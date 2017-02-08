@@ -187,29 +187,30 @@ char** get_targets(char* option_codes){
 	}
 	return targets;
 }
+//Targets is array of targets w/ attribute changes, option_codes == "character_type:round#:prompt#:option#"
 
-bool do_target(char * targets[], char * option_codes){
-	char *player_name = malloc(sizeof(char) * 100);
+bool do_target(char * targets[], char * option_codes){ 
+	char *player_name = malloc(sizeof(char) * 100);//The name of the player being affected
 	char **attributes; // names of attributes to be changed
 	int *attribute_changes; // corresponding values to change attributes by
-	char *navigator = read_text("nav_file.txt");
-	char **nav_split = split(navigator, '\n');
-	for(int i = 0; targets[i]; i++){
-		char **targets_split = split(targets[i], ' ');
-		char *type = targets_split[0];
+	char *navigator = read_text("nav_file.txt"); // pulls nav file content out of file
+	char **nav_split = split(navigator, '\n'); // splits nav file contents by newline
+	for(int i = 0; targets[i]; i++){ //As long as we have targets,
+		char **targets_split = split(targets[i], ' '); //Split the targets cell content by space character
+		char *type = targets_split[0];//Stores the target's character type from split target line
 		
-		player_name = get_player(type);
-		printf("found %s=%s\n", type, player_name);
-		if(!player_name) return false;
+		player_name = get_player(type);//Finds specific player to affect
+		printf("found %s=%s\n", type, player_name);//Check - prints player name
+		if(!player_name) return false;//if the name is not found, return false and kill the loop
 		
-		int attribute_count = atoi(targets_split[1]);
-		attributes = malloc(sizeof(char*) * (attribute_count + 1));
-		for(int z = 0; z < attribute_count; z++){
-			attributes[z] = malloc(sizeof(char) * 20);
+		int attribute_count = atoi(targets_split[1]);//Pulls the number of attributes that will be in use
+		attributes = malloc(sizeof(char*) * (attribute_count + 1));//Allocates space for changed attributes
+		for(int z = 0; z < attribute_count; z++){//For every cell in the array of attributes
+			attributes[z] = malloc(sizeof(char) * 20);//Allocate space for an attribute name
 		}
-		attributes[attribute_count] = NULL;
-		attribute_changes = malloc(sizeof(int) * attribute_count);
-		for(int j = 2, change_index = 0, name_index = 0; targets_split[j]; j++){
+		attributes[attribute_count] = NULL;//And set the end one to NULL to place an end marker.
+		attribute_changes = malloc(sizeof(int) * attribute_count); //Repeats the process for attribute change values
+		for(int j = 2, change_index = 0, name_index = 0; targets_split[j]; j++){//And starts sorting them into their respective arrays
 			if(j % 2 != 0){ // even = attribute change
 				printf("adding %s to atr changes\n", targets_split[j]);
 				attribute_changes[change_index] = atoi(targets_split[j]);
@@ -221,51 +222,53 @@ bool do_target(char * targets[], char * option_codes){
 			}
 			printf("attributes[%d] = %s", j, attribute[j]);
 		}
+		
 		// at this point we have the names and values for attribute changes, with matched indices in 2 arrays
 		// and we have the character type matched to a player's name
 		// player_name = targets_split[0];
 		// char *attribute_count = targets_split[1];
+		
 		char *player_atr_filename = malloc(sizeof(char) * 100);
-		sprintf(player_atr_filename, "%s_attributes.txt", player_name);
-		printf("player_atr_filename = %s\n", player_atr_filename);
-		char *player = read_text(player_atr_filename);
-		char **player_info = split(player, '\n');
-		int num_player_atrs = atoi(player_info[0]);
-		for(int i = 1; player_info[i]; i++){
-			printf("looking at line %s\n", player_info[i]);
-			bool attribute_found = false;
-			char **temporary = split(player_info[i], '=');
-			for(int i2 = 0; attributes[i2]; i2++){
-				if (strcmp(temporary[0], attributes[i2]) == 0){
+		sprintf(player_atr_filename, "%s_attributes.txt", player_name);//turns the name into the text file for access
+		printf("player_atr_filename = %s\n", player_atr_filename);//prints the text file as a check
+		char *player = read_text(player_atr_filename);//pulls the content from the player's file
+		char **player_info = split(player, '\n');//splits the player's file around the newline character
+		int num_player_atrs = atoi(player_info[0]);//and pulls the number of attributes that player has.
+		for(int i = 1; player_info[i]; i++){//As long as there is info in the player file to read,
+			printf("looking at line %s\n", player_info[i]);//Check
+			bool attribute_found = false;//Prepares a test boolean
+			char **temporary = split(player_info[i], '=');//Splits the attributes about the = character
+			for(int i2 = 0; attributes[i2]; i2++){//And as long as we have attributes
+				if (strcmp(temporary[0], attributes[i2]) == 0){//We compare the ones in the target list to the ones in the player's file.
 					attribute_found = true;
 					break;
 				}
 			}
 			
-			if(attribute_found){
-				int value = atoi(temporary[1]);
-				value += attribute_changes[i];
+			if(attribute_found){//Once we find it, 
+				int value = atoi(temporary[1]);//We store the value
+				value += attribute_changes[i];//Add the change of the attribute
 				char str[3];
 				sprintf(str, "%d", value);
-				temporary[1] = str;
-			}else{
+				temporary[1] = str;//And store it back into the string.
+			}else{//If not, then something went kinda sorta pretty bad
 				printf("false\n");
 				return false; // invalid attribute change
 			}
 			char *temporary2 = malloc(sizeof(char) * 100);
-			sprintf(temporary2, "%s=%s", temporary[0], temporary[1]);
+			sprintf(temporary2, "%s=%s", temporary[0], temporary[1]);//Puts the attribute equal to the value in string form again
 			player_info[i] = temporary2;
-			free(temporary2);
+			free(temporary2);//and frees the player info cell
 		}
 		printf("outside of for loop\n");
 		FILE *fp = fopen(player_atr_filename,"w+"); // overwrite player attribute info
-		for(int line = 0; player_info[line]; line++){
+		for(int line = 0; player_info[line]; line++){ // prints the rewritten data into the user file
 			fprintf(fp, "%s\n", player_info[line]);
 		}
-		fclose(fp);
-		char **tempo = split(option_codes, ':');
+		fclose(fp);//and closes the file.
+		char **tempo = split(option_codes, ':');//splits the tempo option code around the :
 		char tempo2[100];
-		sprintf(tempo2, "%s_choices.txt", player_name); 
+		sprintf(tempo2, "%s_choices.txt", player_name); //and stores the choices to the user's choices history file
 		printf("tempo2 = %s\n", tempo2);
 		FILE *fp1 = fopen(tempo2, "a+");
 		fprintf(fp1, "%s\n", option_codes);
