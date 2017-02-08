@@ -1,0 +1,6 @@
+5
+SUP=0
+ALL=0
+FEAR=0
+POW=0
+ALI=0

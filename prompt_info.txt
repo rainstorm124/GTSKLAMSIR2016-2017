@@ -1,0 +1,16 @@
+ROUND_N=1
+CHARACTER_TYPE=STA
+NUM_PROMPTS=1
+PROMPT_1=It is December 1934. Kirov, one of your greatest political rivals, has just been assassinated. How do you use this to secure your power?
+NUM_OPTIONS=3
+OPTION_1=Take the opportunity to fill the Leningrad office with one of your close supporters
+NUM_TARGETS=1
+TARGET_1=STA 2 ALL 2 SUP 1
+OPTION_2=Use the opportunity to call for tighter security and more investigations into dubious party members.
+NUM_TARGETS=3
+TARGET_1=STA 2 FEAR 1 SUP -1
+TARGET_2=YEZ 1 PRES 1
+TARGET_3=YAG 1 PRES 1
+OPTION_3=Take the opportunity to praise Kirov for his patriotism and hard work for the party, encouraging such hard work in other party members.
+NUM_TARGETS=1
+TARGET_1=STA 2 SUP 2 ALL 1
