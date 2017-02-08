@@ -280,4 +280,82 @@ bool do_target(char * targets[], char * option_codes){
 	}
 	free_arr(nav_split);
 }
-
+bool change_target(char * type, char * result){ //Stalin
+	char *player_name = malloc(sizeof(char) * 100);//The name of the player being affected
+	char *navigator = read_text("nav_file.txt"); // pulls nav file content out of file
+	char **nav_split = split(navigator, '\n'); // splits nav file contents by newline
+		
+	player_name = get_player(type);//Finds specific player to affect
+	printf("found %s=%s\n", type, player_name);//Check - prints player name
+	if(!player_name) return false;//if the name is not found, return false and kill the loop
+		
+		// at this point we have the names and values for attribute changes, with matched indices in 2 arrays
+		// and we have the character type matched to a player's name
+		// player_name = targets_split[0];
+		// char *attribute_count = targets_split[1];
+		
+	char *player_atr_filename = malloc(sizeof(char) * 100);
+	sprintf(player_atr_filename, "%s_attributes.txt", player_name);//turns the name into the text file for access
+	printf("player_atr_filename = %s\n", player_atr_filename);//prints the text file as a check
+	char *player = read_text(player_atr_filename);//pulls the content from the player's file
+	char **player_info = split(player, '\n');//splits the player's file around the newline character
+	if(strcmp(result,"NKVD")==0){
+		char **final_copy= malloc(sizeof(player_info));
+		final_copy[0]=player_info[0];
+		for(i=1;player_info[i];i++)
+		{
+			char **temp=split(player_info[i],'=');
+			if (strcmp(temp[0],"POW")!=0)
+				final_copy[i]=player_info[i];
+		}
+		player_info=final_copy;
+		free_arr(final_copy);
+		FILE *fNav = fopen("nav_file.txt","w+");
+		char *nav_file=read_text(fNav);
+		char **nav=split(nav_file, '\n');
+		char **final_copy= malloc(sizeof(nav));
+		for(i=0;nav[i];i++)
+		{
+			char **temp=split(nav[i],'=');
+			if (strcmp(temp[0],player_name)!=0)
+				final_copy[i]=nav[i];
+			else
+				sprintf(final_copy[i],"%s=%s",player_name,result);
+		}
+	}
+	else if(strcmp(result,"STAKW")==0){
+		char **final_copy= malloc(sizeof(player_info));
+		final_copy[0]=player_info[0];
+		for(i=1;player_info[i];i++)
+		{
+			char **temp=split(player_info[i],"=");
+			if (strcmp(temp[0],"HUN")==0){
+				final_copy[i]="MOT=5";
+			}
+			else if (strcmp(temp[0],"LOY")==0){
+				sprintf(final_copy[i],"SUS=%i",10-atoi(temp[1]));
+			}
+			else{
+				final_copy[i]=player_info[i];
+			}
+		}
+		player_info=final_copy;
+		free_arr(final_copy);
+	}
+	printf("outside of for loop\n");
+	FILE *fp = fopen(player_atr_filename,"w+"); // overwrite player attribute info
+	for(int line = 0; player_info[line]; line++){ // prints the rewritten data into the user file
+		fprintf(fp, "%s\n", player_info[line]);
+	}
+	fclose(fp);//and closes the file.
+	char **tempo = split(option_codes, ':');//splits the tempo option code around the :
+	char tempo2[100];
+	sprintf(tempo2, "%s_choices.txt", player_name); //and stores the choices to the user's choices history file
+	printf("tempo2 = %s\n", tempo2);
+	FILE *fp1 = fopen(tempo2, "a+");
+	fprintf(fp1, "%s\n", option_codes);
+	fclose(fp1);
+	free_arr(player_info);
+	}
+	free_arr(nav_split);
+}
