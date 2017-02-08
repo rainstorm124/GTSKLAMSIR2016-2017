@@ -9,5 +9,5 @@ char* get_type(char*);
 char* get_prompt(char*);
 char** get_options(char*);
 char** get_targets(char*);
-bool do_target(char**, char*);
+bool do_option(char**, char*);
 #endif
