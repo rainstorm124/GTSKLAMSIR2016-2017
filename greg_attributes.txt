@@ -4,4 +4,3 @@ ALL=0
 FEAR=2
 POW=0
 ALI=0
-

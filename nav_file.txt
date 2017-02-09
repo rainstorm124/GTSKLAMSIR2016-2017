@@ -1,1 +1,3 @@
 greg=STA
+ari=YEZ
+rain=YAG
