@@ -1,4 +1,5 @@
 #include "prompt_chooser.h"
+#include "prompt.h"
 
 int get_prompt_num_STAKW(char *player_name, int round){
 	switch(round){
@@ -7,7 +8,7 @@ int get_prompt_num_STAKW(char *player_name, int round){
 		case 2:
 		switch(get_player_choice(player_name, 2)){
 			case 1: // player chose option 1 in round 1
-			return 2 // the result is prompt 2
+			return 2; // the result is prompt 2
 			case 2: // player chose option 2 in round 1
 			return 3; // the result is prompt 3
 			case 3: // player chose option 3 in round 1
@@ -41,7 +42,7 @@ int get_prompt_num_STAKW(char *player_name, int round){
 		}
 		case 6:
 		// TODO add round 6 checks
-			break;
+		break;
 	}
 }
 
