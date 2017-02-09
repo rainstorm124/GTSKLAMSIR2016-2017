@@ -1,6 +1,7 @@
 5
-SUP=0
+SUP=-2
 ALL=0
-FEAR=0
+FEAR=2
 POW=0
 ALI=0
+

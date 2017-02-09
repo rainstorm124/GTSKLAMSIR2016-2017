@@ -10,4 +10,7 @@ char* get_prompt(char*);
 char** get_options(char*);
 char** get_targets(char*);
 bool do_option(char**, char*);
+int get_player_choice(char*, int);
+int get_attr_val(char*, char*);
+
 #endif
