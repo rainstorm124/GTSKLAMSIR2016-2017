@@ -34,7 +34,7 @@ char** split(char *src, char delimiter){
 	return arr;	
 }
 
-void free_arr(void **arr){
+void free_arr(char **arr){
 	for(int i = 0; *(arr + i); i++){
 		free(*(arr + i));
 	}

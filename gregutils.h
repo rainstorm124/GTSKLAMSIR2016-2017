@@ -4,6 +4,6 @@
 #include <stdlib.h>
 char* read_text(char*);
 char** split(char*, char);
-void free_arr(void**);
+void free_arr(char**);
 int random(int);
 #endif

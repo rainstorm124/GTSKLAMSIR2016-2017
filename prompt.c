@@ -1,11 +1,9 @@
 #include "prompt.h"
 #include <stdbool.h>
 #include <string.h>
-int round = 1;
-const int character_code_types = 10, max_rounds = 6;
 
 int main(int argc, char **argv){
-	char *prompt_code = get_prompt("greg");
+	char *prompt_code = get_prompt("greg", 1);
 	printf("prompt code = %s\n", prompt_code);
 	char **options = get_options(prompt_code);
 	for(int i = 0; options[i]; i++){
@@ -60,7 +58,7 @@ char* get_type(char *player){
 	return player_type;
 }
 
-char* get_prompt(char *player_name){ // code_type:round:prompt
+char* get_prompt(char *player_name, int round){ // code_type:round:prompt
 	char *info = read_text("prompt_info.txt");
 	char **info_lines = split(info, '\n');
 	char *character_code_type = get_type(player_name);
@@ -302,7 +300,7 @@ int get_attr_val(char *player_name, char * attr_name){
 	for(int i = 1; player_lines[i]; i++){ // starting at 1 to skip number of attrs
 		char **attr = split(player_lines[i], '=');
 		if(strcmp(attr[0], attr_name) == 0){
-			return attr[1];
+			return atoi(attr[1]);
 		}
 		free_arr(attr);
 	}
