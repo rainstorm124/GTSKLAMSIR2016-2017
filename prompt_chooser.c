@@ -27,7 +27,7 @@ int get_prompt_num_STAKW(char *player_name, int round){
 		case 4:
 		if(get_attr_val(player_name, "PRES") > 7){
 			return 1;
-		}else if(get_attr_val(player_name, "HUN") >= 5){
+		}else if(get_attr_val(player_name, "HUNG") >= 5){
 			return 2;
 		}else{ // other criteria are not met
 			return 3;
@@ -51,7 +51,7 @@ int get_prompt_num_EXK(char *player_name, int round){
 		case 1:
 		return 1;
 		case 2:
-		if(get_attr_val(player_name, "HUN") >= 5){
+		if(get_attr_val(player_name, "HUNG") >= 5){
 			return 1;
 		}else if(get_attr_val(player_name, "LOY") >= 0 && get_attr_val(player_name, "LOY") <= 2){
 			return 2;
@@ -59,7 +59,7 @@ int get_prompt_num_EXK(char *player_name, int round){
 			return 3;
 		}
 		case 3:
-		if(get_attr_val(player_name, "HUN") >= 5){
+		if(get_attr_val(player_name, "HUNG") >= 5){
 			return 1;
 		}else if(get_attr_val(player_name, "FAT") <= 2){
 			return 2;
@@ -75,7 +75,7 @@ int get_prompt_num_EXK(char *player_name, int round){
 			return 3;
 		}
 		case 5:
-		if(get_attr_val(player_name, "HUN") >= 8){
+		if(get_attr_val(player_name, "HUNG") >= 8){
 			return 1;
 		}else if(get_attr_val(player_name, "PRES") <= 8){
 			return 2;
@@ -93,7 +93,7 @@ int get_prompt_num_BD(char *player_name, int round){
 		case 1:
 		return 1;
 		case 2:
-		if(get_attr_val(player_name, "HUN") >= 5){
+		if(get_attr_val(player_name, "HUNG") >= 5){
 			return 1;
 		}else if(get_attr_val(player_name, "PRES") >= 6){
 			return 2;
@@ -101,7 +101,7 @@ int get_prompt_num_BD(char *player_name, int round){
 			return 3;
 		}
 		case 3:
-		if(get_attr_val(player_name, "HUN") >= 5){
+		if(get_attr_val(player_name, "HUNG") >= 5){
 			return 1;
 		}else if(get_attr_val(player_name, "PRES") >= 6){
 			return 2;
@@ -109,7 +109,7 @@ int get_prompt_num_BD(char *player_name, int round){
 			return 3;
 		}
 		case 4:
-		if(get_attr_val(player_name, "HUN") >= 5){
+		if(get_attr_val(player_name, "HUNG") >= 5){
 			return 1;
 		}else if(get_attr_val(player_name, "LOY") <= 4){
 			return 2;
@@ -117,7 +117,7 @@ int get_prompt_num_BD(char *player_name, int round){
 			return 3;
 		}
 		case 5:
-		if(get_attr_val(player_name, "HUN") >= 8){
+		if(get_attr_val(player_name, "HUNG") >= 8){
 			return 1;
 		}else if(get_attr_val(player_name, "FAT") >= 8){
 			return 2;
