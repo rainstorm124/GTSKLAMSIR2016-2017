@@ -269,31 +269,29 @@ bool do_option(char * targets[], char * option_code){
 	free_arr(nav_split);
 }
 
-// NOTE: character_type:round#:prompt#:option#
-// returns -100 if no choice was found
-int get_player_choice(char *player_name, int round){
-	char *player_filename = malloc(sizeof(char) * 100);
-	sprintf(player_filename, "%s_choices.txt", player_name);
-	char *choice_text = read_text(player_filename);
-	char **choices = split(choice_text, '\n');
-	for(int i = 0; choices[i]; i++){
-		char **code = split(choices[i], ':');
-		if(atoi(code[1]) == round){
-			free(player_filename);
-			free(choice_text);
-			free_arr(choices);
-			free_arr(code);
-			return atoi(code[3]);
+char * get_choice(char * player_name, int round)
+{
+	char * file_name = malloc(sizeof(char)*50);
+	sprintf(file_name,"%s_choices.txt", player_name);
+	char * player_choices = read_text(file_name);
+	char ** player_lines = split(player_choices, '\n');
+	char * catch = malloc(sizeof(char)*10);
+	catch = "ERROR";
+	for (int i = 0; player_lines[i]; i++)
+	{
+		char ** split_option_code = split(player_lines[i], ':');
+		if(atoi(split_option_code[1])==round){
+			sprintf(catch, "%s:%s", split_option_code[2], split_option_code[3]);
+			free_arr(split_option_code);
+			break;
 		}
-		free(code);
+		free_arr(split_option_code);
 	}
-	free(player_filename);
-	free(choice_text);
-	free_arr(choices);
-	printf("Player did not have a choice for %d\n", round);
-	return -100;
+	free(file_name);
+	free(player_choices);
+	free_arr(player_lines);
+	return catch;
 }
-
 
 // returns -100 if no ATR was found
 int get_attr_val(char *player_name, char * attr_name){
