@@ -6,4 +6,6 @@ char* read_text(char*);
 char** split(char*, char);
 void free_arr(char**);
 int grandom(int);
+void print_header(void);
+char* hash_pw(char *);
 #endif

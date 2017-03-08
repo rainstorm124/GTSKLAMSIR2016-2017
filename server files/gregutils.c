@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE
+#include <unistd.h>
 #include "gregutils.h"
 #include <time.h>
 
@@ -48,4 +50,28 @@ int grandom(int max){
 
 void print_header(){
 	puts("Content-type: text/html\n");
+}
+
+char *hash_pw(char *pass){
+	const char *salt = "$6$eM6XDFpkQy0IWZOy$";
+	return strdup(crypt(pass, salt));
+}
+
+int check_pass(char *user, char *pass, char *file){
+	char *fulltext = read_text(file);
+	char **arr = split(fulltext, '\n');
+	int retval = 0;
+	for(int i = 0; arr[i]; i++){
+      char **line = split(arr[i], '=');
+	  if(strcmp(line[0], user)==0){
+		  char *hash = hash_pw(pass);
+		  retval = !strcmp(hash, line[1]);
+		  free(hash);
+	  }
+	  free_arr(line);
+	  break;
+    }
+	free_arr(arr);
+	free(fulltext);
+	return retval;
 }

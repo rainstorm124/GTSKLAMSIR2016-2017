@@ -116,7 +116,7 @@ void initialize(char *student_file){
 	FILE *nav_file_clear = fopen("nav_file.txt", "w");
 	fclose(nav_file_clear);
 	for(int i = 0; students[i]; i++){
-		int r = random(type_list->size);
+		int r = grandom(type_list->size);
 		node *node = get_node_at(type_list, r);
 		if(!node){
 			printf("node is null\n");

@@ -7,4 +7,5 @@ char** split(char*, char);
 void free_arr(void**);
 int grandom(int);
 void print_header(void);
+char *hash_pw(char *);
 #endif

@@ -49,3 +49,12 @@ int grandom(int max){
 	if(max <= 0) return 0;
 	return (rand() + 1) % max;
 }
+
+void print_header(){
+	puts("Content-type: text/html\n");
+}
+
+char *hash_pw(char *pass){
+	const char *salt = "$6$eM6XDFpkQy0IWZOy$";
+	return strdup(crypt(pass, salt));
+}

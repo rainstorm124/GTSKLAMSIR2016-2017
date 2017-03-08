@@ -25,8 +25,9 @@ int main(int argc, char **argv){
 	return 0;
 }
 
+// only to be used for STA, YAG AND YEZ
 char* get_player(char *type){
-	char *player_name = malloc(sizeof(char) * 100);
+	char *player_name = calloc(sizeof(char), 100);
 	char *navigator = read_text("nav_file.txt");
 	char **nav_split = split(navigator, '\n');
 	bool player_found = false;
@@ -36,9 +37,10 @@ char* get_player(char *type){
 			player_found = true;
 			player_name = nav_line[0];
 		}
+		free_arr(nav_line);
 	}
-	free(navigator);
 	free_arr(nav_split);
+	free(navigator);
 	if(!player_found){
 		printf("Type not found!\n");
 		return NULL; // no type match was found in nav file
@@ -47,7 +49,7 @@ char* get_player(char *type){
 }
 
 char* get_type(char *player){
-	char *player_type = malloc(sizeof(char) * 100);
+	char *player_type = calloc(sizeof(char), 100);
 	char *navigator = read_text("nav_file.txt");
 	char **nav_split = split(navigator, '\n');
 	bool player_found = false;
@@ -57,6 +59,7 @@ char* get_type(char *player){
 			player_found = true;
 			player_type = nav_line[1];
 		}
+		free_arr(nav_line);
 	}
 	free(navigator);
 	free_arr(nav_split);
@@ -72,11 +75,13 @@ char* get_prompt_code(char *player_name, int round){ // player_name:round:prompt
 	sprintf(prompt_info_filename, "prompt_%d_info.txt", round);
 	char *info = read_text(prompt_info_filename);
 	free(prompt_info_filename);
+	//
 	char **info_lines = split(info, '\n');
 	char *character_code_type = get_type(player_name);
 	bool round_found = false, type_found = false;
 	char *prompt_code = malloc(sizeof(char) * 100);
-	for(int i = 0; info_lines[i]; i++){ // loop through lines of prompt_info.txt
+	// loop through lines of prompt_info.txt
+	for(int i = 0; info_lines[i]; i++){
 		char *line = info_lines[i];
 		char **split_line = split(line, '=');
 		if(round_found){
@@ -107,14 +112,17 @@ char** get_option_codes(char *prompt_code){ // player_name:round#:prompt#:option
 	char *code_type = get_type(codes[0]);
 	char *code_round = codes[1];
 	char *code_num = codes[2];
+	//
 	char *prompt_info_filename = malloc(sizeof(char) * 50);
 	sprintf(prompt_info_filename, "prompt_%s_info.txt", code_round);
 	char *info = read_text(prompt_info_filename);
 	free(prompt_info_filename);
+	//
 	char **lines = split(info, '\n');
 	bool round_found = false;
 	bool chartype_found = false;
 	int num_options;
+	//
 	for(int i = 0; lines[i]; i++){
 		char **line = split(lines[i], '=');
 		if(round_found){
@@ -299,7 +307,7 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ALL_IM_UNDER_OPL") == 0){
@@ -311,7 +319,7 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ALL_IM") == 0){
@@ -323,7 +331,7 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ALL_STAKW") == 0){
@@ -335,7 +343,7 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ALL_STAKW_UNDER_OPL") == 0){
@@ -353,7 +361,7 @@ bool attr_change_multiple(char *target, char *player_name){
 					
 				}
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ALL_NKVDO") == 0){
@@ -365,7 +373,7 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ALL_OTHER_OPL") == 0){
@@ -377,7 +385,7 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ALL_OPL_IN_ALLIANCE") == 0){
@@ -389,7 +397,7 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ALL_OTHER_STAKW") == 0){
@@ -401,7 +409,7 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ALL_STAKW_UNDER_IM") == 0){
@@ -413,7 +421,7 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "ASSOCIATED_OPL") == 0){
@@ -431,13 +439,13 @@ bool attr_change_multiple(char *target, char *player_name){
 									players[0] = malloc(sizeof(char) * 100);
 									players[0] = im_opl_line[1];
 									players[1] = NULL;
-									free(line);
+									free(im_opl_line);
 									break;
 								}
-								free(line);
+								free_arr(im_opl_line);
 							}							
 						}
-						free(line);
+						free_arr(line);
 					}						
 				}else if (strcmp(nav_line[1], "IM") == 0){
 					for(int j = 0; im_opl_lines[j]; j++){
@@ -449,7 +457,7 @@ bool attr_change_multiple(char *target, char *player_name){
 							free(line);
 							break;
 						}
-						free(line);
+						free_arr(line);
 					}	
 				}
 			}
@@ -466,10 +474,16 @@ bool attr_change_multiple(char *target, char *player_name){
 				free(line);
 				break;
 			}
-			free(line);
+			free_arr(line);
 		}
 	}else if(strcmp(type, "BD_STAKW") == 0){
+		
+		
+		
 		// character type change
+		
+		
+		
 	}else if(strcmp(type, "ALL_BD") == 0){
 		int i, j;
 		for(i = 0, j = 0; nav_lines[i]; i++){
@@ -479,14 +493,14 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[j] = NULL;
 	}else if(strcmp(type, "YEZ_NKVDO") == 0){
 		// character type change
 	}else if(strcmp(type, "YAG_NKVDO") == 0){
 		// character type change
-	}else if(strcmp(type, "2_grandom_NKVDO") == 0){
+	}else if(strcmp(type, "2_RANDOM_NKVDO") == 0){
 		int i, j;
 		for(i = 0, j = 0; nav_lines[i]; i++){
 			char **line = split(nav_lines[i], '=');
@@ -495,13 +509,13 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		int rand = grandom(j);
 		players[0] = players[grandom(j)];
 		players[1] = players[rand == 0 ? rand + 1 : rand - 1];
 		players[2] = NULL;
-	}else if(strcmp(type, "1_grandom_NKVDO") == 0){
+	}else if(strcmp(type, "1_RANDOM_NKVDO") == 0){
 		int i, j;
 		for(i = 0, j = 0; nav_lines[i]; i++){
 			char **line = split(nav_lines[i], '=');
@@ -510,16 +524,22 @@ bool attr_change_multiple(char *target, char *player_name){
 				players[j] = line[0];
 				j++;
 			}
-			free(line);
+			free_arr(line);
 		}
 		players[0] = players[grandom(j)];
 		players[1] = NULL;
 	}else if(strcmp(type, "INVESTIGATED_OPL") == 0){
+		
+		
+		
 		// investigations file
 	}else if(strcmp(type, "INVESTIGATED_STAKW") == 0){
 		// investigations file
 	}else if(strcmp(type, "ALL_NKVDO_INVESTIGATORS") == 0){
 		// investigations file
+		
+		
+		
 	}else {
 		printf("type \"%s\" is not accounted for!\n", type);
 	}
