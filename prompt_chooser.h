@@ -10,4 +10,5 @@ int get_prompt_num_IM(char*, int);
 int get_prompt_num_STAKW(char*, int);
 int get_prompt_num_EXK(char*, int);
 int get_prompt_num_BD(char*, int);
+double get_DEC();
 #endif

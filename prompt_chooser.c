@@ -129,3 +129,8 @@ int get_prompt_num_BD(char *player_name, int round){
 			break;
 	}
 }
+
+double get_DEC(){
+	// TODO implement
+	return 0;
+}

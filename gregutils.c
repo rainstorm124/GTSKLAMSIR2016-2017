@@ -3,7 +3,10 @@
 
 char* read_text(char *filename){
 	FILE *fp = fopen(filename, "r");
-	if(!fp) return NULL;
+	if(!fp){
+		printf("\"%s\" not found\n", filename);
+		return NULL;
+	}	
 	fseek(fp, 0, SEEK_END);
 	size_t length = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
@@ -42,6 +45,7 @@ void free_arr(char **arr){
 }
 
 int random(int max){
-	srand(time(NULL));
-	return rand() % max;
+	//srand(time(NULL));
+	if(max <= 0) return 0;
+	return (rand() + 1) % max;
 }
