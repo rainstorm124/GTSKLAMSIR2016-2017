@@ -1,0 +1,6 @@
+5
+SUP=7
+ALL=7
+FEAR=6
+POW=8
+ALI=5

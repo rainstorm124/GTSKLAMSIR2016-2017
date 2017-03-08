@@ -1,0 +1,6 @@
+5
+PRES=6
+SUS=4
+CRED=6
+FAV=5
+PROD=5

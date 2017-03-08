@@ -1,0 +1,6 @@
+5
+FAV=5
+CRED=6
+SUS=6
+POW=7
+PRES=7

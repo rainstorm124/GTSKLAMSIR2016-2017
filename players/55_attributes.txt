@@ -1,0 +1,5 @@
+4
+MOT=5
+SUS=2
+PRES=4
+FAT=0

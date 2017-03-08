@@ -1,0 +1,5 @@
+4
+HUNG=3
+LOY=2
+FAT=2
+PRES=7
