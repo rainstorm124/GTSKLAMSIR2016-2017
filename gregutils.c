@@ -44,7 +44,7 @@ void free_arr(char **arr){
 	free(arr);
 }
 
-int random(int max){
+int grandom(int max){
 	//srand(time(NULL));
 	if(max <= 0) return 0;
 	return (rand() + 1) % max;

@@ -20,7 +20,7 @@ int main(int argc, char **argv){
 	free(prompt_code);
 	free_arr(options);
 	
-	attr_change_multiple("2_RANDOM_NKVDO 1 2 3", "bob");
+	attr_change_multiple("2_grandom_NKVDO 1 2 3", "bob");
 	
 	return 0;
 }
@@ -486,7 +486,7 @@ bool attr_change_multiple(char *target, char *player_name){
 		// character type change
 	}else if(strcmp(type, "YAG_NKVDO") == 0){
 		// character type change
-	}else if(strcmp(type, "2_RANDOM_NKVDO") == 0){
+	}else if(strcmp(type, "2_grandom_NKVDO") == 0){
 		int i, j;
 		for(i = 0, j = 0; nav_lines[i]; i++){
 			char **line = split(nav_lines[i], '=');
@@ -497,11 +497,11 @@ bool attr_change_multiple(char *target, char *player_name){
 			}
 			free(line);
 		}
-		int rand = random(j);
-		players[0] = players[random(j)];
+		int rand = grandom(j);
+		players[0] = players[grandom(j)];
 		players[1] = players[rand == 0 ? rand + 1 : rand - 1];
 		players[2] = NULL;
-	}else if(strcmp(type, "1_RANDOM_NKVDO") == 0){
+	}else if(strcmp(type, "1_grandom_NKVDO") == 0){
 		int i, j;
 		for(i = 0, j = 0; nav_lines[i]; i++){
 			char **line = split(nav_lines[i], '=');
@@ -512,7 +512,7 @@ bool attr_change_multiple(char *target, char *player_name){
 			}
 			free(line);
 		}
-		players[0] = players[random(j)];
+		players[0] = players[grandom(j)];
 		players[1] = NULL;
 	}else if(strcmp(type, "INVESTIGATED_OPL") == 0){
 		// investigations file

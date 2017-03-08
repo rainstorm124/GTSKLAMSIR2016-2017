@@ -5,5 +5,5 @@
 char* read_text(char*);
 char** split(char*, char);
 void free_arr(char**);
-int random(int);
+int grandom(int);
 #endif
