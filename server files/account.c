@@ -53,7 +53,7 @@ int main(void) {
              "value='%s'><input type='submit' name='submit' "
 			 "value='Submit'></form></body></html>",user);
     else {
-      printf("<p> Invalid username or password</p>");
+      printf("<p> Invalid username or password<br /><a href='/cgi-bin/greg/mainpage.cgi'>Homepage</a></p>");
     }
   }
   puts("</body></html>");

@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <time.h>
+#include "prompt.h"
 
 #define MINIMUM_PLAYERS 60
 /*
@@ -49,7 +50,6 @@ void print_type(void *ptr){
 
 int main(int argc, char **argv){
 	initialize("test_students.txt");
-	
 	return 0;
 }
 
@@ -129,25 +129,25 @@ void initialize(char *student_file){
 		}
 		char **character_attirbute_names;
 		if(strcmp(((player_type*)node->data)->type, "STAKW") == 0){
-			character_attirbute_names = split("MOT,5 SUS,2 PRES,4 FAT,0", ' ');
+			character_attirbute_names = split("MOT,5 SUS,2 PRES,4 FAT,0 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "IM") == 0){
-			character_attirbute_names = split("PRES,4 ALL,1 SUP,4 SUS,4 PROD,5", ' ');
+			character_attirbute_names = split("PRES,4 ALL,1 SUP,4 SUS,4 PROD,5 IN_ALLIANCE,0 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "BD") == 0){
-			character_attirbute_names = split("HUNG,4 LOY,3 FAT,3 PRES,5", ' ');
+			character_attirbute_names = split("HUNG,4 LOY,3 FAT,3 PRES,5 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "NKVDO") == 0){
-			character_attirbute_names = split("PRES,6 SUS,4 CRED,6 FAV,5 PROD,5", ' ');
+			character_attirbute_names = split("PRES,6 SUS,4 CRED,6 FAV,5 PROD,5 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "EP") == 0){
-			character_attirbute_names = split("POL,5 ALI,10 SUS,4", ' ');
+			character_attirbute_names = split("POL,5 ALI,10 SUS,4 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "OPL") == 0){
-			character_attirbute_names = split("PRES,4 ALL,1 SUP,4 SUS,4 PROD,5", ' ');
+			character_attirbute_names = split("PRES,4 ALL,1 SUP,4 SUS,4 PROD,5 IN_ALLIANCE,0 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "EXK") == 0){
-			character_attirbute_names = split("HUNG,3 LOY,2 FAT,2 PRES,7", ' ');
+			character_attirbute_names = split("HUNG,3 LOY,2 FAT,2 PRES,7 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "YAG") == 0){
-			character_attirbute_names = split("FAV,5 CRED,6 SUS,6 POW,7 PRES,7", ' ');
+			character_attirbute_names = split("FAV,5 CRED,6 SUS,6 POW,7 PRES,7 ARRESTED,0 GULAG,0 DEAD,0 DEMOTED,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "YEZ") == 0){
-			character_attirbute_names = split("FAV,7 CRED,5 SUS,4 POW,3 PRES,5", ' ');
+			character_attirbute_names = split("FAV,7 CRED,5 SUS,4 POW,3 PRES,5 ARRESTED,0 GULAG,0 DEAD,0 DEMOTED,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "STA") == 0){
-			character_attirbute_names = split("SUP,7 ALL,7 FEAR,6 POW,8 ALI,5", ' ');
+			character_attirbute_names = split("SUP,7 ALL,7 FEAR,6 POW,8 ALI,5 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else{
 			printf("error, unmatched character!!!\n");
 		}
@@ -186,8 +186,8 @@ void initialize(char *student_file){
 	}
 	
 	// populate arrays of opl, im and stakw
-	char *opl_list[3], *im_list[9], *stakw_list[27];
-	int opl = 0, im = 0, stakw = 0;
+	char *opl_list[3], *im_list[9], *stakw_list[27], *nkvdo_list[5];
+	int opl = 0, im = 0, stakw = 0, nkvdo = 0;
 	char *nav_text = read_text("nav_file.txt");
 	char **nav_lines = split(nav_text, '\n');
 	for(int i = 0; nav_lines[i]; i++){
@@ -206,6 +206,10 @@ void initialize(char *student_file){
 			stakw_list[stakw] = entry[0];
 			stakw++;
 		}
+    if(strcmp(entry[1], "NKVDO") == 0){
+      nkvdo_list[nkvdo] = entry[0];
+      nkvdo++;
+    }
 	}
 	
 	// create IM-OPL assignments
@@ -225,6 +229,26 @@ void initialize(char *student_file){
 		}
 	}
 	fclose(stakw_im);
+  
+  // create STAKW, IM and OPL investigation assignment files
+  FILE *stakw_investigations = fopen("stakw_investigations.txt", "w+");
+  char **random_stakw = get_random_players("STAKW", 5);
+  for(int i = 0; nkvdo_list[i]; i++){
+    fprintf(stakw_investigations, "%s=%s\n", random_stakw[i], nkvdo_list[i]);
+  }
+  fclose(stakw_investigations);
+  FILE *im_investigations = fopen("im_investigations.txt", "w+");
+  char **random_im= get_random_players("IM", 5);
+  for(int i = 0; nkvdo_list[i]; i++){
+    fprintf(im_investigations, "%s=%s\n", random_im[i], nkvdo_list[i]);
+  }
+  fclose(im_investigations);
+  FILE *opl_investigations = fopen("opl_investigations.txt", "w+");
+  char **random_opl = get_random_players("OPL", 3);
+  for(int i = 0; nkvdo_list[i]; i++){
+    fprintf(opl_investigations, "%s=%s\n", random_opl[i % 3], nkvdo_list[i]);
+  }
+  fclose(opl_investigations);
 
 	fclose(fp); // close students' names files
 }

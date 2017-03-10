@@ -5,7 +5,10 @@
 
 char* read_text(char *filename){
 	FILE *fp = fopen(filename, "r");
-	if(!fp) return NULL;
+	if(!fp){
+    printf("File \"%s\" not found.\n", filename);
+    return NULL;
+  }
 	fseek(fp, 0, SEEK_END);
 	size_t length = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
@@ -36,7 +39,7 @@ char** split(char *src, char delimiter){
 	return arr;	
 }
 
-void free_arr(void **arr){
+void free_arr(char **arr){
 	for(int i = 0; *(arr + i); i++){
 		free(*(arr + i));
 	}
@@ -49,7 +52,7 @@ int grandom(int max){
 }
 
 void print_header(){
-	puts("Content-type: text/html\n");
+	puts("Content-type: text/html\n\n");
 }
 
 char *hash_pw(char *pass){
@@ -57,8 +60,8 @@ char *hash_pw(char *pass){
 	return strdup(crypt(pass, salt));
 }
 
-int check_pass(char *user, char *pass, char *file){
-	char *fulltext = read_text(file);
+int check_pass(char *user, char *pass, char *pwsd_file){
+	char *fulltext = read_text(pswd_file);
 	char **arr = split(fulltext, '\n');
 	int retval = 0;
 	for(int i = 0; arr[i]; i++){

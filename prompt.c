@@ -2,7 +2,8 @@
 #include <stdbool.h>
 #include <string.h>
 
-int main(int argc, char **argv){
+
+/*int main(int argc, char **argv){
 	char *prompt_code = get_prompt_code("greg", 1);
 	printf("prompt code = %s\n", prompt_code);
 	char **options = get_option_codes(prompt_code);
@@ -19,11 +20,22 @@ int main(int argc, char **argv){
 	free_arr(targets);
 	free(prompt_code);
 	free_arr(options);
-	
-	attr_change_multiple("2_grandom_NKVDO 1 2 3", "bob");
+	srand(time(NULL));
+	attr_change_multiple("2_RANDOM_NKVDO 1 2 3", "bob");
 	
 	return 0;
+}*/
+
+int main(int argc, char **argv){
+  srand(time(NULL));
+  //char **keys = split("2_RANDOM_NKVDO 1_RANDOM_NKVDO 1_RANDOM_IM 1_RANDOM_OPL 1_RANDOM_EP 1_RANDOM_BD 1_RANDOM_EXK 2_RANDOM_EXK 3_RANDOM_STAKW", ' ');
+  char **keys = split("ASSOCIATED_IM", ' ');
+   for(char **kp = keys; *kp; kp++){
+     attr_change_multiple(*kp, "Kasandra Sano");
+   }
+  free_arr(keys);
 }
+
 
 // only to be used for STA, YAG AND YEZ
 char* get_player(char *type){
@@ -297,149 +309,135 @@ bool attr_change_multiple(char *target, char *player_name){
 	char **im_opl_lines = split(im_opl_text, '\n');
 	char *stakw_im_text = read_text("stakw-im.txt");
 	char **stakw_im_lines = split(stakw_im_text, '\n');
+  char *stakw_investigations_text = read_text("stakw_investigations.txt");
+  char **stakw_investigations_lines = split(stakw_investigations_text, '\n');
+  char *im_investigations_text = read_text("im_investigations.txt");
+  char **im_investigations_lines = split(im_investigations_text, '\n');
+  char *opl_investigations_text = read_text("opl_investigations.txt");
+  char **opl_investigations_lines = split(opl_investigations_text, '\n');
+  /// array of players to be modified
 	char **players = malloc(sizeof(char*) * 100);
-	if(strcmp(type, "ALL_OPL") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "OPL") == 0){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		players[j] = NULL;
-	}else if(strcmp(type, "ALL_IM_UNDER_OPL") == 0){
-		int j;
-		for(int i = 0, j = 0; im_opl_lines[i]; i++){
+	if(strcmp(type, "ALL_OPL") == 0){ // good
+    free(players);
+    players = get_all_players_of_type("OPL");
+	}else if(strcmp(type, "ALL_IM") == 0){ // good
+    free(players);
+    players = get_all_players_of_type("IM");
+	}else if(strcmp(type, "ALL_STAKW") == 0){ // good
+    free(players);
+    players = get_all_players_of_type("STAKW");
+	}else if(strcmp(type, "ALL_NKVDO") == 0){ // good
+    free(players);
+    players = get_all_players_of_type("NKVDO");
+  }else if(strcmp(type, "ALL_BD") == 0){ // good
+    free(players);
+    players = get_all_players_of_type("BD");
+	}else if(strcmp(type, "ALL_STAKW_UNDER_OPL") == 0){ // good
+		int j = 0;
+		for(int i = 0; im_opl_lines[i]; i++){
 			char **line = split(im_opl_lines[i], '=');
-			if(strcmp(line[1], player_name) == 0){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		players[j] = NULL;
-	}else if(strcmp(type, "ALL_IM") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "IM") == 0){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		players[j] = NULL;
-	}else if(strcmp(type, "ALL_STAKW") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "STAKW") == 0){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		players[j] = NULL;
-	}else if(strcmp(type, "ALL_STAKW_UNDER_OPL") == 0){
-		int j;
-		for(int i = 0, j = 0; im_opl_lines[i]; i++){
-			char **line = split(im_opl_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
 			if(strcmp(line[1], player_name) == 0){
 				for(int k = 0; stakw_im_lines[k]; k++){
-					char **stakw_im_line = split(stakw_im_lines[i], '=');
+					char **stakw_im_line = split(stakw_im_lines[k], '=');
+          if(!stakw_im_line[0] || !stakw_im_line[1]) continue;
 					if(strcmp(stakw_im_line[1], line[0]) == 0){
-						players[j] = malloc(sizeof(char) * 100);
-						players[j] = line[0];
+						players[j] = calloc(sizeof(char), 100);
+						strcpy(players[j], stakw_im_line[0]);
 						j++;
 					}
-					
+					free_arr(stakw_im_line);
 				}
 			}
 			free_arr(line);
 		}
 		players[j] = NULL;
-	}else if(strcmp(type, "ALL_NKVDO") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "NKVDO") == 0){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		players[j] = NULL;
-	}else if(strcmp(type, "ALL_OTHER_OPL") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "OPL") == 0 && strcmp(line[0], player_name) != 0){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		players[j] = NULL;
-	}else if(strcmp(type, "ALL_OPL_IN_ALLIANCE") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "OPL") == 0 && get_attr_val(line[0], "IN_ALLIANCE") == 1){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		players[j] = NULL;
-	}else if(strcmp(type, "ALL_OTHER_STAKW") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "STAKW") == 0 && strcmp(line[0], player_name) != 0){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		players[j] = NULL;
-	}else if(strcmp(type, "ALL_STAKW_UNDER_IM") == 0){
-		int j;
-		for(int i = 0, j = 0; stakw_im_lines[i]; i++){
-			char **line = split(stakw_im_lines[i], '=');
+	}else if(strcmp(type, "ALL_IM_UNDER_OPL") == 0){ // good
+		int j = 0;
+		for(int i = 0; im_opl_lines[i]; i++){
+			char **line = split(im_opl_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
 			if(strcmp(line[1], player_name) == 0){
 				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
+				strcpy(players[j], line[0]);
 				j++;
 			}
 			free_arr(line);
 		}
 		players[j] = NULL;
-	}else if(strcmp(type, "ASSOCIATED_OPL") == 0){
+	}else if(strcmp(type, "ALL_OTHER_OPL") == 0){ // good
+		int i, j;
+		for(i = 0, j = 0; nav_lines[i]; i++){
+			char **line = split(nav_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[1], "OPL") == 0 && strcmp(line[0], player_name) != 0){
+				players[j] = malloc(sizeof(char) * 100);
+				strcpy(players[j], line[0]);
+				j++;
+			}
+			free_arr(line);
+		}
+		players[j] = NULL;
+	}else if(strcmp(type, "ALL_OPL_IN_ALLIANCE") == 0){ // good
+		int i, j;
+		for(i = 0, j = 0; nav_lines[i]; i++){
+			char **line = split(nav_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[1], "OPL") == 0){
+        if(get_attr_val(line[0], "IN_ALLIANCE") == 1){
+          players[j] = malloc(sizeof(char) * 100);
+          strcpy(players[j], line[0]);
+          j++;
+        }
+      }
+			free_arr(line);
+		}
+		players[j] = NULL;
+	}else if(strcmp(type, "ALL_OTHER_STAKW") == 0){ // good
+		int i, j;
+		for(i = 0, j = 0; nav_lines[i]; i++){
+			char **line = split(nav_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[1], "STAKW") == 0 && strcmp(line[0], player_name) != 0){
+				players[j] = malloc(sizeof(char) * 100);
+				strcpy(players[j], line[0]);
+				j++;
+			}
+			free_arr(line);
+		}
+		players[j] = NULL;
+	}else if(strcmp(type, "ALL_STAKW_UNDER_IM") == 0){ // good
+		int j = 0;
+		for(int i = 0; stakw_im_lines[i]; i++){
+			char **line = split(stakw_im_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[1], player_name) == 0){
+				players[j] = malloc(sizeof(char) * 100);
+				strcpy(players[j], line[0]);
+				j++;
+			}
+			free_arr(line);
+		}
+		players[j] = NULL;
+	}else if(strcmp(type, "ASSOCIATED_OPL") == 0){ // good
 		// need to check if player is STAKW or IM
 		for(int i = 0; nav_lines[i]; i++){
 			char **nav_line = split(nav_lines[i], '=');
+      if(!nav_line[0] || !nav_line[1]) continue;
 			if(strcmp(nav_line[0], player_name) == 0){
 				if(strcmp(nav_line[1], "STAKW") == 0){
 					for(int j = 0; stakw_im_lines[j]; j++){
 						char **line = split(stakw_im_lines[j], '=');
+            if(!line[0] || !line[1]) continue;
 						if(strcmp(line[0], player_name) == 0){
 							for(int k = 0; im_opl_lines[k]; k++){
 								char **im_opl_line = split(im_opl_lines[k], '=');
+                if(!im_opl_line[0] || !im_opl_line[1]) continue;
 								if(strcmp(im_opl_line[0], line[1]) == 0){
 									players[0] = malloc(sizeof(char) * 100);
-									players[0] = im_opl_line[1];
+									strcpy(players[0], im_opl_line[1]);
 									players[1] = NULL;
-									free(im_opl_line);
+									free_arr(im_opl_line);
 									break;
 								}
 								free_arr(im_opl_line);
@@ -450,11 +448,12 @@ bool attr_change_multiple(char *target, char *player_name){
 				}else if (strcmp(nav_line[1], "IM") == 0){
 					for(int j = 0; im_opl_lines[j]; j++){
 						char **line = split(im_opl_lines[j], '=');
+            if(!line[0] || !line[1]) continue;
 						if(strcmp(line[0], player_name) == 0){
 							players[0] = malloc(sizeof(char) * 100);
-							players[0] = line[1];
+							strcpy(players[0], line[1]);
 							players[1] = NULL;
-							free(line);
+							free_arr(line);
 							break;
 						}
 						free_arr(line);
@@ -464,88 +463,127 @@ bool attr_change_multiple(char *target, char *player_name){
 				
 		}
 	}else if(strcmp(type, "ASSOCIATED_IM") == 0){
-		// assume player is stakw
+    char *stakw = calloc(sizeof(char), 100);
+    // if the player is an NKVDO, then the ASSOCIATED_IM is the manager of the STAKW they are investigating
+    if(strcmp(player_name, "NKVDO") == 0){
+      for(int i = 0; stakw_investigations_lines[i]; i++){
+        char **line = split(stakw_investigations_lines[i], '=');
+        if(!line[0] || !line[1]) continue;
+        if(strcmp(line[1], player_name) == 0){
+          strcpy(stakw, line[0]);
+          free_arr(line);
+          break;
+        }
+        free_arr(line);
+      }
+    // otherwise its just a STAKW, and the ASSOCIATED_IM is simply their manager
+    }else{
+      free(stakw);
+      stakw = player_name;
+    }
+    printf("stakw = %s\n", stakw);
 		for(int i = 0; stakw_im_lines[i]; i++){
 			char **line = split(stakw_im_lines[i], '=');
-			if(strcmp(line[1], player_name) == 0){
+      printf("looking at line %s\n", stakw_im_lines[i]);
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[0], stakw) == 0){
 				players[0] = malloc(sizeof(char) * 100);
-				players[0] = line[1];
+				strcpy(players[0], line[1]);
 				players[1] = NULL;
-				free(line);
+				free_arr(line);
 				break;
 			}
 			free_arr(line);
 		}
 	}else if(strcmp(type, "BD_STAKW") == 0){
-		
-		
-		
+				
 		// character type change
-		
-		
-		
-	}else if(strcmp(type, "ALL_BD") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "BD") == 0){
+			
+	}else if(strcmp(type, "YEZ_NKVDO") == 0){
+    
+    // character type change
+    
+	}else if(strcmp(type, "YAG_NKVDO") == 0){
+    
+		// character type change
+        
+	}else if(strcmp(type, "2_RANDOM_NKVDO") == 0){ // good
+    free(players);
+    players = get_random_players("NKVDO", 2);
+	}else if(strcmp(type, "1_RANDOM_NKVDO") == 0){ // good
+    free(players);
+    players = get_random_players("NKVDO", 1);
+	}else if(strcmp(type, "1_RANDOM_IM") == 0){ // good
+    free(players);
+    players = get_random_players("IM", 1);
+  }else if(strcmp(type, "1_RANDOM_OPL") == 0){ // good
+    free(players);
+    players = get_random_players("OPL", 1);
+  }else if(strcmp(type, "1_RANDOM_EP") == 0){ // good
+    free(players);
+    players = get_random_players("EP", 1);
+  }else if(strcmp(type, "1_RANDOM_BD") == 0){ // good
+    free(players);
+    players = get_random_players("BD", 1);
+  }else if(strcmp(type, "1_RANDOM_EXK") == 0){ // good
+    free(players);
+    players = get_random_players("EXK", 1);
+  }else if(strcmp(type, "2_RANDOM_EXK") == 0){ // good
+    free(players);
+    players = get_random_players("EXK", 2);
+  }else if(strcmp(type, "3_RANDOM_STAKW") == 0){ // good
+    free(players);
+    players = get_random_players("STAKW", 3);    
+	}else if(strcmp(type, "INVESTIGATED_OPL") == 0){ // good
+		// player is NKVDO because they are investigating
+    for(int i = 0; opl_investigations_lines[i]; i++){
+        char **line = split(opl_investigations_lines[i], '=');
+        if(!line[0] || !line[1]) continue;
+        if(strcmp(line[1], player_name) == 0){
+          players[0] = calloc(sizeof(char), 100);
+          strcpy(players[0], line[0]);
+          players[1] = NULL;
+          free_arr(line);
+          break;
+        }
+        free_arr(line);
+    } 
+	}else if(strcmp(type, "INVESTIGATED_STAKW") == 0){ // good
+    // player is NKVDO because they are investigating
+    for(int i = 0; stakw_investigations_lines[i]; i++){
+        char **line = split(stakw_investigations_lines[i], '=');
+        if(!line[0] || !line[1]) continue;
+        if(strcmp(line[1], player_name) == 0){
+          players[0] = calloc(sizeof(char), 100);
+          strcpy(players[0], line[0]);
+          players[1] = NULL; 
+          free_arr(line);
+          break;
+        }
+        free_arr(line);
+    }  
+	}else if(strcmp(type, "ALL_NKVDO_INVESTIGATORS") == 0){ // good
+    // play should be OPL for this option
+    int j = 0;
+		for(int i = 0; opl_investigations_lines[i]; i++){
+			char **line = split(opl_investigations_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[0], player_name) == 0){
 				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
+				strcpy(players[j], line[1]);
 				j++;
 			}
 			free_arr(line);
 		}
 		players[j] = NULL;
-	}else if(strcmp(type, "YEZ_NKVDO") == 0){
-		// character type change
-	}else if(strcmp(type, "YAG_NKVDO") == 0){
-		// character type change
-	}else if(strcmp(type, "2_RANDOM_NKVDO") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "NKVDO") == 0){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		int rand = grandom(j);
-		players[0] = players[grandom(j)];
-		players[1] = players[rand == 0 ? rand + 1 : rand - 1];
-		players[2] = NULL;
-	}else if(strcmp(type, "1_RANDOM_NKVDO") == 0){
-		int i, j;
-		for(i = 0, j = 0; nav_lines[i]; i++){
-			char **line = split(nav_lines[i], '=');
-			if(strcmp(line[1], "NKVDO") == 0){
-				players[j] = malloc(sizeof(char) * 100);
-				players[j] = line[0];
-				j++;
-			}
-			free_arr(line);
-		}
-		players[0] = players[grandom(j)];
-		players[1] = NULL;
-	}else if(strcmp(type, "INVESTIGATED_OPL") == 0){
-		
-		
-		
-		// investigations file
-	}else if(strcmp(type, "INVESTIGATED_STAKW") == 0){
-		// investigations file
-	}else if(strcmp(type, "ALL_NKVDO_INVESTIGATORS") == 0){
-		// investigations file
-		
-		
-		
-	}else {
+	}else{
 		printf("type \"%s\" is not accounted for!\n", type);
 	}
-	for(int i = 0; players[i]; i++){
+  printf("type = %s\n", type);
+  print_arr(players);
+	/*for(int i = 0; players[i]; i++){
 		printf("%d = %s\n", i, players[i]);
-	}
+	}*/
 	/*for(int i = 0; players[i]; i++){
 		char *player_atr_filename_temp = malloc(sizeof(char) * 100);
 		sprintf(player_atr_filename_temp, "%s_attributes.txt", players[i]);
@@ -554,8 +592,122 @@ bool attr_change_multiple(char *target, char *player_name){
 	}*/
 	
 	// above commented for testing purposes
-	
-	
+}
+
+/*char* get_im(char *stakw){
+  if(!get_type(stakw)){
+    printf("%s is not a STAKW!\n", stakw);
+    return NULL;
+  }
+  char *stakw_im_text = read_text("stakw-im.txt");
+	char **stakw_im_lines = split(stakw_im_text, '\n');
+  for(int i = 0; stakw_im_lines[i]; i++){
+			char **line = split(stakw_im_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[0], stakw) == 0){
+				char *im = calloc(sizeof(char), 100);
+				strcpy(im, line[1]);
+				free_arr(line);
+        free_arr(stakw_im_lines);
+        free(stakw_im_text);
+				return im;
+			}
+      free_arr(line);
+  }
+  printf("%s does not have an IM somehow!\n", stakw);
+  free_arr(stakw_im_lines);
+  free(stakw_im_text);
+  return NULL;
+}
+
+char* get_opl(char *im){
+  if(!get_type(im)){
+    printf("%s is not a IM!\n", im);
+    return NULL;
+  }
+  char *im_opl_text = read_text("im-opl.txt");
+	char **im_opl_lines = split(im_opl_text, '\n');
+  for(int i = 0; im_opl_lines[i]; i++){
+			char **line = split(im_opl_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[0], im) == 0){
+				char *opl = calloc(sizeof(char), 100);
+				strcpy(opl, line[1]);
+				free_arr(line);
+        free_arr(im_opl_lines);
+        free(im_opl_text);
+				return opl;
+			}
+      free_arr(line);
+  }
+  printf("%s does not have an OPL somehow!\n", im);
+  free_arr(im_opl_lines);
+  free(im_opl_text);
+  return NULL;
+}*/
+
+char** get_all_players_of_type(char *type){
+  char *nav_text = read_text("nav_file.txt");
+	char **nav_lines = split(nav_text, '\n');
+  char **players = malloc(sizeof(char*) * 100);
+  int i, j;
+		for(i = 0, j = 0; nav_lines[i]; i++){
+			char **line = split(nav_lines[i], '=');
+      if(!line[0]) continue;
+      if(!line[1]) continue;
+			if(strcmp(line[1], type) == 0){
+				players[j] = malloc(sizeof(char) * 100);
+				strcpy(players[j], line[0]);
+				j++;
+			}
+			free_arr(line);
+		}
+	players[j] = NULL;
+  return players;
+}
+
+char** get_random_players(char *type, int num){
+  char *nav_text = read_text("nav_file.txt");
+	char **nav_lines = split(nav_text, '\n');
+  char **players = calloc(num+1, sizeof(char*));
+  char **tmp_arr = calloc(100, sizeof(char*));
+  int i, j;
+	for(i = 0, j = 0; nav_lines[i]; i++){
+		char **line = split(nav_lines[i], '=');
+    if(!line[0]) continue;
+    if(!line[1]) continue;
+		if(strcmp(line[1], type) == 0){
+			tmp_arr[j] = calloc(sizeof(char), 100);
+			strcpy(tmp_arr[j], line[0]);
+			j++;
+		}
+		free_arr(line);
+	}
+  #ifdef GDEBUG
+  printf("BUILLDING LISTAA %s\n", type);
+  print_arr(tmp_arr);
+  #endif
+  if(j < num){
+    printf("You have entered the twilight zone: there are %d %s, and we need at least %d!\n", j, type, num);
+    abort();
+  }
+  int *rand = calloc(num, sizeof(int));
+	for(int idx = 0; idx < num; idx++){
+    aa:
+    rand[idx] = grandom(j);
+    #ifdef GDEBUG
+    printf("Random(%d) = %d of %d\n", idx, rand[idx], j);
+    #endif
+    for(int jdx = 0; jdx < idx; jdx++){
+      if(jdx >= idx) break;
+      if(rand[idx] == rand[jdx]) goto aa;
+    }
+    players[idx] = calloc(100, sizeof(char));
+    strcpy(players[idx], tmp_arr[rand[idx]]);
+  }
+  free(rand);
+  players[num] = NULL;
+  return players;
 }
 
 bool do_option(char * targets[], char * option_code){
@@ -627,9 +779,9 @@ char *get_choice(char *player_name, int round){
 }
 
 // returns -100 if no ATR was found
-int get_attr_val(char *player_name, char * attr_name){
+int get_attr_val(char *player_name, char *attr_name){
 	char *player_file = malloc(sizeof(char) * 50);
-	sprintf(player_file, "%s_attributes.txt", player_name);
+	sprintf(player_file, "players\\%s_attributes.txt", player_name);
 	char *player_attr = read_text(player_file);
 	char **player_lines = split(player_attr,'\n');
 	for(int i = 1; player_lines[i]; i++){ // starting at 1 to skip number of attrs
@@ -644,4 +796,78 @@ int get_attr_val(char *player_name, char * attr_name){
 	free(player_file);
 	printf("Could not find \"%s\"\n", attr_name);
 	return -100;
+}
+
+char* get_prompt_text(char *player_name, char *prompt_code){
+	char* prompt_text = malloc(sizeof(char)*200);
+	char* prompt_info_filename = malloc(sizeof(char)*50);
+	char** search_key = split(prompt_code, ':');
+	sprintf(prompt_info_filename, "prompt_%d_info.txt", search_key[1]);
+	char* info = read_text(prompt_info_filename);
+	free(prompt_info_filename);
+	char** info_lines = split(info, '\n');
+	char* character_code_type = get_type(player_name);
+	bool round_found = false, type_found = false, prompt_found = false;
+	for(int i = 0; info_lines[i]; i++){
+		char* line = info_lines[i];
+		char** split_line = split(line, '=');
+		if(round_found)
+		{
+			if(type_found)
+			{
+				char** prompt_num_check = split(split_line[0], '_');
+				if(strcmp(prompt_num_check[0], "PROMPT") == 0 && strcmp(prompt_num_check[1], search_key[2])==0)
+					prompt_text=split_line[1];
+			}else if(strcmp(split_line[0], "CHARACTER_TYPE") ==0 && strcmp(split_line[1], search_key[0])==0)
+				type_found = true;
+		}else if(strcmp(split_line[0], "ROUND") == 0 && strcmp(split_line[1], search_key[1])==0)
+			round_found = true;
+	}
+	free(prompt_info_filename);
+	free(info);
+	free(character_code_type);
+	free_arr(info_lines);
+	free_arr(search_key);
+	return prompt_text;
+}
+
+char* get_option_texts_given_codes(char* option_code_single){
+	char* option_text = calloc(sizeof(char), 1000);
+	char** search_key = split(option_code_single, '\n');
+	char* prompt_info_filename = calloc(sizeof(char), 50);
+	sprintf(prompt_info_filename, "prompt_%s_info.txt", search_key[1]);
+	char *info = read_text(prompt_info_filename);
+	free(prompt_info_filename);
+	char** lines = split(info, '\n');
+	bool round_found = false, player_found = false, prompt_found = false;
+	for (int i = 0; lines[i]; i++){
+		char** split_line = split(lines[i], '=');
+		if(round_found) {
+			if(player_found){
+				if(prompt_found) {
+					char** choice_num_check = split(split_line[0], '_');
+					if(strcmp(choice_num_check[0], "OPTION")==0 && strcmp(choice_num_check[1], search_key[3])==0){
+						option_text = split_line[1];
+          }
+          free_arr(choice_num_check);
+				} else {
+					char** prompt_num_check = split(split_line[0], '_');
+					if(strcmp(prompt_num_check[0], "PROMPT") == 0 && strcmp(prompt_num_check[1], search_key[2])==0){
+						prompt_found = true;
+          }
+          free_arr(prompt_num_check);
+				}
+			}else if(strcmp(split_line[0], "CHARACTER_TYPE")==0 && strcmp(split_line[1], search_key[0])==0){
+        player_found=true;	
+      }
+		}else if(strcmp(split_line[0], "ROUND")==0 && strcmp(split_line[1], search_key[1])==0){
+			round_found=true;
+    }
+    free_arr(split_line);
+	}
+	free(prompt_info_filename);
+	free(info);
+	free_arr(search_key);
+	free_arr(lines);
+	return option_text;
 }
