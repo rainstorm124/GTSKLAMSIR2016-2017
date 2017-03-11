@@ -1,13 +1,29 @@
 9
-PRES=5
-ALL=1
+PRES=14
+ALL=-2
 SUP=4
-SUS=4
-PROD=5
+SUS=0
+PROD=8
 IN_ALLIANCE=0
 ARRESTED=0
-GULAG=0
+GULAG=1
 DEAD=0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

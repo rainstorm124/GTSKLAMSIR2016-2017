@@ -34,40 +34,21 @@ int GMAIN(int argc, char **argv){
   }
   players[i] = NULL;
   
-  
-  for(int j = 0; players[j]; j++){
-    char *prompt_code = get_prompt_code(players[j], 1);
-    char **options = get_option_codes(prompt_code);
-    int option_count = 0;
-    while(options[option_count]) option_count++;
-    int random_option_choice = grandom(option_count);
-    char **targets = get_targets(options[random_option_choice]);
-    printf("%s(%s) chose %s\n", players[j], get_type(players[j]),options[random_option_choice]);
-    do_option(targets, options[random_option_choice]);
-    free(prompt_code);
-    free_arr(options);
-    free_arr(targets);
-  }
-  
-  /*char *prompt_code = get_prompt_code("greg", 1);
-  printf("prompt code = %s\n", prompt_code);
-  char **options = get_option_codes(prompt_code);
-  for(int i = 0; options[i]; i++){
-    printf("option %d = %s\n", i + 1, options[i]);
-    char **targets = get_targets(options[i]);
-    for(int j = 0; targets[j]; j++){
-      printf("\ttarget %d = %s\n", j + 1, targets[j]);
+  for(int round = 1; round <= 6; round++){
+    for(int j = 0; players[j]; j++){
+      char *prompt_code = get_prompt_code(players[j], round);
+      char **options = get_option_codes(prompt_code);
+      int option_count = 0;
+      while(options[option_count]) option_count++;
+      int random_option_choice = grandom(option_count);
+      char **targets = get_targets(options[random_option_choice]);
+      printf("%s(%s) chose %s\n", players[j], get_type(players[j]),options[random_option_choice]);
+      do_option(targets, options[random_option_choice]);
+      free(prompt_code);
+      free_arr(options);
+      free_arr(targets);
     }
-    free_arr(targets);
   }
-  char **targets = get_targets("greg:1:1:2");
-  do_option(targets, "greg:1:1:2");
-  free_arr(targets);
-  free(prompt_code);
-  free_arr(options);
-  srand(time(NULL));
-  attr_change_multiple("2_RANDOM_NKVDO 1 2 3", "bob");*/
-  
   return 0;
 }
 
@@ -92,7 +73,6 @@ char* get_player(char *type){
     printf("Type not found!\n");
     return NULL; // no type match was found in nav file
   }
-  printf("get_player returning %s\n", player_name);
   return player_name;
 }
 
@@ -136,7 +116,6 @@ char* get_prompt_code(char *player_name, int round){ // player_name:round:prompt
     if(round_found){
       if(type_found){
         char *type = get_type(player_name);
-        printf("type %s\n", type);
         if(strcmp(type, "STA") == 0){
           sprintf(prompt_code, "%s:%d:%d", player_name, round, get_prompt_num_STA(player_name, round));
         }else if(strcmp(type, "YAG") == 0){
@@ -160,7 +139,6 @@ char* get_prompt_code(char *player_name, int round){ // player_name:round:prompt
         }else{
           printf("Typo in get round player type\n");
         }
-        printf("prompt_code should be %s\n", prompt_code);
         free(type);
         goto code_found_break;
       }else if(strcmp(split_line[0], "CHARACTER_TYPE") == 0 && strcmp(split_line[1], character_code_type) == 0){
@@ -816,8 +794,6 @@ bool attr_change_multiple(char *target, char *player_name){
     players[0] = player_name;
     players[1] = NULL;
   }
-  //printf("type = %s\n", type);
-  //print_arr(players);
   for(int i = 0; players[i]; i++){
     attr_change_single(target, players[i]);
   }
@@ -861,10 +837,6 @@ char** get_random_players(char *type, int num){
     }
     free_arr(line);
   }
-  #ifdef GDEBUG
-  printf("BUILLDING LISTAA %s\n", type);
-  print_arr(tmp_arr);
-  #endif
   if(j < num){
     printf("You have entered the twilight zone: there are %d %s, and we need at least %d!\n", j, type, num);
     abort();
@@ -890,8 +862,6 @@ char** get_random_players(char *type, int num){
 
 bool do_option(char * targets[], char * option_code){
   printf("Performing option code : %s\n", option_code);
-  printf("List of targets:\n");
-  print_arr(targets);
   char **option_codes = split(option_code, ':');
   char *player_name = option_codes[0];
 
@@ -903,11 +873,9 @@ bool do_option(char * targets[], char * option_code){
   fclose(fp1);
   //char *player_atr_filename = malloc(sizeof(char) * 100);
   //sprintf(player_atr_filename, "players\\%s_attributes.txt", player_name);
-  printf("about to loop through targets\n");
   for(int i = 0; targets[i]; i++){
     char **targets_split = split(targets[i], ' '); // Split the targets cell content by space character
     char *type = targets_split[0];//Stores the target's character type from split target line
-    printf("type = %s\n", type);
     if(targets[i][0] == '\0') continue;
     if(strcmp(type, "YAG") == 0 || strcmp(type, "YEZ") == 0 || strcmp(type, "STA") == 0){
       //player_name = get_player(type);
@@ -942,8 +910,8 @@ char *get_choice(char *player_name, int round){
   sprintf(file_name,"players\\%s_choices.txt", player_name);
   char *player_choices = read_text(file_name);
   char **player_lines = split(player_choices, '\n');
-  char *catch = malloc(sizeof(char)*10);
-  catch = "ERROR";
+  char *catch = calloc(sizeof(char), 100);
+  //catch = "GET_CHOICE_ERROR";
   for (int i = 0; player_lines[i]; i++)
   {
     if(player_lines[i][0] == '\0') continue;
@@ -963,10 +931,8 @@ char *get_choice(char *player_name, int round){
 
 // returns -100 if no ATR was found
 int get_attr_val(char *player_name, char *attr_name){
-  printf("HELLOOO %s\n", player_name);
   char *player_file = calloc(sizeof(char), 50);
   sprintf(player_file, "players\\%s_attributes.txt", player_name);
-  printf("get attr player_file = %s\n", player_file);
   char *player_attr = read_text(player_file);
   char **player_lines = split(player_attr,'\n');
   for(int i = 1; player_lines[i]; i++){ // starting at 1 to skip number of attrs

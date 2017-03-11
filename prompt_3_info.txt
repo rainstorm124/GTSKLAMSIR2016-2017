@@ -271,8 +271,9 @@ OPTION_2=Deny any knowledge of why the production numbers are low.
 NUM_TARGETS=1
 TARGET_1=STAKW 2 SUS 1 PRES -2
 OPTION_3=Blame the other workers at the factory for not working hard enough.
-NUM_TARGETS=1
-TARGET_1=ALL_OTHER_STAKW 3 SUS -1 PRES -2 SUP 1
+NUM_TARGETS=2
+TARGET_1=ALL_OTHER_STAKW 1 SUS 1
+TARGET_2=STAKW 2 SUS -1 PRES -2
 CHARACTER_TYPE=NKVDO
 NUM_PROMPTS=3
 PROMPT_1=Because of your efforts in investigating your Oblast Party Leader, he has been detained, and you have been chosen to interrogate him. What will you say?
@@ -384,4 +385,3 @@ TARGET_1=EXK 2 HUNG 1 FAT 1
 OPTION_3=Allow yourself to recover from being sick before fully returning to work, so that you can get healthy again.
 NUM_TARGETS=1
 TARGET_1=EXK 1 PRES 1
-

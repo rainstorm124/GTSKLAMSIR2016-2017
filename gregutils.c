@@ -45,9 +45,7 @@ void free_arr(char **arr){
 }
 
 int grandom(int max){
-	//srand(time(NULL));
 	if(max <= 0) return 0;
-  //printf("RAND_MAX=%ld\n", (long long)RAND_MAX);
 	return (rand() + 1) % max;
 }
 

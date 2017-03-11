@@ -8,11 +8,11 @@ int get_prompt_num_STAKW(char *player_name, int round){
   case 1:
     return 1;
   case 2:
-    if(!strcmp(get_choice(player_name, 2), "1:1")){
+    if(!strcmp(get_choice(player_name, 1), "1:1")){
       return 2;
-    }else if(!strcmp(get_choice(player_name, 2), "1:2")){
+    }else if(!strcmp(get_choice(player_name, 1), "1:2")){
       return 3;
-    }else if(!strcmp(get_choice(player_name, 2), "1:3")){
+    }else if(!strcmp(get_choice(player_name, 1), "1:3")){
       return 1;
     }
     printf("problem in round 2 of STAKW!\n");
@@ -173,7 +173,7 @@ int get_prompt_num_BD(char *player_name, int round){
   case 1:
     return 1;
   case 2:
-    if(get_attr_val(player_name,"ALI")>1)
+    if(get_attr_val(player_name,"ALL")>1)
       return 1;
     else if(get_attr_val(player_name,"PROD")<5 && get_attr_val(player_name,"PRES")>4)
       return 2;
@@ -228,11 +228,9 @@ int get_prompt_num_BD(char *player_name, int round){
  }
 
 int get_prompt_num_EP(char *player_name, int round) {
-  printf("in\n");
   int sta_ali = get_attr_val(get_player("STA"),"ALI");
   int player_pol = get_attr_val(player_name,"POL");
   int player_sus = get_attr_val(player_name,"SUS");
-  printf("out\n");
   int dec = get_DEC();
   switch(round){
     case 1: 
@@ -267,7 +265,7 @@ int get_prompt_num_IM(char *player_name, int round){
   int player_sup  = get_attr_val(player_name, "SUP");
   int player_prod = get_attr_val(player_name, "PROD");
   int player_sus  = get_attr_val(player_name, "SUS");
-  int player_ali  = get_attr_val(player_name, "ALI");
+  int player_ali = get_attr_val(player_name, "ALL");
   int dec = get_DEC();
   int player_arrested = get_attr_val(player_name, "ARRESTED");
   int player_alliance = get_attr_val(player_name, "IN_ALLIANCE");
