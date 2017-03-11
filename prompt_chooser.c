@@ -3,11 +3,6 @@
 #include "gregutils.h"
 #include <stdlib.h>
 
-int main(int argc, char **argv){
-  printf("game DEC = %f\n", get_DEC());
-  return 0;
-}
-
 int get_prompt_num_STAKW(char *player_name, int round){
   switch(round){
   case 1:
@@ -208,14 +203,14 @@ int get_prompt_num_BD(char *player_name, int round){
     if (get_attr_val(player_name,"ARRESTED")==1)
       return 3;
     // XXX: WARNING MUST CHECK
-    else if((((get_attr_val(player_name,"PROD")<get_DEC()+1 ||get_attr_val(player_name,"SUS")>9)&& strcmp(get_choice("STA",4),"2:2")==0)
-        || (get_attr_val(player_name,"PROD")<get_DEC()-1 ||get_attr_val(player_name,"SUS")>5) && strcmp(get_choice("STA",4),"2:2")!=  0) && get_attr_val(player_name,"IN_ALLIANCE")==0)
+    else if((((get_attr_val(player_name,"PROD")<get_DEC()+1 ||get_attr_val(player_name,"SUS")>9)&& strcmp(get_choice(get_player("STA"),4),"2:2")==0)
+        || (get_attr_val(player_name,"PROD")<get_DEC()-1 ||get_attr_val(player_name,"SUS")>5) && strcmp(get_choice(get_player("STA"),4),"2:2")!=  0) && get_attr_val(player_name,"IN_ALLIANCE")==0)
     //      ((OPL                 Prod<EP+1 Dec             or              OPL Sus>9)          AND Stalin chose B2 in round 4)            or ((OPL Prod<EP-1 Dec                          or OPL Sus>5)                        AND Stalin didn’t choose B2 in round 4)     AND IN_ALLIANCE=false
       return 1;
     else if(get_attr_val(player_name,"PRES")>12 || get_attr_val(player_name,"PRES")>8)//IM Sup>4 then 2
       return 2;
-    else if((((get_attr_val(player_name,"PROD")<=get_DEC()+1 ||get_attr_val(player_name,"SUS")>9)&& strcmp(get_choice("STA",4),"2:2")==0)
-      || (get_attr_val(player_name,"PROD")<get_DEC()-1 ||get_attr_val(player_name,"SUS")>5) && strcmp(get_choice("STA",4),"2:2")!=0) && get_attr_val(player_name,"IN_ALLIANCE")==1)
+    else if((((get_attr_val(player_name,"PROD")<=get_DEC()+1 ||get_attr_val(player_name,"SUS")>9)&& strcmp(get_choice(get_player("STA"),4),"2:2")==0)
+      || (get_attr_val(player_name,"PROD")<get_DEC()-1 ||get_attr_val(player_name,"SUS")>5) && strcmp(get_choice(get_player("STA"),4),"2:2")!=0) && get_attr_val(player_name,"IN_ALLIANCE")==1)
       return 5;
     else
       return 4;
@@ -233,9 +228,11 @@ int get_prompt_num_BD(char *player_name, int round){
  }
 
 int get_prompt_num_EP(char *player_name, int round) {
+  printf("in\n");
   int sta_ali = get_attr_val(get_player("STA"),"ALI");
   int player_pol = get_attr_val(player_name,"POL");
   int player_sus = get_attr_val(player_name,"SUS");
+  printf("out\n");
   int dec = get_DEC();
   switch(round){
     case 1: 
@@ -274,7 +271,7 @@ int get_prompt_num_IM(char *player_name, int round){
   int dec = get_DEC();
   int player_arrested = get_attr_val(player_name, "ARRESTED");
   int player_alliance = get_attr_val(player_name, "IN_ALLIANCE");
-  int sta_r4b2 = !strcmp(get_choice("STA", 4), "2:2");
+  int sta_r4b2 = !strcmp(get_choice(get_player("STA"), 4), "2:2");
   switch(round){
   case 1:
     return 1;
@@ -385,6 +382,8 @@ int get_prompt_num_YAG(char *player_name, int round){
   int sta_r5a2 = strcmp(get_choice(get_player("STA"), 5), "1:2");
   
   switch(round){
+  case 1:
+    return 1;
   case 2:
     if(player_pres > 6 || player_sus > 6)
       return 1;
@@ -511,7 +510,7 @@ double get_DEC(){
   int ep_count = 0, j = 0;
   for(int i = 0; nav_lines[i]; i++){
     char **nav_line = split(nav_lines[i], '=');
-    if(!nav_line[0]) continue;
+    if(nav_lines[i][0] == '\0') continue;
     if(strcmp(nav_line[1], "EP") == 0){
       players[j] = malloc(sizeof(char) * 100);
       players[j] = strdup(nav_line[0]);
