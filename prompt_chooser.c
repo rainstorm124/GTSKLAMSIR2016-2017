@@ -454,6 +454,11 @@ int get_prompt_num_YEZ(char *player_name, int round){
       prompt_number = 2;
     break;
   case 6:
+    if(strcmp(get_choice(get_player("STA"), round-1), "1:1")==0 || strcmp(get_choice(get_player("STA"), round-1), "1:2")==0){
+      prompt_number = 1;
+    }else{
+      prompt_number = 2;
+    }
     break;
   }
   return prompt_number;

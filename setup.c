@@ -135,7 +135,7 @@ void initialize(char *student_file){
 		}else if(strcmp(((player_type*)node->data)->type, "BD") == 0){
 			character_attirbute_names = split("HUNG,4 LOY,3 FAT,3 PRES,5 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "NKVDO") == 0){
-			character_attirbute_names = split("PRES,6 SUS,4 CRED,6 FAV,5 PROD,5 ARRESTED,0 GULAG,0 DEAD,0", ' ');
+			character_attirbute_names = split("PRES,6 SUS,4 CRED,6 FAV,5 PROD,5 ARRESTED,0 GULAG,0 DEAD,0 DEMOTED,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "EP") == 0){
 			character_attirbute_names = split("POL,5 ALI,10 SUS,4 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "OPL") == 0){
@@ -170,7 +170,7 @@ void initialize(char *student_file){
 		
 		// create player choice files
 		char *choice_filepath = calloc(sizeof(char) , 100);
-		sprintf(choice_filepath, "%s\%s_choice.txt", dir, students[i]);
+		sprintf(choice_filepath, "%s\%s_choices.txt", dir, students[i]);
 		FILE *player_choices = fopen(choice_filepath, "w+");
 		fclose(player_choices);
 		
@@ -186,7 +186,7 @@ void initialize(char *student_file){
 	}
 	
 	// populate arrays of opl, im and stakw
-	char *opl_list[3], *im_list[9], *stakw_list[27], *nkvdo_list[5];
+	char *opl_list[3+1], *im_list[9+1], *stakw_list[27+1], *nkvdo_list[5+1];
 	int opl = 0, im = 0, stakw = 0, nkvdo = 0;
 	char *nav_text = read_text("nav_file.txt");
 	char **nav_lines = split(nav_text, '\n');
@@ -201,7 +201,8 @@ void initialize(char *student_file){
 		}
 		if(strcmp(entry[1], "IM") == 0){
 			im_list[im] = entry[0];
-			im++;		}
+			im++;
+    }
 		if(strcmp(entry[1], "STAKW") == 0){
 			stakw_list[stakw] = entry[0];
 			stakw++;
@@ -210,7 +211,12 @@ void initialize(char *student_file){
       nkvdo_list[nkvdo] = entry[0];
       nkvdo++;
     }
+    // Memory LEAK!!!!
 	}
+  opl_list[opl] = NULL;
+  im_list[im] = NULL;
+  stakw_list[stakw] = NULL;
+  nkvdo_list[nkvdo] = NULL;
 	
 	// create IM-OPL assignments
 	FILE *im_opl = fopen("im-opl.txt", "w+");
@@ -238,9 +244,9 @@ void initialize(char *student_file){
   }
   fclose(stakw_investigations);
   FILE *im_investigations = fopen("im_investigations.txt", "w+");
-  char **random_im= get_random_players("IM", 5);
-  for(int i = 0; nkvdo_list[i]; i++){
-    fprintf(im_investigations, "%s=%s\n", random_im[i], nkvdo_list[i]);
+  char **random_nkvdo= get_random_players("NKVDO", 5);
+  for(int i = 0; im_list[i]; i++){
+    fprintf(im_investigations, "%s=%s\n", im_list[i], random_nkvdo[i % 5]);
   }
   fclose(im_investigations);
   FILE *opl_investigations = fopen("opl_investigations.txt", "w+");

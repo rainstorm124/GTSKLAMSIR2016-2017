@@ -1,10 +1,53 @@
 #include "prompt.h"
 #include <stdbool.h>
 #include <string.h>
+#include "prompt_chooser.h"
 
 
-/*int main(int argc, char **argv){
-	char *prompt_code = get_prompt_code("greg", 1);
+int GMAIN(int argc, char **argv){
+  printf("Avast is really dumb. Continue? (y/n): ");
+	while(true){
+		char c = getchar();
+		if(c == 'y'){
+			break;
+		}else if(c == 'n'){
+			printf("quitting...\n");
+			return 0;
+		}else{
+			printf("\"%c\" is invalid\n", c);
+			continue;
+		}
+	}
+  char **players = calloc(sizeof(char*), 400);
+  char *nav_text = read_text("nav_file.txt");
+  char **nav_lines = split(nav_text, '\n');
+  int i = 0;
+  for(;nav_lines[i]; i++){
+    if(nav_lines[i][0] == '\0') continue;
+    char **nav_line = split(nav_lines[i], '=');
+    if(!nav_line[0]) continue;
+    players[i] = calloc(sizeof(char), 100);
+    strcpy(players[i], nav_line[0]);
+    free_arr(nav_line);
+  }
+  players[i] = NULL;
+  
+  
+  for(int j = 0; players[j]; j++){
+    char *prompt_code = get_prompt_code(players[j], 1);
+    char **options = get_option_codes(prompt_code);
+    int option_count = 0;
+    while(options[option_count]) option_count++;
+    int random_option_choice = grandom(option_count);
+    char **targets = get_targets(options[random_option_choice]);
+    printf("%s(%s) chose %s\n", players[j], get_type(players[j]),options[random_option_choice]);
+    do_option(targets, options[random_option_choice]);
+    free(prompt_code);
+    free_arr(options);
+    free_arr(targets);
+  }
+  
+	/*char *prompt_code = get_prompt_code("greg", 1);
 	printf("prompt code = %s\n", prompt_code);
 	char **options = get_option_codes(prompt_code);
 	for(int i = 0; options[i]; i++){
@@ -21,21 +64,33 @@
 	free(prompt_code);
 	free_arr(options);
 	srand(time(NULL));
-	attr_change_multiple("2_RANDOM_NKVDO 1 2 3", "bob");
+	attr_change_multiple("2_RANDOM_NKVDO 1 2 3", "bob");*/
 	
 	return 0;
-}*/
-
-int main(int argc, char **argv){
-  srand(time(NULL));
-  //char **keys = split("2_RANDOM_NKVDO 1_RANDOM_NKVDO 1_RANDOM_IM 1_RANDOM_OPL 1_RANDOM_EP 1_RANDOM_BD 1_RANDOM_EXK 2_RANDOM_EXK 3_RANDOM_STAKW", ' ');
-  char **keys = split("ASSOCIATED_IM", ' ');
-   for(char **kp = keys; *kp; kp++){
-     attr_change_multiple(*kp, "Kasandra Sano");
-   }
-  free_arr(keys);
 }
 
+/*int GMAIN(int argc, char **argv){
+  printf("Avast is really dumb. Continue? (y/n): ");
+		while(true){
+			char c = getchar();
+			if(c == 'y'){
+				break;
+			}else if(c == 'n'){
+				printf("quitting...\n");
+				return 0;
+			}else{
+				printf("\"%c\" is invalid\n", c);
+				continue;
+			}
+		}
+  srand(time(NULL));
+  //char **keys = split("2_RANDOM_NKVDO 1_RANDOM_NKVDO 1_RANDOM_IM 1_RANDOM_OPL 1_RANDOM_EP 1_RANDOM_BD 1_RANDOM_EXK 2_RANDOM_EXK 3_RANDOM_STAKW", ' ');
+  char **keys = split("BD_STAKW", ' ');
+    for(char **kp = keys; *kp; kp++){
+      attr_change_multiple(*kp, "Joeann Scarboro");
+    }
+  free_arr(keys);
+}*/
 
 // only to be used for STA, YAG AND YEZ
 char* get_player(char *type){
@@ -67,9 +122,10 @@ char* get_type(char *player){
 	bool player_found = false;
 	for(int j = 0; nav_split[j]; j++){ // find the player from the given type (target)
 		char **nav_line = split(nav_split[j], '=');
+    if(!nav_line[0] || !nav_line[1]) continue;
 		if(strcmp(nav_line[0], player) == 0){
 			player_found = true;
-			player_type = nav_line[1];
+			strcpy(player_type, nav_line[1]);
 		}
 		free_arr(nav_line);
 	}
@@ -87,14 +143,14 @@ char* get_prompt_code(char *player_name, int round){ // player_name:round:prompt
 	sprintf(prompt_info_filename, "prompt_%d_info.txt", round);
 	char *info = read_text(prompt_info_filename);
 	free(prompt_info_filename);
-	//
 	char **info_lines = split(info, '\n');
 	char *character_code_type = get_type(player_name);
 	bool round_found = false, type_found = false;
-	char *prompt_code = malloc(sizeof(char) * 100);
+	char *prompt_code = calloc(sizeof(char), 100);
 	// loop through lines of prompt_info.txt
 	for(int i = 0; info_lines[i]; i++){
 		char *line = info_lines[i];
+    if(line[0] == '\0') continue;
 		char **split_line = split(line, '=');
 		if(round_found){
 			if(type_found){
@@ -222,10 +278,10 @@ char** get_targets(char* option_code){
 	return targets;
 }
 //Targets is array of targets w/ attribute changes, option_code == "player_name:round#:prompt#:option#"
-
 bool attr_change_single(char *target, char *player_name){
+  printf("player = %s and target = %s\n", player_name, target);
 	char *player_atr_filename = malloc(sizeof(char) * 100);
-	sprintf(player_atr_filename, "%s_attributes.txt", player_name);
+	sprintf(player_atr_filename, "players\\%s_attributes.txt", player_name);
 	char **targets_split = split(target, ' ');
 	char **attributes; // names of attributes to be changed
 	int *attribute_changes; // corresponding values to change attributes by
@@ -259,6 +315,7 @@ bool attr_change_single(char *target, char *player_name){
 		char **old_attr_line;
 		int i3;
 		for(i3 = 1; player_info[i3]; i3++){
+      if(player_info[i3][0] == '\0') continue;
 			old_attr_line = split(player_info[i3], '=');
 			if (strcmp(old_attr_line[0], attributes[i2]) == 0){
 				// correct attr in player's file found, index i3 recorded
@@ -358,7 +415,7 @@ bool attr_change_multiple(char *target, char *player_name){
 			char **line = split(im_opl_lines[i], '=');
       if(!line[0] || !line[1]) continue;
 			if(strcmp(line[1], player_name) == 0){
-				players[j] = malloc(sizeof(char) * 100);
+				players[j] = calloc(sizeof(char), 100);
 				strcpy(players[j], line[0]);
 				j++;
 			}
@@ -371,7 +428,7 @@ bool attr_change_multiple(char *target, char *player_name){
 			char **line = split(nav_lines[i], '=');
       if(!line[0] || !line[1]) continue;
 			if(strcmp(line[1], "OPL") == 0 && strcmp(line[0], player_name) != 0){
-				players[j] = malloc(sizeof(char) * 100);
+				players[j] = calloc(sizeof(char), 100);
 				strcpy(players[j], line[0]);
 				j++;
 			}
@@ -385,7 +442,7 @@ bool attr_change_multiple(char *target, char *player_name){
       if(!line[0] || !line[1]) continue;
 			if(strcmp(line[1], "OPL") == 0){
         if(get_attr_val(line[0], "IN_ALLIANCE") == 1){
-          players[j] = malloc(sizeof(char) * 100);
+          players[j] = calloc(sizeof(char), 100);
           strcpy(players[j], line[0]);
           j++;
         }
@@ -393,13 +450,28 @@ bool attr_change_multiple(char *target, char *player_name){
 			free_arr(line);
 		}
 		players[j] = NULL;
+  }else if(strcmp(type, "ALL_IM_IN_ALLIANCE") == 0){ // good
+		int i, j;
+		for(i = 0, j = 0; nav_lines[i]; i++){
+			char **line = split(nav_lines[i], '=');
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[1], "IM") == 0){
+        if(get_attr_val(line[0], "IN_ALLIANCE") == 1){
+          players[j] = calloc(sizeof(char), 100);
+          strcpy(players[j], line[0]);
+          j++;
+        }
+      }
+			free_arr(line);
+		}
+		players[j] = NULL;  
 	}else if(strcmp(type, "ALL_OTHER_STAKW") == 0){ // good
 		int i, j;
 		for(i = 0, j = 0; nav_lines[i]; i++){
 			char **line = split(nav_lines[i], '=');
       if(!line[0] || !line[1]) continue;
 			if(strcmp(line[1], "STAKW") == 0 && strcmp(line[0], player_name) != 0){
-				players[j] = malloc(sizeof(char) * 100);
+				players[j] = calloc(sizeof(char), 100);
 				strcpy(players[j], line[0]);
 				j++;
 			}
@@ -412,7 +484,7 @@ bool attr_change_multiple(char *target, char *player_name){
 			char **line = split(stakw_im_lines[i], '=');
       if(!line[0] || !line[1]) continue;
 			if(strcmp(line[1], player_name) == 0){
-				players[j] = malloc(sizeof(char) * 100);
+				players[j] = calloc(sizeof(char), 100);
 				strcpy(players[j], line[0]);
 				j++;
 			}
@@ -434,7 +506,7 @@ bool attr_change_multiple(char *target, char *player_name){
 								char **im_opl_line = split(im_opl_lines[k], '=');
                 if(!im_opl_line[0] || !im_opl_line[1]) continue;
 								if(strcmp(im_opl_line[0], line[1]) == 0){
-									players[0] = malloc(sizeof(char) * 100);
+									players[0] = calloc(sizeof(char), 100);
 									strcpy(players[0], im_opl_line[1]);
 									players[1] = NULL;
 									free_arr(im_opl_line);
@@ -450,7 +522,7 @@ bool attr_change_multiple(char *target, char *player_name){
 						char **line = split(im_opl_lines[j], '=');
             if(!line[0] || !line[1]) continue;
 						if(strcmp(line[0], player_name) == 0){
-							players[0] = malloc(sizeof(char) * 100);
+							players[0] = calloc(sizeof(char), 100);
 							strcpy(players[0], line[1]);
 							players[1] = NULL;
 							free_arr(line);
@@ -462,10 +534,10 @@ bool attr_change_multiple(char *target, char *player_name){
 			}
 				
 		}
-	}else if(strcmp(type, "ASSOCIATED_IM") == 0){
+	}else if(strcmp(type, "ASSOCIATED_IM") == 0){ // good
     char *stakw = calloc(sizeof(char), 100);
     // if the player is an NKVDO, then the ASSOCIATED_IM is the manager of the STAKW they are investigating
-    if(strcmp(player_name, "NKVDO") == 0){
+    if(strcmp(get_type(player_name), "NKVDO") == 0){
       for(int i = 0; stakw_investigations_lines[i]; i++){
         char **line = split(stakw_investigations_lines[i], '=');
         if(!line[0] || !line[1]) continue;
@@ -481,13 +553,11 @@ bool attr_change_multiple(char *target, char *player_name){
       free(stakw);
       stakw = player_name;
     }
-    printf("stakw = %s\n", stakw);
 		for(int i = 0; stakw_im_lines[i]; i++){
 			char **line = split(stakw_im_lines[i], '=');
-      printf("looking at line %s\n", stakw_im_lines[i]);
       if(!line[0] || !line[1]) continue;
 			if(strcmp(line[0], stakw) == 0){
-				players[0] = malloc(sizeof(char) * 100);
+				players[0] = calloc(sizeof(char), 100);
 				strcpy(players[0], line[1]);
 				players[1] = NULL;
 				free_arr(line);
@@ -495,16 +565,177 @@ bool attr_change_multiple(char *target, char *player_name){
 			}
 			free_arr(line);
 		}
-	}else if(strcmp(type, "BD_STAKW") == 0){
-				
-		// character type change
-			
-	}else if(strcmp(type, "YEZ_NKVDO") == 0){
+  }else if(strcmp(type, "INVESTIGATED_STAKW_ASSOCIATED_OPL") == 0){ // good
+    char *stakw = calloc(sizeof(char), 100);
+    for(int i = 0; stakw_investigations_lines[i]; i++){
+        char **line = split(stakw_investigations_lines[i], '=');
+        if(!line[0] || !line[1]) continue;
+        if(strcmp(line[1], player_name) == 0){
+          strcpy(stakw, line[0]);
+          free_arr(line);
+          break;
+        }
+        free_arr(line);
+    } 
+  
+		for(int j = 0; stakw_im_lines[j]; j++){
+			char **line = split(stakw_im_lines[j], '=');
+      if(!line[0] || !line[1]) continue;
+			if(strcmp(line[0], stakw) == 0){
+        for(int k = 0; im_opl_lines[k]; k++){
+					char **im_opl_line = split(im_opl_lines[k], '=');
+          if(!im_opl_line[0] || !im_opl_line[1]) continue;
+          if(strcmp(im_opl_line[0], line[1]) == 0){
+            players[0] = calloc(sizeof(char), 100);
+            strcpy(players[0], im_opl_line[1]);
+            players[1] = NULL;
+            free_arr(im_opl_line);
+            break;
+					}
+					free_arr(im_opl_line);
+				}							
+			}
+			free_arr(line);				
+		}
+  }else if(strcmp(type, "IM_INVESTIGATOR") == 0){ // good
+    // player is IM, looking for assigned NKVDO
+    for(int i = 0; im_investigations_lines[i]; i++){
+        char **line = split(im_investigations_lines[i], '=');
+        if(!line[0] || !line[1]) continue;
+        if(strcmp(line[0], player_name) == 0){
+          players[0] = calloc(sizeof(char), 100);
+          strcpy(players[0], line[1]);
+          players[1] = NULL;
+          free_arr(line);
+          break;
+        }
+        free_arr(line);
+    } 
     
-    // character type change
+	}else if(strcmp(type, "BD_STAKW") == 0){ // good
+		// the BD must be added to the stakw-im.txt linking file
+    if(strcmp(get_type(player_name), "BD") != 0){
+      printf("%s is not a BD!!!\n", player_name);
+      return false;
+    }
+    char *im_list[9+1];
+    int im = 0;
+    for(int i = 0; nav_lines[i]; i++){
+      char **entry = split(nav_lines[i], '=');
+      // last empty line has no 2nd element;
+      if(!entry[0] || !entry[1]) continue; 
+      if(strcmp(entry[1], "IM") == 0){
+        im_list[im] = calloc(100, sizeof(char));
+        strcpy(im_list[im], entry[0]);
+        im++;
+      }
+      free_arr(entry);
+    }
+    im_list[im] = NULL;
+    FILE *fp = fopen("stakw-im.txt", "a+");
+    fprintf(fp, "%s=%s\n", player_name, im_list[grandom(9)]);
+    fclose(fp);
+    // the entry in the navigation file must be changed
+    for(int i = 0; nav_lines[i]; i++){
+      char **nav_line = split(nav_lines[i], '=');
+      if(!nav_line[0] || !nav_line[1]) continue;
+      if(strcmp(nav_line[0], player_name) == 0){
+        char *assignment = calloc(sizeof(char), 100);
+        sprintf(assignment, "%s=%s", player_name, "STAKW");
+        nav_lines[i] = calloc(100, sizeof(char));
+        strcpy(nav_lines[i], assignment);
+        free(assignment);
+      }
+      free_arr(nav_line);
+    }
+    FILE *new_nav = fopen("nav_file.txt", "w");
+    for(char **nav = nav_lines; *nav; nav++){
+      fprintf(new_nav, "%s\n", *nav);
+    }
+    fclose(new_nav);
+    // change player's attribute file
+    char *player_attribute_filename = calloc(sizeof(char), 100);
+    sprintf(player_attribute_filename, "players\\%s_attributes.txt", player_name);
+    char *attr_file_text = read_text(player_attribute_filename);
+    char **attr_file_lines = split(attr_file_text, '\n');
+    FILE *attribute_file = fopen(player_attribute_filename, "w");
+    fprintf(attribute_file, "%d\n", 7);
+    fprintf(attribute_file, "MOT=5\n");
+    if(!attr_file_lines[0]){
+      printf("attribute file has no lines!!\n");
+      abort();
+    }
+    for(int i = 1; attr_file_lines[i]; i++){
+      char **attr_file_line = split(attr_file_lines[i], '=');
+      if(!attr_file_line[0] || !attr_file_line[1]) continue;
+      if(strcmp(attr_file_line[0], "HUNG") == 0){
+        continue;
+      }else if(strcmp(attr_file_line[0], "LOY") == 0){
+        fprintf(attribute_file, "SUS=%d\n", 10 - atoi(attr_file_line[1]));
+      }else{
+        fprintf(attribute_file, "%s\n", attr_file_lines[i]);
+      }
+      free_arr(attr_file_line);
+    }
+    fclose(attribute_file);
+    free(player_attribute_filename);
+    free(attr_file_text);
+    free_arr(attr_file_lines);
+		// character type change
+		return true;
+	}else if(strcmp(type, "YEZ_NKVDO") == 0){
+    if(strcmp(get_type(player_name), "YEZ") != 0){
+      printf("%s is not YEZ!!!\n", player_name);
+      return false;
+    }
+    // the entry in the navigation file must be changed
+    for(int i = 0; nav_lines[i]; i++){
+      char **nav_line = split(nav_lines[i], '=');
+      if(!nav_line[0] || !nav_line[1]) continue;
+      if(strcmp(nav_line[0], player_name) == 0){
+        char *assignment = calloc(sizeof(char), 100);
+        sprintf(assignment, "%s=%s", player_name, "NKVDO");
+        nav_lines[i] = calloc(100, sizeof(char));
+        strcpy(nav_lines[i], assignment);
+        free(assignment);
+      }
+      free_arr(nav_line);
+    }
+    FILE *new_nav = fopen("nav_file.txt", "w");
+    for(char **nav = nav_lines; *nav; nav++){
+      fprintf(new_nav, "%s\n", *nav);
+    }
+    fclose(new_nav);
+    // change player's attribute file
+    char *player_attribute_filename = calloc(sizeof(char), 100);
+    sprintf(player_attribute_filename, "players\\%s_attributes.txt", player_name);
+    char *attr_file_text = read_text(player_attribute_filename);
+    char **attr_file_lines = split(attr_file_text, '\n');
+    FILE *attribute_file = fopen(player_attribute_filename, "w");
+    fprintf(attribute_file, "%d\n", 9);
+    if(!attr_file_lines[0]){
+      printf("attribute file has no lines!!\n");
+      abort();
+    }
+    for(int i = 1; attr_file_lines[i]; i++){
+      char **attr_file_line = split(attr_file_lines[i], '=');
+      if(!attr_file_line[0] || !attr_file_line[1]) continue;
+      if(strcmp(attr_file_line[0], "POW") == 0){
+        fprintf(attribute_file, "PROD=%d\n", atoi(attr_file_line[1]));
+      }else{
+        fprintf(attribute_file, "%s\n", attr_file_lines[i]);
+      }
+      free_arr(attr_file_line);
+    }
+    fclose(attribute_file);
+    free(player_attribute_filename);
+    free(attr_file_text);
+    free_arr(attr_file_lines);
+		// character type change
+		return true;
     
 	}else if(strcmp(type, "YAG_NKVDO") == 0){
-    
+		return true;
 		// character type change
         
 	}else if(strcmp(type, "2_RANDOM_NKVDO") == 0){ // good
@@ -577,74 +808,18 @@ bool attr_change_multiple(char *target, char *player_name){
 		}
 		players[j] = NULL;
 	}else{
-		printf("type \"%s\" is not accounted for!\n", type);
+		// XXX ???
+    players[0] = calloc(sizeof(char), 100);
+    players[0] = player_name;
+    players[1] = NULL;
 	}
-  printf("type = %s\n", type);
-  print_arr(players);
-	/*for(int i = 0; players[i]; i++){
-		printf("%d = %s\n", i, players[i]);
-	}*/
-	/*for(int i = 0; players[i]; i++){
-		char *player_atr_filename_temp = malloc(sizeof(char) * 100);
-		sprintf(player_atr_filename_temp, "%s_attributes.txt", players[i]);
-		attr_change_single(target, player_atr_filename_temp);
-		free(player_atr_filename_temp);
-	}*/
-	
-	// above commented for testing purposes
+  //printf("type = %s\n", type);
+  //print_arr(players);
+	for(int i = 0; players[i]; i++){
+		attr_change_single(target, players[i]);
+	}
+  return true;
 }
-
-/*char* get_im(char *stakw){
-  if(!get_type(stakw)){
-    printf("%s is not a STAKW!\n", stakw);
-    return NULL;
-  }
-  char *stakw_im_text = read_text("stakw-im.txt");
-	char **stakw_im_lines = split(stakw_im_text, '\n');
-  for(int i = 0; stakw_im_lines[i]; i++){
-			char **line = split(stakw_im_lines[i], '=');
-      if(!line[0] || !line[1]) continue;
-			if(strcmp(line[0], stakw) == 0){
-				char *im = calloc(sizeof(char), 100);
-				strcpy(im, line[1]);
-				free_arr(line);
-        free_arr(stakw_im_lines);
-        free(stakw_im_text);
-				return im;
-			}
-      free_arr(line);
-  }
-  printf("%s does not have an IM somehow!\n", stakw);
-  free_arr(stakw_im_lines);
-  free(stakw_im_text);
-  return NULL;
-}
-
-char* get_opl(char *im){
-  if(!get_type(im)){
-    printf("%s is not a IM!\n", im);
-    return NULL;
-  }
-  char *im_opl_text = read_text("im-opl.txt");
-	char **im_opl_lines = split(im_opl_text, '\n');
-  for(int i = 0; im_opl_lines[i]; i++){
-			char **line = split(im_opl_lines[i], '=');
-      if(!line[0] || !line[1]) continue;
-			if(strcmp(line[0], im) == 0){
-				char *opl = calloc(sizeof(char), 100);
-				strcpy(opl, line[1]);
-				free_arr(line);
-        free_arr(im_opl_lines);
-        free(im_opl_text);
-				return opl;
-			}
-      free_arr(line);
-  }
-  printf("%s does not have an OPL somehow!\n", im);
-  free_arr(im_opl_lines);
-  free(im_opl_text);
-  return NULL;
-}*/
 
 char** get_all_players_of_type(char *type){
   char *nav_text = read_text("nav_file.txt");
@@ -712,31 +887,35 @@ char** get_random_players(char *type, int num){
 
 bool do_option(char * targets[], char * option_code){
 	printf("Performing option code : %s\n", option_code);
+  printf("List of targets:\n");
+  print_arr(targets);
 	char **option_codes = split(option_code, ':');
 	char *player_name = option_codes[0];
 
 	/* record choice in the choosing player's file*/
 	char player_choices_filename[100];
-	sprintf(player_choices_filename, "%s_choices.txt", player_name);
+	sprintf(player_choices_filename, "players\\%s_choices.txt", player_name);
 	FILE *fp1 = fopen(player_choices_filename, "a+");
 	fprintf(fp1, "%s\n", option_code);
 	fclose(fp1);
 	//char *player_atr_filename = malloc(sizeof(char) * 100);
-	//sprintf(player_atr_filename, "%s_attributes.txt", player_name);
+	//sprintf(player_atr_filename, "players\\%s_attributes.txt", player_name);
+  printf("about to loop through targets\n");
 	for(int i = 0; targets[i]; i++){
 		char **targets_split = split(targets[i], ' '); // Split the targets cell content by space character
 		char *type = targets_split[0];//Stores the target's character type from split target line
-		
+    printf("type = %s\n", type);
+		if(targets[i][0] == '\0') continue;
 		if(strcmp(type, "YAG") == 0 || strcmp(type, "YEZ") == 0 || strcmp(type, "STA") == 0){
-			player_name = get_player(type);
-			//sprintf(player_atr_filename, "%s_attributes.txt", player_name);
-
+			//player_name = get_player(type);
+			//sprintf(player_atr_filename, "players\\%s_attributes.txt", player_name);
+      
 			bool result = attr_change_single(targets[i], player_name);
 			// XXX free rest of stuff
 			//free(player_atr_filename);
 			//free_arr(option_codes);
 			if(!result){
-				printf("error with %s\n", targets_split[0]);
+				printf("(first) error with %s\n", targets_split[0]);
 				return false;
 			}
 		}else{
@@ -745,7 +924,7 @@ bool do_option(char * targets[], char * option_code){
 			//free(player_atr_filename);
 			//free_arr(option_codes);
 			if(!result){
-				printf("error with %s\n", targets_split[0]);
+				printf("(second) error with %s\n", targets_split[0]);
 				return false;
 			}
 		}
@@ -757,7 +936,7 @@ bool do_option(char * targets[], char * option_code){
 
 char *get_choice(char *player_name, int round){
 	char *file_name = malloc(sizeof(char)*50);
-	sprintf(file_name,"%s_choices.txt", player_name);
+	sprintf(file_name,"players\\%s_choices.txt", player_name);
 	char *player_choices = read_text(file_name);
 	char **player_lines = split(player_choices, '\n');
 	char *catch = malloc(sizeof(char)*10);

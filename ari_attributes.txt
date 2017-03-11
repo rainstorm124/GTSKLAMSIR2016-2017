@@ -1,6 +1,0 @@
-5
-FAV=0
-CRED=0
-SUS=0
-POW=0
-PRES=152
