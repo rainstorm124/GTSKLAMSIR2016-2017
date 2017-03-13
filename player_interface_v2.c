@@ -79,12 +79,12 @@ int main(void){
 	printf("<div id=\"choice_left\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[0]);
 	printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
 			"%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"1\">" 
-			"<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\"> <\form> <\center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
+			"<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\"> <\form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
 	printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
 	printf("<div id=\"choice_center\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[0]);
 	printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
 			"%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"2\">" 
-			"<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\"> <\form> <\center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
+			"<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\"> <\form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
 	printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
 	printf("<div id=\"choice_right\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[0]);
 	printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\"> <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"3\">"
