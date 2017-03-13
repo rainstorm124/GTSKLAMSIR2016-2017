@@ -1,5 +1,5 @@
-Richie Trice:1:1:3
-Richie Trice:2:1:1
-Richie Trice:3:3:3
-Richie Trice:4:3:1
-Richie Trice:5:2:2
+Richie Trice:1:1:1
+Richie Trice:2:1:3
+Richie Trice:3:1:2
+Richie Trice:4:1:2
+Richie Trice:5:3:2

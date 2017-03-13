@@ -1,6 +1,5 @@
-Annalee Nardi:1:1:2
-Annalee Nardi:2:3:3
-Annalee Nardi:3:2:2
-Annalee Nardi:4:1:3
-Annalee Nardi:5:2:3
-Annalee Nardi:6:3:2
+Annalee Nardi:1:1:1
+Annalee Nardi:2:1:2
+Annalee Nardi:3:3:3
+Annalee Nardi:4:3:1
+Annalee Nardi:5:1:1

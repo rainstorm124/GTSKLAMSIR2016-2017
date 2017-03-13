@@ -1,13 +1,26 @@
 9
-FAV=10
-CRED=7
-SUS=5
-POW=5
-PRES=5
+PRES=12
+ALL=1
+SUP=4
+SUS=6
+PROD=6
+IN_ALLIANCE=0
 ARRESTED=1
 GULAG=1
 DEAD=0
-DEMOTED=0
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
