@@ -4,6 +4,8 @@
 #include <string.h>
 #include <time.h>
 
+//Global variable, keep track in header file so that I can use it in interfaces.
+int round = 1;
 
 int GMAIN(int argc, char **argv){
   printf("Avast is really dumb. Continue? (y/n): ");
@@ -50,6 +52,11 @@ int GMAIN(int argc, char **argv){
     }
   }
   return 0;
+}
+
+//Just for use in the interface files. nothing special - Rain
+void increment_round(){
+  round = round + 1;
 }
 
 // only to be used for STA, YAG AND YEZ
