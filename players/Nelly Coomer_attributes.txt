@@ -1,29 +1,11 @@
-9
-PRES=5
-ALL=-6
-SUP=6
-SUS=4
-PROD=5
-IN_ALLIANCE=0
+7
+HUNG=4
+LOY=3
+FAT=4
+PRES=6
 ARRESTED=2
-GULAG=1
+GULAG=2
 DEAD=0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -1,25 +1,11 @@
 7
-MOT=5
+MOT=8
 SUS=6
-PRES=29
-FAT=1
+PRES=10
+FAT=0
 ARRESTED=0
 GULAG=0
 DEAD=0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

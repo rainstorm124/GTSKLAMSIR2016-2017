@@ -4,6 +4,10 @@
 #include <string.h>
 #include <time.h>
 
+
+// //Global variable, keep track in header file so that I can use it in interfaces.
+// int round = 1;
+
 int GMAIN(int argc, char **argv){
   printf("Avast is really dumb. Continue? (y/n): ");
   while(true){
@@ -43,6 +47,8 @@ int GMAIN(int argc, char **argv){
       int random_option_choice = grandom(option_count);
       char **targets = get_targets(options[random_option_choice]);
       printf("%s(%s) chose %s\n", players[j], get_type(players[j]),options[random_option_choice]);
+      printf("passing do_option targets:\n");
+      print_arr(targets);
       do_option(targets, options[random_option_choice]);
       free(prompt_code);
       free_arr(options);
@@ -53,6 +59,11 @@ int GMAIN(int argc, char **argv){
   
   return 0;
 }
+
+// //Just for use in the interface files. nothing special - Rain
+// void increment_round(){
+  // round = round + 1;
+// }
 
 // only to be used for STA, YAG AND YEZ
 char* get_player(char *type){
@@ -67,12 +78,20 @@ char* get_player(char *type){
       player_found = true;
       strcpy(player_name, nav_line[0]);
     }
+    if(strcmp(type, "YEZ") == 0 || strcmp(type, "YEZ") == 0){
+      if(strcmp(nav_line[1], "NKVDO") == 0){
+        if(get_attr_val(nav_line[0], "DEMOTED") == 1){
+          player_found = true;
+          strcpy(player_name, nav_line[0]);
+        }
+      }
+    }
     free_arr(nav_line);
   }
   free_arr(nav_split);
   free(navigator);
   if(!player_found){
-    printf("Type not found!\n");
+    printf("Type \"%s\" not found!\n", type);
     abort();
     return NULL; // no type match was found in nav file
   }
@@ -223,33 +242,35 @@ char** get_targets(char* option_code){
   char *info = read_text(prompt_info_filename);
   free(prompt_info_filename);
   char **lines = split(info, '\n');
-  char **targets;
+  char **targets = calloc(sizeof(char*), 100);
   bool round_found = false, char_found = false, prompt_found = false, option_found = false, num_targets_found = false;
   int options = 0;
   int target_count = 0;
   int i;
   for(i = 0; lines[i]; i++){
-    char *line = lines[i];
+    //char *line = lines[i];
     char **line_info = split(lines[i], '=');
     if(round_found){
       if(char_found){
-        char *prompt_compare = malloc(sizeof(char) * 100);
+        char *prompt_compare = calloc(sizeof(char), 100);
         sprintf(prompt_compare, "PROMPT_%s", prompt_num);
         if(prompt_found){
-          char *option_compare = malloc(sizeof(char) * 100);
+          char *option_compare = calloc(sizeof(char), 100);
           sprintf(option_compare, "OPTION_%s", option_num);
           if(option_found){
             if(num_targets_found){
               for (int j = 0; j < target_count && lines[i]; j++, i++){
-                targets[j] = malloc(sizeof(char) * 30);
                 line_info = split(lines[i], '=');
-                targets[j] = line_info[1];
+                targets[j] = calloc(sizeof(char), 90);
+                strcpy(targets[j], line_info[1]);
+                free_arr(line_info);
               }
+              printf("\t\tfinal position is set to null\n");
               targets[target_count] = NULL;
               break;
             }else if (strcmp(line_info[0], "NUM_TARGETS")==0){
               target_count = atoi(line_info[1]);
-              targets = malloc(sizeof(char*) * (target_count + 1));
+              //targets = malloc(sizeof(char*) * (target_count + 10));
               num_targets_found = true;
             }  
           }else if (strcmp(line_info[0], option_compare) == 0){
@@ -270,6 +291,7 @@ char** get_targets(char* option_code){
     free_arr(line_info);
   }
   free(character_type);
+  free_arr(temp);
   return targets;
 }
 //Targets is array of targets w/ attribute changes, option_code == "player_name:round#:prompt#:option#"
@@ -722,12 +744,10 @@ bool attr_change_multiple(char *target, char *player_name){
     // character type change
     return true;
   }else if(strcmp(type, "YEZ_NKVDO") == 0){
-    /*if(strcmp(get_type(player_name), "YEZ") != 0){
-      printf("%s is not YEZ!!!\n", player_name);
-      abort();
-      return false;
-    }*/
+    
+    printf("calling from YEZ_NKVDO case\n");
     char *yez_player_name = get_player("YEZ");
+    
     // the entry in the navigation file must be changed
     for(int i = 0; nav_lines[i]; i++){
       char **nav_line = split(nav_lines[i], '=');
@@ -864,7 +884,7 @@ bool attr_change_multiple(char *target, char *player_name){
 char** get_all_players_of_type(char *type){
   char *nav_text = read_text("nav_file.txt");
   char **nav_lines = split(nav_text, '\n');
-  char **players = malloc(sizeof(char*) * 100);
+  char **players = calloc(sizeof(char*), 100);
   int i, j;
     for(i = 0, j = 0; nav_lines[i]; i++){
       char **line = split(nav_lines[i], '=');
@@ -921,7 +941,7 @@ char** get_random_players(char *type, int num){
   return players;
 }
 
-bool do_option(char * targets[], char * option_code){
+bool do_option(char **targets, char * option_code){
   printf("Performing option code : %s\n", option_code);
   char **option_codes = split(option_code, ':');
   char *player_name = option_codes[0];
@@ -940,7 +960,7 @@ bool do_option(char * targets[], char * option_code){
     if(targets[i][0] == '\0') continue;
     if(strcmp(type, "YAG") == 0 || strcmp(type, "YEZ") == 0 || strcmp(type, "STA") == 0){
       //sprintf(player_atr_filename, "players\\%s_attributes.txt", player_name);
-      
+      printf("calling get_player(type) before attr_change_single\n");
       bool result = attr_change_single(targets[i], get_player(type)); // get type is OK because these are unique
       // XXX free rest of stuff
       //free(player_atr_filename);

@@ -1,5 +1,6 @@
-Sachiko Istre:1:1:2
-Sachiko Istre:2:3:2
-Sachiko Istre:3:3:2
-Sachiko Istre:4:1:2
-Sachiko Istre:5:2:3
+Sachiko Istre:1:1:3
+Sachiko Istre:2:1:1
+Sachiko Istre:3:1:2
+Sachiko Istre:4:3:2
+Sachiko Istre:5:2:2
+Sachiko Istre:6:3:1

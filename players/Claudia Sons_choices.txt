@@ -1,6 +1,6 @@
 Claudia Sons:1:1:3
 Claudia Sons:2:1:2
-Claudia Sons:3:3:1
-Claudia Sons:4:1:2
-Claudia Sons:5:2:2
-Claudia Sons:6:3:1
+Claudia Sons:3:2:2
+Claudia Sons:4:2:2
+Claudia Sons:5:1:2
+Claudia Sons:6:3:2

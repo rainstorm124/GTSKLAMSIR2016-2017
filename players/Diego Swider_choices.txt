@@ -1,6 +1,6 @@
 Diego Swider:1:1:2
-Diego Swider:2:1:1
-Diego Swider:3:1:2
-Diego Swider:4:2:2
-Diego Swider:5:3:1
-Diego Swider:6:3:1
+Diego Swider:2:1:3
+Diego Swider:3:1:1
+Diego Swider:4:2:3
+Diego Swider:5:2:1
+Diego Swider:6:1:1

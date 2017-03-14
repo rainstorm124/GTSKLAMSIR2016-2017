@@ -1,5 +1,6 @@
 Kerri Quinlan:1:1:1
-Kerri Quinlan:2:2:2
-Kerri Quinlan:3:3:1
-Kerri Quinlan:4:1:2
-Kerri Quinlan:5:2:2
+Kerri Quinlan:2:2:1
+Kerri Quinlan:3:3:2
+Kerri Quinlan:4:2:1
+Kerri Quinlan:5:3:2
+Kerri Quinlan:6:3:2
