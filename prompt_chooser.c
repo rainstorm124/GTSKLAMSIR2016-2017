@@ -28,7 +28,7 @@ int get_prompt_num_STAKW(char *player_name, int round){
   case 4:
     if(get_attr_val(player_name, "PRES") > 7){
       return 1;
-    }else if(get_attr_val(player_name, "HUNG") >= 5){
+    }else if(get_attr_val(player_name, "PRES") >= 5){ // replaced HUNG with PRES
       return 2;
     }else{ // other criteria are not met
       return 3;

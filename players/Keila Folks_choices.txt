@@ -1,6 +1,6 @@
-Keila Folks:1:1:2
-Keila Folks:2:1:3
-Keila Folks:3:3:3
-Keila Folks:4:4:2
-Keila Folks:5:2:2
-Keila Folks:6:2:1
+Keila Folks:1:1:1
+Keila Folks:2:3:3
+Keila Folks:3:2:1
+Keila Folks:4:3:3
+Keila Folks:5:1:1
+Keila Folks:6:2:3

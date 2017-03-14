@@ -1,13 +1,39 @@
-9
-FAV=4
-CRED=5
+7
+MOT=7
 SUS=5
-POW=13
-PRES=10
+PRES=27
+FAT=1
 ARRESTED=0
 GULAG=0
 DEAD=0
-DEMOTED=0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

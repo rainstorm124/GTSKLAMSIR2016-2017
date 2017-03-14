@@ -1,10 +1,25 @@
-6
-POL=4
-ALI=10
-SUS=3
-ARRESTED=0
+9
+PRES=10
+ALL=0
+SUP=6
+SUS=2
+PROD=5
+IN_ALLIANCE=0
+ARRESTED=1
 GULAG=0
 DEAD=0
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,5 +1,6 @@
-Mallie Calixte:1:1:2
-Mallie Calixte:2:3:2
+Mallie Calixte:1:1:1
+Mallie Calixte:2:1:1
 Mallie Calixte:3:3:3
-Mallie Calixte:4:3:2
-Mallie Calixte:5:2:1
+Mallie Calixte:4:4:2
+Mallie Calixte:5:4:3
+Mallie Calixte:6:2:2
