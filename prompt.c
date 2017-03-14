@@ -22,6 +22,8 @@ int GMAIN(int argc, char **argv){
       continue;
     }
   }
+  while(true){
+  system("setup.exe");
   srand(time(NULL));
   char **players = calloc(sizeof(char*), 400);
   char *nav_text = read_text("nav_file.txt");
@@ -56,7 +58,7 @@ int GMAIN(int argc, char **argv){
     }
   }
   printf("testing is complete!\n");
-  
+  }
   return 0;
 }
 
@@ -78,9 +80,14 @@ char* get_player(char *type){
       player_found = true;
       strcpy(player_name, nav_line[0]);
     }
-    if(strcmp(type, "YEZ") == 0 || strcmp(type, "YEZ") == 0){
+    if(strcmp(type, "YEZ") == 0 || strcmp(type, "YAG") == 0){
+      bool looking_for_yez = strcmp(type, "YEZ") == 0;
       if(strcmp(nav_line[1], "NKVDO") == 0){
-        if(get_attr_val(nav_line[0], "DEMOTED") == 1){
+        if(get_attr_val(nav_line[0], "DEMOTED") == 1 && looking_for_yez){
+          player_found = true;
+          strcpy(player_name, nav_line[0]);
+        }
+        if(get_attr_val(nav_line[0], "DEMOTED") == 2 && !looking_for_yez){
           player_found = true;
           strcpy(player_name, nav_line[0]);
         }
@@ -261,7 +268,7 @@ char** get_targets(char* option_code){
             if(num_targets_found){
               for (int j = 0; j < target_count && lines[i]; j++, i++){
                 line_info = split(lines[i], '=');
-                targets[j] = calloc(sizeof(char), 90);
+                targets[j] = calloc(sizeof(char), strlen(line_info[1]) + 1);
                 strcpy(targets[j], line_info[1]);
                 free_arr(line_info);
               }
@@ -297,7 +304,7 @@ char** get_targets(char* option_code){
 //Targets is array of targets w/ attribute changes, option_code == "player_name:round#:prompt#:option#"
 bool attr_change_single(char *target, char *player_name){
   printf("player = %s and target = %s\n", player_name, target);
-  char *player_atr_filename = malloc(sizeof(char) * 100);
+  char *player_atr_filename = calloc(sizeof(char), 100);
   sprintf(player_atr_filename, "players\\%s_attributes.txt", player_name);
   char **targets_split = split(target, ' ');
   char **attributes; // names of attributes to be changed
@@ -595,6 +602,7 @@ bool attr_change_multiple(char *target, char *player_name){
     }
   }else if(strcmp(type, "ASSOCIATED_IM") == 0){ // good
     char *stakw = calloc(sizeof(char), 100);
+    int found = 0;
     // if the player is an NKVDO, then the ASSOCIATED_IM is the manager of the STAKW they are investigating
     if(strcmp(get_type(player_name), "NKVDO") == 0){
       for(int i = 0; stakw_investigations_lines[i]; i++){
@@ -603,6 +611,7 @@ bool attr_change_multiple(char *target, char *player_name){
         if(strcmp(line[1], player_name) == 0){
           strcpy(stakw, line[0]);
           free_arr(line);
+          found = 1;
           break;
         }
         free_arr(line);
@@ -782,6 +791,7 @@ bool attr_change_multiple(char *target, char *player_name){
       if(!attr_file_line[0] || !attr_file_line[1]) continue;
       if(strcmp(attr_file_line[0], "POW") == 0){
         fprintf(attribute_file, "PROD=%d\n", atoi(attr_file_line[1]));
+        fprintf(attribute_file, "POW=%d\n", atoi(attr_file_line[1]));
       }else{
         fprintf(attribute_file, "%s\n", attr_file_lines[i]);
       }
@@ -796,8 +806,56 @@ bool attr_change_multiple(char *target, char *player_name){
     return true;
     
   }else if(strcmp(type, "YAG_NKVDO") == 0){
-    return true;
+    printf("calling from YAG_NKVDO case\n");
+    char *yag_player_name = get_player("YAG");
+    
+    // the entry in the navigation file must be changed
+    for(int i = 0; nav_lines[i]; i++){
+      char **nav_line = split(nav_lines[i], '=');
+      if(!nav_line[0] || !nav_line[1]) continue;
+      if(strcmp(nav_line[0], yag_player_name) == 0){
+        char *assignment = calloc(sizeof(char), 100);
+        sprintf(assignment, "%s=%s", yag_player_name, "NKVDO");
+        nav_lines[i] = calloc(100, sizeof(char));
+        strcpy(nav_lines[i], assignment);
+        free(assignment);
+      }
+      free_arr(nav_line);
+    }
+    FILE *new_nav = fopen("nav_file.txt", "w");
+    for(char **nav = nav_lines; *nav; nav++){
+      fprintf(new_nav, "%s\n", *nav);
+    }
+    fclose(new_nav);
+    // change player's attribute file
+    char *player_attribute_filename = calloc(sizeof(char), 100);
+    sprintf(player_attribute_filename, "players\\%s_attributes.txt", yag_player_name);
+    char *attr_file_text = read_text(player_attribute_filename);
+    char **attr_file_lines = split(attr_file_text, '\n');
+    FILE *attribute_file = fopen(player_attribute_filename, "w");
+    fprintf(attribute_file, "%d\n", 9);
+    if(!attr_file_lines[0]){
+      printf("attribute file has no lines!!\n");
+      abort();
+    }
+    for(int i = 1; attr_file_lines[i]; i++){
+      char **attr_file_line = split(attr_file_lines[i], '=');
+      if(!attr_file_line[0] || !attr_file_line[1]) continue;
+      if(strcmp(attr_file_line[0], "POW") == 0){
+        fprintf(attribute_file, "PROD=%d\n", atoi(attr_file_line[1]));
+        fprintf(attribute_file, "POW=%d\n", atoi(attr_file_line[1]));
+      }else{
+        fprintf(attribute_file, "%s\n", attr_file_lines[i]);
+      }
+      free_arr(attr_file_line);
+    }
+    fclose(attribute_file);
+    free(player_attribute_filename);
+    free(attr_file_text);
+    free_arr(attr_file_lines);
+    free(yag_player_name);
     // character type change
+    return true;
         
   }else if(strcmp(type, "2_RANDOM_NKVDO") == 0){ // good
     free(players);
@@ -871,7 +929,7 @@ bool attr_change_multiple(char *target, char *player_name){
   }else{
     // XXX ???
     players[0] = calloc(sizeof(char), 100);
-    players[0] = player_name;
+    strcpy(players[0], player_name);
     players[1] = NULL;
   }
   for(int i = 0; players[i]; i++){

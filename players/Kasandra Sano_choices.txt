@@ -1,6 +1,4 @@
 Kasandra Sano:1:1:1
-Kasandra Sano:2:3:3
+Kasandra Sano:2:2:2
 Kasandra Sano:3:3:1
-Kasandra Sano:4:1:2
-Kasandra Sano:5:3:3
-Kasandra Sano:6:2:3
+Kasandra Sano:4:3:3

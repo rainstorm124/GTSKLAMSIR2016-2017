@@ -135,7 +135,7 @@ void initialize(char *student_file){
 		}else if(strcmp(((player_type*)node->data)->type, "BD") == 0){
 			character_attirbute_names = split("HUNG,4 LOY,3 FAT,3 PRES,5 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "NKVDO") == 0){
-			character_attirbute_names = split("PRES,6 SUS,4 CRED,6 FAV,5 PROD,5 ARRESTED,0 GULAG,0 DEAD,0 DEMOTED,0", ' ');
+			character_attirbute_names = split("PRES,6 SUS,4 CRED,6 FAV,5 PROD,5 ARRESTED,0 GULAG,0 DEAD,0 DEMOTED,0 POW,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "EP") == 0){
 			character_attirbute_names = split("POL,5 ALI,10 SUS,4 ARRESTED,0 GULAG,0 DEAD,0", ' ');
 		}else if(strcmp(((player_type*)node->data)->type, "OPL") == 0){
@@ -239,19 +239,29 @@ void initialize(char *student_file){
   // create STAKW, IM and OPL investigation assignment files
   FILE *stakw_investigations = fopen("stakw_investigations.txt", "w+");
   char **random_stakw = get_random_players("STAKW", 5);
-  for(int i = 0; nkvdo_list[i]; i++){
+  int stakw_i = 0;
+  fprintf(stakw_investigations, "%s=%s\n", stakw_list[stakw_i++], get_player("YAG"));
+  fprintf(stakw_investigations, "%s=%s\n", stakw_list[stakw_i++], get_player("YEZ"));
+  for(int i = stakw_i; nkvdo_list[i]; i++){
     fprintf(stakw_investigations, "%s=%s\n", random_stakw[i], nkvdo_list[i]);
   }
   fclose(stakw_investigations);
   FILE *im_investigations = fopen("im_investigations.txt", "w+");
   char **random_nkvdo= get_random_players("NKVDO", 5);
-  for(int i = 0; im_list[i]; i++){
+  int im_i = 0;
+  fprintf(im_investigations, "%s=%s\n", im_list[im_i++], get_player("YAG"));
+  fprintf(im_investigations, "%s=%s\n", im_list[im_i++], get_player("YEZ"));
+  for(int i = im_i; im_list[i]; i++){
     fprintf(im_investigations, "%s=%s\n", im_list[i], random_nkvdo[i % 5]);
   }
+
   fclose(im_investigations);
   FILE *opl_investigations = fopen("opl_investigations.txt", "w+");
   char **random_opl = get_random_players("OPL", 3);
-  for(int i = 0; nkvdo_list[i]; i++){
+  int opl_i = 0;
+  fprintf(opl_investigations, "%s=%s\n", opl_list[opl_i++], get_player("YAG"));
+  fprintf(opl_investigations, "%s=%s\n", opl_list[opl_i++], get_player("YEZ"));
+  for(int i = opl_i; nkvdo_list[i]; i++){
     fprintf(opl_investigations, "%s=%s\n", random_opl[i % 3], nkvdo_list[i]);
   }
   fclose(opl_investigations);

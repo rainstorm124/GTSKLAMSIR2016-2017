@@ -1,6 +1,4 @@
 Sherill Molino:1:1:1
-Sherill Molino:2:1:2
-Sherill Molino:3:1:1
-Sherill Molino:4:2:3
-Sherill Molino:5:2:3
-Sherill Molino:6:1:2
+Sherill Molino:2:2:1
+Sherill Molino:3:3:2
+Sherill Molino:4:3:2

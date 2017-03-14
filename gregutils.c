@@ -20,7 +20,8 @@ char* read_text(char *filename){
 char** split(char *src, char delimiter){
 	int element_count = 1;
 	for(int i = 0; src[i]; i++){
-		if(src[i] == delimiter) element_count++;
+		if(src[i] != delimiter)continue;
+    if(src[i+1] != '\0' && src[i+1] != delimiter) element_count++;
 	}
 	char **arr = malloc(sizeof(char*) * (element_count + 1));
 	for(int i = 0, index = 0; i < element_count; i++){
@@ -31,7 +32,9 @@ char** split(char *src, char delimiter){
 			arr[i][j] = src[index + j];
 		}
 		arr[i][word_length] = '\0';
-		index += word_length + 1; // +1 to skip delimiter
+		index += word_length;
+    // skip all delimiters
+    while(src[index] == delimiter)index++;
 	}
 	arr[element_count] = NULL;
 	return arr;	
