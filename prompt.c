@@ -22,6 +22,8 @@ int GMAIN(int argc, char **argv){
       continue;
     }
   }
+  
+  
   int games = 0;
   while(true){
     system("setup.exe -y");
@@ -325,7 +327,7 @@ char** get_targets(char* option_code){
 }
 //Targets is array of targets w/ attribute changes, option_code == "player_name:round#:prompt#:option#"
 bool attr_change_single(char *target, char *player_name){
-  printf("(in single) player = %s and target = %s\n", player_name, target);
+  //printf("(in single) player = %s and target = %s\n", player_name, target);
   char *player_atr_filename = calloc(sizeof(char), 100);
   sprintf(player_atr_filename, "players\\%s_attributes.txt", player_name);
   char **targets_split = split(target, ' ');
@@ -414,7 +416,7 @@ bool attr_change_single(char *target, char *player_name){
 }
 
 bool attr_change_multiple(char *target, char *player_name){
-  printf("(in single) player = %s and target = %s\n", player_name, target);
+  //printf("(in single) player = %s and target = %s\n", player_name, target);
   char **targets_split = split(target, ' ');
   char *type = targets_split[0];
   char *nav_text = read_text("nav_file.txt");
@@ -968,7 +970,7 @@ bool attr_change_multiple(char *target, char *player_name){
   }
   for(int i = 0; players[i]; i++){
     //printf("players[%d] = %s\n", i, players[i]);
-    printf("calling change single from multi\n");
+    //printf("calling change single from multi\n");
     attr_change_single(target, players[i]);
   }
   free_arr(players);
@@ -1070,7 +1072,7 @@ bool do_option(char **targets, char * option_code){
     char *type = targets_split[0];//Stores the target's character type from split target line
     if(targets[i][0] == '\0') continue;
     if(strcmp(type, "YAG") == 0 || strcmp(type, "YEZ") == 0 || strcmp(type, "STA") == 0){
-      printf("calling get_player(type) before attr_change_single\n");
+      //printf("calling get_player(type) before attr_change_single\n");
       char *player = get_player(type);
       bool result = attr_change_single(targets[i], player); // get type is OK because these are unique
       if(!result){
@@ -1215,4 +1217,12 @@ char* get_option_texts_given_codes(char* option_code_single){
   free_arr(search_key);
   free_arr(lines);
   return option_text;
+}
+
+int get_round(){
+  FILE *fp = fopen("round.txt", "rb");
+  int round = fgetc(fp) - '0';
+  //fread(&round, sizeof(int), 1, fp);
+  fclose(fp);
+  return round;
 }

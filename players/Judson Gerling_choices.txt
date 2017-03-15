@@ -1,5 +1,5 @@
 Judson Gerling:1:1:1
-Judson Gerling:2:3:2
-Judson Gerling:3:3:1
-Judson Gerling:4:1:2
-Judson Gerling:5:3:3
+Judson Gerling:2:2:2
+Judson Gerling:3:1:1
+Judson Gerling:4:2:2
+Judson Gerling:5:3:2

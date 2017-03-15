@@ -45,10 +45,10 @@ int main(void){
 	//Prepares the admin's files for reading
 	char *admin_attributes_filename = malloc(sizeof(char) * 1024 * 1024);
 	char *admin_choices_filename = malloc(sizeof(char) * 1024 * 1024);
-	sprintf(admin_attributes_filename, "%s_attributes.txt", user);
+	sprintf(admin_attributes_filename, "players\\%s_attributes.txt", user);
 
 	//Reads them and processes them
-	char *admin_attributes = read(admin_attributes_filename);
+	char *admin_attributes = read_text(admin_attributes_filename);
 	char **split_attributes = split(admin_attributes, '/n');
 
 	char *prompt_code = get_prompt(user, round);

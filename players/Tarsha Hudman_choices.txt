@@ -1,5 +1,6 @@
-Tarsha Hudman:1:1:3
-Tarsha Hudman:2:1:1
-Tarsha Hudman:3:2:2
-Tarsha Hudman:4:4:2
-Tarsha Hudman:5:2:3
+Tarsha Hudman:1:1:2
+Tarsha Hudman:2:1:2
+Tarsha Hudman:3:1:3
+Tarsha Hudman:4:3:1
+Tarsha Hudman:5:1:1
+Tarsha Hudman:6:1:2

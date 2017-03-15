@@ -1,5 +1,6 @@
-Eugenie Turco:1:1:2
-Eugenie Turco:2:3:3
-Eugenie Turco:3:3:1
-Eugenie Turco:4:1:1
+Eugenie Turco:1:1:1
+Eugenie Turco:2:2:3
+Eugenie Turco:3:2:3
+Eugenie Turco:4:2:3
 Eugenie Turco:5:3:2
+Eugenie Turco:6:1:3

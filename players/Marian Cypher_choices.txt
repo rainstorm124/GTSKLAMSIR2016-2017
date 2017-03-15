@@ -1,5 +1,5 @@
 Marian Cypher:1:1:1
 Marian Cypher:2:2:1
-Marian Cypher:3:3:3
-Marian Cypher:4:1:1
-Marian Cypher:5:3:1
+Marian Cypher:3:3:1
+Marian Cypher:4:1:3
+Marian Cypher:5:3:3
