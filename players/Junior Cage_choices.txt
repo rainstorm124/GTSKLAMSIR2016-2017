@@ -1,4 +1,5 @@
 Junior Cage:1:1:2
-Junior Cage:2:3:2
-Junior Cage:3:3:2
+Junior Cage:2:2:1
+Junior Cage:3:2:1
 Junior Cage:4:3:3
+Junior Cage:5:1:1

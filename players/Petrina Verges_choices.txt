@@ -1,4 +1,5 @@
-Petrina Verges:1:1:2
-Petrina Verges:2:3:2
-Petrina Verges:3:1:3
-Petrina Verges:4:1:1
+Petrina Verges:1:1:1
+Petrina Verges:2:2:3
+Petrina Verges:3:3:1
+Petrina Verges:4:2:2
+Petrina Verges:5:3:3

@@ -1,3 +1,5 @@
 Dania Huggins:1:1:1
-Dania Huggins:2:2:3
-Dania Huggins:3:3:3
+Dania Huggins:2:2:2
+Dania Huggins:3:3:1
+Dania Huggins:4:1:3
+Dania Huggins:5:3:1

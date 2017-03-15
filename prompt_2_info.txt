@@ -98,7 +98,6 @@ TARGET_1=OPL 1 SUS 1
 CHARACTER_TYPE=YAG
 NUM_PROMPTS=3
 PROMPT_1=You have not been able to make much progress in the investigation of Kirov’s murder, and Stalin is growing impatient. Also, you have noticed Yezhov growing in Stalin’s favor. What do you do to regain your standing with Stalin while also advancing the investigation?
-Pressure and/or suspicion is high
 NUM_OPTIONS=3
 OPTION_1=Attempt to frame Yezhov for assisting with the Kirov murder
 NUM_TARGETS=2
