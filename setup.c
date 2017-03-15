@@ -23,7 +23,7 @@
 1 Yagoda (9)
 1 Yezhov (10)
 */
-
+int ask_prompt;
 typedef struct player_type{
 	char *type;
 	int count;
@@ -49,6 +49,8 @@ void print_type(void *ptr){
 }
 
 int main(int argc, char **argv){
+  if(argc > 1 && !strcmp(argv[1], "-y")) ask_prompt = 0;
+  else ask_prompt = 1;
 	initialize("test_students.txt");
 	return 0;
 }
@@ -56,6 +58,7 @@ int main(int argc, char **argv){
 void initialize(char *student_file){
 	FILE *fp = fopen(student_file, "r");
 	if(fp){
+    if(!ask_prompt) goto b;
 		printf("This action will overwrite all assignment files. Continue? (y/n): ");
 		while(true){
 			char c = getchar();
@@ -72,6 +75,7 @@ void initialize(char *student_file){
 	}else{
 		printf("\"%s\" does not exist\n", student_file);
 	}
+  b:
 	srand(time(NULL));
 	char *student_text = read_text(student_file);
 	char **students = split(student_text, '\n');

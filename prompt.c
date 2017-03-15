@@ -23,41 +23,41 @@ int GMAIN(int argc, char **argv){
     }
   }
   while(true){
-  system("setup.exe");
-  srand(time(NULL));
-  char **players = calloc(sizeof(char*), 400);
-  char *nav_text = read_text("nav_file.txt");
-  char **nav_lines = split(nav_text, '\n');
-  int i = 0;
-  for(;nav_lines[i]; i++){
-    if(nav_lines[i][0] == '\0') continue;
-    char **nav_line = split(nav_lines[i], '=');
-    if(!nav_line[0]) continue;
-    players[i] = calloc(sizeof(char), 100);
-    strcpy(players[i], nav_line[0]);
-    free_arr(nav_line);
-  }
-  players[i] = NULL;
-  
-  for(int round = 1; round <= 6; round++){
-    for(int j = 0; players[j]; j++){
-      char *prompt_code = get_prompt_code(players[j], round);
-      char **options = get_option_codes(prompt_code);
-      int option_count = 0;
-      while(options[option_count]) option_count++;
-      printf("counted %d options\n", option_count);
-      int random_option_choice = grandom(option_count);
-      char **targets = get_targets(options[random_option_choice]);
-      printf("%s(%s) chose %s\n", players[j], get_type(players[j]),options[random_option_choice]);
-      printf("passing do_option targets:\n");
-      print_arr(targets);
-      do_option(targets, options[random_option_choice]);
-      free(prompt_code);
-      free_arr(options);
-      free_arr(targets);
+    system("setup.exe -y");
+    srand(time(NULL));
+    char **players = calloc(sizeof(char*), 400);
+    char *nav_text = read_text("nav_file.txt");
+    char **nav_lines = split(nav_text, '\n');
+    int i = 0;
+    for(;nav_lines[i]; i++){
+      if(nav_lines[i][0] == '\0') continue;
+      char **nav_line = split(nav_lines[i], '=');
+      if(!nav_line[0]) continue;
+      players[i] = calloc(sizeof(char), 100);
+      strcpy(players[i], nav_line[0]);
+      free_arr(nav_line);
     }
-  }
-  printf("testing is complete!\n");
+    players[i] = NULL;
+    
+    for(int round = 1; round <= 6; round++){
+      for(int j = 0; players[j]; j++){
+        char *prompt_code = get_prompt_code(players[j], round);
+        char **options = get_option_codes(prompt_code);
+        int option_count = 0;
+        while(options[option_count]) option_count++;
+        printf("counted %d options\n", option_count);
+        int random_option_choice = grandom(option_count);
+        char **targets = get_targets(options[random_option_choice]);
+        printf("%s(%s) chose %s\n", players[j], get_type(players[j]),options[random_option_choice]);
+        printf("passing do_option targets:\n");
+        print_arr(targets);
+        do_option(targets, options[random_option_choice]);
+        free(prompt_code);
+        free_arr(options);
+        free_arr(targets);
+      }
+    }
+    printf("testing is complete!\n");
   }
   return 0;
 }
@@ -106,6 +106,7 @@ char* get_player(char *type){
 }
 
 char* get_type(char *player){
+  printf("trying to get type of %s\n", player);
   char *player_type = calloc(sizeof(char), 100);
   char *navigator = read_text("nav_file.txt");
   char **nav_split = split(navigator, '\n');
@@ -116,20 +117,24 @@ char* get_type(char *player){
     if(strcmp(nav_line[0], player) == 0){
       player_found = true;
       strcpy(player_type, nav_line[1]);
+      free_arr(nav_line);
+      break;
     }
     free_arr(nav_line);
   }
   free(navigator);
   free_arr(nav_split);
   if(!player_found){
-    printf("Player not found!\n");
+    printf("Player \"%s\" not found!\n", player);
     abort();
     return NULL; // no type match was found in nav file
   }
+  printf("i think %s is %s\n", player, player_type);
   return player_type;
 }
 
 char* get_prompt_code(char *player_name, int round){ // player_name:round:prompt
+  printf("trying to get prompt code for %s\n", player_name);
   char *prompt_info_filename = malloc(sizeof(char) * 50);
   sprintf(prompt_info_filename, "prompt_%d_info.txt", round);
   char *info = read_text(prompt_info_filename);
@@ -170,6 +175,7 @@ char* get_prompt_code(char *player_name, int round){ // player_name:round:prompt
           printf("Typo in get round player type\n");
           abort();
         }
+        printf("printed \"%s\" to prompt_code\n", prompt_code);
         free(type);
         goto code_found_break;
       }else if(strcmp(split_line[0], "CHARACTER_TYPE") == 0 && strcmp(split_line[1], character_code_type) == 0){
@@ -189,6 +195,7 @@ char* get_prompt_code(char *player_name, int round){ // player_name:round:prompt
 
 char** get_option_codes(char *prompt_code){ // player_name:round#:prompt#:option#
   char **codes = split(prompt_code, ':');
+  printf("Prompt code = %s\n", prompt_code);
   char *code_type = get_type(codes[0]);
   char *code_round = codes[1];
   char *code_num = codes[2];
@@ -255,6 +262,7 @@ char** get_targets(char* option_code){
   int target_count = 0;
   int i;
   for(i = 0; lines[i]; i++){
+    //printf("looking at line: %s\n", lines[i]);
     //char *line = lines[i];
     char **line_info = split(lines[i], '=');
     if(round_found){
@@ -268,11 +276,13 @@ char** get_targets(char* option_code){
             if(num_targets_found){
               for (int j = 0; j < target_count && lines[i]; j++, i++){
                 line_info = split(lines[i], '=');
+                printf("lines[%d] = %s\n", i, lines[i]);
+                if(lines[i][0] == '\0' || lines[i][0] == '\n') continue;
                 targets[j] = calloc(sizeof(char), strlen(line_info[1]) + 1);
                 strcpy(targets[j], line_info[1]);
                 free_arr(line_info);
               }
-              printf("\t\tfinal position is set to null\n");
+              // printf("\t\tfinal position is set to null\n");
               targets[target_count] = NULL;
               break;
             }else if (strcmp(line_info[0], "NUM_TARGETS")==0){
@@ -1086,13 +1096,13 @@ int get_attr_val(char *player_name, char *attr_name){
   free_arr(player_lines);
   free(player_attr);
   free(player_file);
-  printf("Could not find \"%s\"\n", attr_name);
+  printf("Could not find \"%s\" in player \"%s\"\n", attr_name, player_name);
   abort();
   return -100;
 }
 
 char* get_prompt_text(char *player_name, char *prompt_code){
-  char* prompt_text = malloc(sizeof(char)*200);
+  char* prompt_text = calloc(sizeof(char), 2048);
   char* prompt_info_filename = malloc(sizeof(char)*50);
   char** search_key = split(prompt_code, ':');
   sprintf(prompt_info_filename, "prompt_%d_info.txt", search_key[1]);

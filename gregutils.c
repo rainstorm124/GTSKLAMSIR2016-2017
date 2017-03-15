@@ -2,6 +2,25 @@
 #include <time.h>
 
 char* read_text(char *filename){
+  FILE *fp = fopen(filename, "r");
+  char c;
+  int num = 0;
+  while((c=fgetc(fp)) != EOF){
+    num++;
+  }
+  fseek(fp, 0, SEEK_SET);
+  char *total = calloc(sizeof(char), num + 1);
+  int i = 0;
+  while((c=fgetc(fp)) != EOF){
+    total[i] = c;
+    i++;
+  }
+  total[i] = '\0';
+  fclose(fp);
+  return total;
+}
+
+/*char* read_text(char *filename){
 	FILE *fp = fopen(filename, "r");
 	if(!fp){
 		printf("File \"%s\" not found\n", filename);
@@ -9,13 +28,14 @@ char* read_text(char *filename){
 	}	
 	fseek(fp, 0, SEEK_END);
 	size_t length = ftell(fp);
+  printf("length = %d\n", length);
 	fseek(fp, 0, SEEK_SET);
 	char *data = calloc(sizeof(char), (length + 1));
 	fread(data, sizeof(char), length, fp);
 	fclose(fp);
-	data[length] = '\0';
+  data[length] = '\0';
 	return data;
-}
+}*/
 
 char** split(char *src, char delimiter){
 	int element_count = 1;
@@ -23,14 +43,15 @@ char** split(char *src, char delimiter){
 		if(src[i] != delimiter)continue;
     if(src[i+1] != '\0' && src[i+1] != delimiter) element_count++;
 	}
-	char **arr = malloc(sizeof(char*) * (element_count + 1));
+	char **arr = calloc(sizeof(char*), (element_count + 1));
 	for(int i = 0, index = 0; i < element_count; i++){
 		int word_length = 0;
 		while(src[index + word_length] && src[index + word_length] != delimiter) word_length++;
-		arr[i] = malloc(sizeof(char) * (word_length + 1));
-		for(int j = 0; j < word_length; j++){
-			arr[i][j] = src[index + j];
-		}
+		arr[i] = calloc(sizeof(char), (word_length + 1));
+		memcpy(arr[i], src+index, word_length);
+    //for(int j = 0; j < word_length; j++){
+		//	arr[i][j] = src[index + j];
+		//}
 		arr[i][word_length] = '\0';
 		index += word_length;
     // skip all delimiters

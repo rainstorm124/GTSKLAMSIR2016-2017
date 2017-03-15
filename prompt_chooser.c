@@ -320,6 +320,7 @@ int get_prompt_num_IM(char *player_name, int round){
 int get_prompt_num_STA(char *player_name, int round){
   int yez_pow = get_attr_val(get_player("YEZ"), "POW");
   int yag_sus = get_attr_val(get_player("YAG"), "SUS");
+  printf("checking fear from STA chooser\n");
   int player_fear = get_attr_val(player_name, "FEAR");
   int player_r3a2 = strcmp(get_choice(player_name, 3), "1:2");
   int player_r3a3 = strcmp(get_choice(player_name, 3), "1:3");
