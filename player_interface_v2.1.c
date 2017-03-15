@@ -1,7 +1,7 @@
 /*
- * player_interface_v1.c
+ * player_interface_v2.1.c
  *
- *  Created on: Mar 8, 2017
+ *  Created on: Mar 15, 2017
  *      Author: rcb
  */
 
@@ -12,12 +12,15 @@
 #include "gregutils.h"
 
 int main(void){
+
+	int round = get_round();
+
 	//HTML header
 	printf("Content-type: text/html\n\n");
 	printf("<html><head><title>");
 	printf("WELCOME TO THE GULAG\n");
 	printf("</title>");
-	
+
 	//CSS Stylesheet.
 	printf("<style>");
 	printf("#header_and_prompt {position:absolute;width:1230px;height:200px;padding:2px;}");
@@ -27,12 +30,12 @@ int main(void){
 	printf("#playerattributes {position:relative;width:1230px;height:200px;float:left;}");
 	printf("#choiceform #submitbutton(margin-left:120px;margin_top:5px;width:90px;}");
 	printf("</style>");
-	
+
 	//Javascript-based Menu
 	printf("<script>");
 	printf("function prompt() { document.getElementbyId(\"prompt\").style.display=\"block\"; document.getElementbyId(\"attr\").style.display=\"none\"; document.getElementbyId(\"history\").style.display=\"none\";}");
 	printf("function attr() { document.getElementbyId(\"attr\").style.display=\"block\"; document.getElementbyId(\"prompt\").style.display=\"none\";document.getElementbyId(\"history\").style.display=\"none\";}");
-	printf("function history() { document.getElementbyId(\"history\").style.display=\"block\"; document.getElementbyId(\"prompt\").style.display=\"none\";document.getElementbyId(\"attr\").style.display=\"none\";")
+	printf("function history() { document.getElementbyId(\"history\").style.display=\"block\"; document.getElementbyId(\"prompt\").style.display=\"none\";document.getElementbyId(\"attr\").style.display=\"none\";");
 	printf("</script>");
 	//end of head
 	printf("</head>");
@@ -52,7 +55,7 @@ int main(void){
 	sprintf(player_attributes_filename, "%s_attributes.txt", user);
 
 	//Reads them and processes them
-	char *player_attributes = read(player_attributes_filename);
+	char *player_attributes = read_text(player_attributes_filename);
 	char **split_attributes = split(player_attributes, '/n');
 
 	char *prompt_code = get_prompt(user, round);
@@ -64,26 +67,30 @@ int main(void){
 		prompt_choices_texts[i] = malloc(sizeof(char) * 100);
 		strcpy(prompt_choices_texts[i],get_option_texts_given_codes(prompt_choices[i]));
 	}
-	char **pre_prompt_code = split(prompt_code);
-	
-	char *round_HTML_setup = "<input type=\"hidden\" name=\"round\" id=\"round\" value=\"%s\">", pre_prompt_code[1]);
-	char *prompt_HTML_setup = "<input type=\"hidden\" name=\"prompt\" id=\"prompt\" value=\"%s\">", pre_prompt_code[2]);
-	char *user_HTML_setup = "<input type=\"hidden\" name=\"name\" id=\"name\" value=\"%s\">", pre_prompt_code[0]);
+	char **pre_prompt_code = split(prompt_code, ';');
+
+	char *round_HTML_setup = malloc(sizeof(char)*30);
+	char *prompt_HTML_setup = malloc(sizeof(char)*30);
+	char *user_HTML_setup = malloc(sizeof(char)*30);
+
+	sprintf(round_HTML_setup,"<input type=\"hidden\" name=\"round\" id=\"round\" value=\"%s\">", pre_prompt_code[1]);
+	sprintf(prompt_HTML_setup = "<input type=\"hidden\" name=\"prompt\" id=\"prompt\" value=\"%s\">", pre_prompt_code[2]);
+	sprintf(user_HTML_setup = "<input type=\"hidden\" name=\"name\" id=\"name\" value=\"%s\">", pre_prompt_code[0]);
 
 	printf("<body> <button onclick=\"prompt();\"> Prompt </button>"
 			"<button onclick=\"attr();\"> Attributes </button>"
 			"<button onclick=\"history();\"> Choice History </button>"
 			"<div id = \"prompt\">"
-			"<div id=\"header_and_prompt\">" 
+			"<div id=\"header_and_prompt\">"
 			"<h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
 	printf("<div id=\"choice_left\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[0]);
 	printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
-			"%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"1\">" 
+			"%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"1\">"
 			"<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\"> <\form> <\center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
 	printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
 	printf("<div id=\"choice_center\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[0]);
 	printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
-			"%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"2\">" 
+			"%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"2\">"
 			"<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\"> <\form> <\center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
 	printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
 	printf("<div id=\"choice_right\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[0]);
@@ -104,20 +111,20 @@ int main(void){
 	printf("<div id = \"history\" style=\"display:none;\">");
 	printf("<center><h1>Choice History</h1>");
 	printf("<table><tr><th>Round Number</th><th>Prompt</th><th>Choice</th></tr>");
-	
+
 	//Open and process player choice file.
 	sprintf(player_choices_filename, "%s_choices.txt", user);
 
 	char *player_choices = read(player_choices_filename);
 	char **split_choices = split(player_choices, '/n');
-	
+
 	for (int i = 0; split_choices[i]; i++){
 		char **choices = split(split_attributes, ':');
 		printf("<tr><td>%s</td><td>%s</td><td>%s</td></tr>", choices[1], choices[2], choices[3]);
-	)
+	}
 	printf("</table></center></div>");
 	printf("</body> </html>");
-	
+
 	free(text_length);
 	free(postdata);
 	free(user);
