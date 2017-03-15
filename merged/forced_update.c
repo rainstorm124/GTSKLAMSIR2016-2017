@@ -39,6 +39,5 @@ int main(void){
 			"%s"
 			"<input type=\"submit\" name = \"submitbutton\" id=\"submitbutton\"> </form>", user_HTML_setup);
 		printf("</body></html>");
-		increment_round();
 	}
 }

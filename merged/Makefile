@@ -1,12 +1,12 @@
 CC=gcc
-CFLAGS=-std=gnu99
+CFLAGS=-std=gnu99 -g
 #tell the linker to look for libraries in the current directory
 LDFLAGS=-L.
 #tell the linker which libraries to use
-LDLIBS=-lgreg -lcrypt
+LDLIBS=-lgreg -lcrypt -g
 LIBG_OBJECTS=gregutils.o prompt.o prompt_chooser.o zoinka.o
 
-all: mainpage.cgi account.cgi libgreg.a createaccount.cgi player_interface.cgi player_choice.cgi forced_update.cgi
+all: mainpage.cgi account.cgi libgreg.a createaccount.cgi player_interface.cgi player_choice.cgi forced_update.cgi setup.exe
 
 libgreg.a: $(LIBG_OBJECTS)
 	ar rcs $@ $^
@@ -27,10 +27,10 @@ createaccount.cgi: createaccount.o libgreg.a
 	$(CC) $(LDFLAGS) -o createaccount.cgi createaccount.o $(LDLIBS)
 	
 player_interface.cgi: player_interface.o libgreg.a
-	$(CC) $(LDFLAGS) -o rain.cgi player_interface.o $(LDLIBS)
+	$(CC) $(LDFLAGS) -o player_interface.cgi player_interface.o $(LDLIBS)
 
 clean:
 	rm *.o *.cgi *.a *.exe
 
 setup.exe:setup.o gregutils.o linked_list.o prompt.o prompt_chooser.o
-	$(CC) setup.o gregutils.o linked_list.o prompt.o prompt_chooser.o -o setup.exe
+	$(CC) $(LDFLAGS) setup.o gregutils.o linked_list.o prompt.o prompt_chooser.o -o setup.exe $(LDLIBS)

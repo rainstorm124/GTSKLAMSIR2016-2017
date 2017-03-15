@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 const extern int character_type, max_rounds;
 bool add_update_to_queue(char* option_code);
 int count_players_chosen(char *fp);

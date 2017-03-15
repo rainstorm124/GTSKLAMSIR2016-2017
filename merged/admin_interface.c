@@ -64,8 +64,7 @@ int main(void){
 	char **prompt_choices = get_options(prompt_code);
 	char *prompt_text = get_prompt_text(user, prompt_code);
 	char **prompt_choices_texts = malloc(sizeof(char*) * 3);
-	for(int i = 0; i<3; i++)
-	{
+	for(int i = 0; i<3; i++) {
 		prompt_choices_texts[i] = malloc(sizeof(char) * 100);
 		strcpy(prompt_choices_texts[i],get_option_texts_given_codes(prompt_choices[i]));
 	}

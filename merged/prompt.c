@@ -1174,7 +1174,7 @@ char* get_prompt_text(char *player_name, char *prompt_code){
 
 char* get_option_texts_given_codes(char* option_code_single){
   char* option_text = calloc(sizeof(char), 1000);
-  char** search_key = split(option_code_single, '\n');
+  char** search_key = split(option_code_single, ':');
   char* prompt_info_filename = calloc(sizeof(char), 50);
   sprintf(prompt_info_filename, "prompt_%s_info.txt", search_key[1]);
   char *info = read_text(prompt_info_filename);
@@ -1208,7 +1208,6 @@ char* get_option_texts_given_codes(char* option_code_single){
     }
     free_arr(split_line);
   }
-  free(prompt_info_filename);
   free(info);
   free_arr(search_key);
   free_arr(lines);

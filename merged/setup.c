@@ -5,9 +5,10 @@
 #include <sys/stat.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <windows.h>
 #include <time.h>
 #include "prompt.h"
+#include <stdint.h>
+#include <stddef.h>
 
 #define MINIMUM_PLAYERS 60
 /*
@@ -119,7 +120,11 @@ void initialize(char *student_file){
 		sprintf(dir, "./players/");
 		struct stat st = {0};
 		if (stat(dir, &st) == -1) {
+      #ifdef WINDOWS
 			mkdir(dir);
+      #else
+        mkdir(dir, ~0);
+      #endif
 		}
 		char **character_attirbute_names;
 		if(strcmp(((player_type*)node->data)->type, "STAKW") == 0){

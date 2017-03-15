@@ -1,4 +1,4 @@
-//#include "zoinka.h"
+#include "zoinka.h"
 #include <stdio.h>
 #include <strings.h>
 #include "prompt.h"
@@ -28,7 +28,7 @@ int main(void){
 	sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"name\" id=\"name\" value=\"%s\">", split_return[2]);
 
 	if (count_players_chosen("update_file.txt") == true){
-		printf("Content-type: text/html\n\n");
+		print_header();
 		printf("<html><head><title>");
 		printf("WELCOME TO THE GULAG\n");
 		printf("</title>");
@@ -37,10 +37,9 @@ int main(void){
 			"%s"
 			"<input type=\"submit\" name = \"submitbutton\" id=\"submitbutton\"> </form>", user_HTML_setup);
 		printf("</body></html>");
-		increment_round();
-	}
-	else {
-		printf("Content-type: text/html\n\n");
+		set_round(get_round()+1);
+	} else {
+		print_header();
 		printf("<html><head><title>");
 		printf("WELCOME TO THE GULAG\n");
 		printf("</title>");
@@ -83,7 +82,7 @@ int main(void){
 		char *player_choices_filename = malloc(sizeof(char) * 1024 * 1024);
 		sprintf(player_choices_filename, "players/%s_choices.txt", character_name);
 
-		char *player_choices = read(player_choices_filename);
+		char *player_choices = read_text(player_choices_filename);
 		char **split_choices = split(player_choices, '\n');
 
 		for (int i = 0; split_choices[i]; i++){

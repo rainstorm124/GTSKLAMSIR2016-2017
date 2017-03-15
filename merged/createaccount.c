@@ -9,9 +9,9 @@ int main(int argc, char **argv){
   print_header();
   /// MAKE SURE THAT passwords.txt is WORLD WRITEABLE!
   // setup code
-  char *user = calloc(1024 * 1024, sizeof(char));
-  char *pass = calloc(1024 * 1024, sizeof(char));
-  char *key = calloc(1024 * 1024, sizeof(char));
+  char *user = calloc(8180, sizeof(char));
+  char *pass = calloc(8180, sizeof(char));
+  char *key = calloc(8180, sizeof(char));
 
   char *len_ = getenv("CONTENT_LENGTH");
   long int len = strtol(len_, NULL, 10);
@@ -28,7 +28,7 @@ int main(int argc, char **argv){
   char **studarr = split(students, '\n');
   bool user_found = false;
   if(!studarr[0]){
-    puts("<html><head><title>ERROR 500 NO STUDENTS.TXT</title></head><body><h1>List of permissible usernames not found."
+    puts("\n<html><head><title>ERROR 500 NO STUDENTS.TXT</title></head><body><h1>List of permissible usernames not found."
          "Contact your teacher or sysadmin for help.</h1>"
 		     "<p>Click <a href='/greg/createaccount.html'>here</a> to return to the account creation page</p></body></html>");
     exit(0);
