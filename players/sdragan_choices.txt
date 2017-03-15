@@ -1,3 +1,0 @@
-sdragan:1:1:2
-sdragan:2:3:2
-sdragan:3:1:1

@@ -1,6 +1,0 @@
-Bernarda Henline:1:1:1
-Bernarda Henline:2:3:1
-Bernarda Henline:3:3:3
-Bernarda Henline:4:1:2
-Bernarda Henline:5:3:3
-Bernarda Henline:6:1:1

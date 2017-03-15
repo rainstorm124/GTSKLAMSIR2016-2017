@@ -1,6 +1,0 @@
-Albina Luebbert:1:1:2
-Albina Luebbert:2:3:2
-Albina Luebbert:3:3:1
-Albina Luebbert:4:1:1
-Albina Luebbert:5:3:2
-Albina Luebbert:6:1:2

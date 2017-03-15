@@ -1,6 +1,0 @@
-Avery Vanegas:1:1:2
-Avery Vanegas:2:1:1
-Avery Vanegas:3:3:1
-Avery Vanegas:4:4:2
-Avery Vanegas:5:4:1
-Avery Vanegas:6:1:1

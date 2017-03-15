@@ -1,5 +1,0 @@
-Gloria Mcfee:1:1:3
-Gloria Mcfee:2:1:2
-Gloria Mcfee:3:3:3
-Gloria Mcfee:4:1:3
-Gloria Mcfee:5:2:3

@@ -1,5 +1,0 @@
-Wilburn Foret:1:1:2
-Wilburn Foret:2:3:1
-Wilburn Foret:3:3:1
-Wilburn Foret:4:3:2
-Wilburn Foret:5:3:1

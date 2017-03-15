@@ -1,6 +1,0 @@
-Wilfred Lachapelle:1:1:3
-Wilfred Lachapelle:2:1:1
-Wilfred Lachapelle:3:3:1
-Wilfred Lachapelle:4:1:2
-Wilfred Lachapelle:5:2:3
-Wilfred Lachapelle:6:1:1

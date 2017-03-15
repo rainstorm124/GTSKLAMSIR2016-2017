@@ -1,3 +1,0 @@
-tdemastri:1:1:2
-tdemastri:2:3:3
-tdemastri:3:3:1

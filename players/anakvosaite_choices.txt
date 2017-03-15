@@ -1,2 +1,0 @@
-anakvosaite:1:1:3
-anakvosaite:2:1:2

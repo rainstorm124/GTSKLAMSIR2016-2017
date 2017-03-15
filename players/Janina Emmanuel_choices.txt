@@ -1,6 +1,0 @@
-Janina Emmanuel:1:1:1
-Janina Emmanuel:2:2:1
-Janina Emmanuel:3:2:1
-Janina Emmanuel:4:3:1
-Janina Emmanuel:5:2:3
-Janina Emmanuel:6:1:2

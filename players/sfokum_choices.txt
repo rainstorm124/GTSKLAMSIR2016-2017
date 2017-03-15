@@ -1,3 +1,0 @@
-sfokum:1:1:3
-sfokum:2:1:1
-sfokum:3:3:3

@@ -1,3 +1,0 @@
-lbeers:1:1:3
-lbeers:2:1:1
-lbeers:3:3:1

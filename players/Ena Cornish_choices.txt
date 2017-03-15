@@ -1,6 +1,0 @@
-Ena Cornish:1:1:3
-Ena Cornish:2:3:3
-Ena Cornish:3:3:2
-Ena Cornish:4:1:3
-Ena Cornish:5:3:3
-Ena Cornish:6:1:3

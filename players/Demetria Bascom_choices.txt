@@ -1,5 +1,0 @@
-Demetria Bascom:1:1:2
-Demetria Bascom:2:3:1
-Demetria Bascom:3:3:1
-Demetria Bascom:4:1:1
-Demetria Bascom:5:3:3

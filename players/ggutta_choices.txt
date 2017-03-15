@@ -1,2 +1,0 @@
-ggutta:1:1:2
-ggutta:2:3:2

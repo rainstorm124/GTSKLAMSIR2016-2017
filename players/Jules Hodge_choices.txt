@@ -1,6 +1,0 @@
-Jules Hodge:1:1:1
-Jules Hodge:2:2:1
-Jules Hodge:3:3:3
-Jules Hodge:4:2:1
-Jules Hodge:5:3:3
-Jules Hodge:6:1:2

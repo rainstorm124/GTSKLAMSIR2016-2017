@@ -1,5 +1,0 @@
-Ingeborg Trojacek:1:1:2
-Ingeborg Trojacek:2:3:3
-Ingeborg Trojacek:3:3:2
-Ingeborg Trojacek:4:1:1
-Ingeborg Trojacek:5:2:3

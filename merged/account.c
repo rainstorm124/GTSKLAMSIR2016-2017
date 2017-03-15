@@ -47,7 +47,7 @@ int main(void) {
         printf("<html><head><script type=\"text/javascript\">"
                "function loaded(e){ document.forms[0].submit.click();}"
                "</script></head><body onload=\"loaded();\"><h1>Loading..."
-			         "</h1><br><form name='user' id='user' action='admin_interface_v1.cgi' "
+			         "</h1><br><form name='user' id='user' action='admin_interface.cgi' "
 			         "method='POST'><input type='hidden' name='user'"
                "value='%s'><input type='submit' name='submit' "
 			         "value='Submit'></form></body></html>",user);
@@ -55,7 +55,7 @@ int main(void) {
         printf("<html><head><script type=\"text/javascript\">"
                "function loaded(e){ document.forms[0].submit.click();}"
                "</script></head><body onload=\"loaded();\"><h1>Loading..."
-			         "</h1><br><form name='user' id='user' action='player_interface_v3.cgi' "
+			         "</h1><br><form name='user' id='user' action='player_interface.cgi' "
 			         "method='POST'><input type='hidden' name='user'"
                "value='%s'><input type='submit' name='submit' "
 			         "value='Submit'></form></body></html>",user);

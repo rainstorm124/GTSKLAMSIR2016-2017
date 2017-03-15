@@ -319,7 +319,7 @@ char** get_targets(char* option_code){
 bool attr_change_single(char *target, char *player_name){
   //printf("(in single) player = %s and target = %s\n", player_name, target);
   char *player_atr_filename = calloc(sizeof(char), 100);
-  sprintf(player_atr_filename, "players\\%s_attributes.txt", player_name);
+  sprintf(player_atr_filename, "players/%s_attributes.txt", player_name);
   char **targets_split = split(target, ' ');
   char **attributes; // names of attributes to be changed
   int *attribute_changes; // corresponding values to change attributes by
@@ -369,13 +369,16 @@ bool attr_change_single(char *target, char *player_name){
         break;
       }
       free_arr(old_attr_line);
+      old_attr_line = NULL;
     }
     if(attribute_found){
       int value = atoi(old_attr_line[1]);//We store the value
       value += attribute_changes[i2];//Add the change of the attribute
-      char str[10];
-      sprintf(str, "%d", value);
-      strcpy(old_attr_line[1], str);//And store it back into the string.
+      /// FIX: prevents memory corruption when value changes from '<digit>' to '<digit><digit>'.
+      free(old_attr_line[1]);
+      old_attr_line[1] = calloc(10, sizeof(char));
+      //write the changed attribute to the line
+      sprintf(old_attr_line[1], "%d", value);
     }else{ // attr expecting to be changed was not found in player's file
       printf("attribute \"%s\" is not %s\n", attributes[i2], player_atr_filename);
       printf("There is a typo!!!\n");
@@ -385,8 +388,8 @@ bool attr_change_single(char *target, char *player_name){
     sprintf(new_attr_line, "%s=%s", old_attr_line[0], old_attr_line[1]);//Puts the attribute equal to the value in string form again
     player_info[i3] = strdup(new_attr_line);
     
+    free_arr(old_attr_line);    
     free(new_attr_line);
-    free_arr(old_attr_line);
   }
 
   /* overwrite player attr file with new numbers */
@@ -747,7 +750,7 @@ bool attr_change_multiple(char *target, char *player_name){
     fclose(new_nav);
     // change player's attribute file
     char *player_attribute_filename = calloc(sizeof(char), 100);
-    sprintf(player_attribute_filename, "players\\%s_attributes.txt", player_name);
+    sprintf(player_attribute_filename, "players/%s_attributes.txt", player_name);
     char *attr_file_text = read_text(player_attribute_filename);
     char **attr_file_lines = split(attr_file_text, '\n');
     FILE *attribute_file = fopen(player_attribute_filename, "w");
@@ -801,7 +804,7 @@ bool attr_change_multiple(char *target, char *player_name){
     fclose(new_nav);
     // change player's attribute file
     char *player_attribute_filename = calloc(sizeof(char), 100);
-    sprintf(player_attribute_filename, "players\\%s_attributes.txt", yez_player_name);
+    sprintf(player_attribute_filename, "players/%s_attributes.txt", yez_player_name);
     char *attr_file_text = read_text(player_attribute_filename);
     char **attr_file_lines = split(attr_file_text, '\n');
     FILE *attribute_file = fopen(player_attribute_filename, "w");
@@ -854,7 +857,7 @@ bool attr_change_multiple(char *target, char *player_name){
     fclose(new_nav);
     // change player's attribute file
     char *player_attribute_filename = calloc(sizeof(char), 100);
-    sprintf(player_attribute_filename, "players\\%s_attributes.txt", yag_player_name);
+    sprintf(player_attribute_filename, "players/%s_attributes.txt", yag_player_name);
     char *attr_file_text = read_text(player_attribute_filename);
     char **attr_file_lines = split(attr_file_text, '\n');
     FILE *attribute_file = fopen(player_attribute_filename, "w");
@@ -1053,7 +1056,7 @@ bool do_option(char **targets, char * option_code){
 
   /* record choice in the choosing player's file*/
   char player_choices_filename[100];
-  sprintf(player_choices_filename, "players\\%s_choices.txt", player_name);
+  sprintf(player_choices_filename, "players/%s_choices.txt", player_name);
   FILE *fp1 = fopen(player_choices_filename, "a+");
   fprintf(fp1, "%s\n", option_code);
   fclose(fp1);
@@ -1085,7 +1088,7 @@ bool do_option(char **targets, char * option_code){
 
 char *get_choice(char *player_name, int round){
   char *file_name = malloc(sizeof(char) * 50);
-  sprintf(file_name, "players\\%s_choices.txt", player_name);
+  sprintf(file_name, "players/%s_choices.txt", player_name);
   char *player_choices = read_text(file_name);
   char **player_lines = split(player_choices, '\n');
   char *catch = calloc(sizeof(char), 100);
@@ -1108,7 +1111,7 @@ char *get_choice(char *player_name, int round){
 // returns -100 if no ATR was found
 int get_attr_val(char *player_name, char *attr_name){
   char *player_file = calloc(sizeof(char), 50);
-  sprintf(player_file, "players\\%s_attributes.txt", player_name);
+  sprintf(player_file, "players/%s_attributes.txt", player_name);
   char *player_attr = read_text(player_file);
   char **player_lines = split(player_attr,'\n');
   for(int i = 1; player_lines[i]; i++){ // starting at 1 to skip number of attrs

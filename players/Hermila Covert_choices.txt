@@ -1,6 +1,0 @@
-Hermila Covert:1:1:1
-Hermila Covert:2:2:2
-Hermila Covert:3:2:1
-Hermila Covert:4:3:1
-Hermila Covert:5:2:2
-Hermila Covert:6:1:3

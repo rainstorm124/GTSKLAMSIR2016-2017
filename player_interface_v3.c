@@ -60,7 +60,7 @@ int main(void){
 	//Prepares the player's files for reading
 	char *player_attributes_filename = malloc(sizeof(char) * 1024 * 1024);
 	char *player_choices_filename = malloc(sizeof(char) * 1024 * 1024);
-	sprintf(player_attributes_filename, "%s_attributes.txt", user);
+	sprintf(player_attributes_filename, "players/%s_attributes.txt", user);
 
 	//Reads them and processes them
 	char *player_attributes = read_text(player_attributes_filename);

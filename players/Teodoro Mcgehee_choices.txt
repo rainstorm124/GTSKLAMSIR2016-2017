@@ -1,6 +1,0 @@
-Teodoro Mcgehee:1:1:3
-Teodoro Mcgehee:2:1:1
-Teodoro Mcgehee:3:3:3
-Teodoro Mcgehee:4:4:3
-Teodoro Mcgehee:5:4:1
-Teodoro Mcgehee:6:1:3

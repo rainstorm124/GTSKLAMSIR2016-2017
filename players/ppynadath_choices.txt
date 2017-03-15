@@ -1,2 +1,0 @@
-ppynadath:1:1:2
-ppynadath:2:1:2
