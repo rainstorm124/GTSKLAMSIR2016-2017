@@ -22,4 +22,6 @@ int get_round(void);
 bool do_option(char**, char*);
 bool attr_change_single(char*, char*);
 bool attr_change_multiple(char*, char*);
+
+void set_round(int round);
 #endif

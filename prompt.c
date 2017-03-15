@@ -4,10 +4,6 @@
 #include <string.h>
 #include <time.h>
 
-
-// //Global variable, keep track in header file so that I can use it in interfaces.
-// int round = 1;
-
 int GMAIN(int argc, char **argv){
   printf("Avast is really dumb. Continue? (y/n): ");
   while(true){
@@ -22,8 +18,7 @@ int GMAIN(int argc, char **argv){
       continue;
     }
   }
-  
-  
+
   int games = 0;
   while(true){
     system("setup.exe -y");
@@ -68,11 +63,6 @@ int GMAIN(int argc, char **argv){
   }
   return 0;
 }
-
-// //Just for use in the interface files. nothing special - Rain
-// void increment_round(){
-  // round = round + 1;
-// }
 
 // only to be used for STA, YAG AND YEZ
 char* get_player(char *type){
@@ -1225,4 +1215,10 @@ int get_round(){
   //fread(&round, sizeof(int), 1, fp);
   fclose(fp);
   return round;
+}
+
+void set_round(int round){
+  FILE *fp = fopen("round.txt", "w");
+  fprintf(fp, "%d", round);
+  fclose(fp);
 }
