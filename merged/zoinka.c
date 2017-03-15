@@ -22,11 +22,11 @@ bool add_update_to_queue(char* input_code) {
 	if(fp = fopen("update_file.txt", "a+")){
 		fprintf(fp, "%s\n", input_code);
     int stak_votes = 0;
-    bool stak_vote_special = false;
-		bool YEZ_favor_special = false;
-		bool YEZ_cred_special = false;
-		bool YAG_favor_special = false;
-		bool YAG_cred_special = false;
+    bool stak_vote_specialP = false;
+		bool YEZ_favor_specialP = false;
+		bool YEZ_cred_specialP = false;
+		bool YAG_favor_specialP = false;
+		bool YAG_cred_specialP = false;
     
 		if(count_players_chosen("update_file.txt") == count_nav_lines() ){
 			char *raw_updates = read_text("update_file.txt");
@@ -39,35 +39,35 @@ bool add_update_to_queue(char* input_code) {
 					char **split_update_line = split(raw_updates_lines[i], ':');
           char *player = split_update_line[0];
           
-					if(is_player_type(player, "STAKW") && is_player_choice(player, 5, "2:2"){
-						stak_vote_special = true;
+					if(is_player_type(player, "STAKW") && is_player_choice(player, 5, "2:2")){
+						stak_vote_specialP = true;
 						strcpy(stakw_player_name[stak_votes], player);
 						strcpy(stakw_voters[stak_votes], raw_updates_lines[i]);
 						stak_votes++;
 					} else if(is_player_type(player, "YEZ") && is_player_choice(player, 5, "2:2")){
-						YEZ_favor_special = true;
+						YEZ_favor_specialP = true;
 					} else if(is_player_type(player, "YEZ") && is_player_choice(player, 5, "2:3")){
-						YEZ_cred_special = true;
+						YEZ_cred_specialP = true;
 					} else if(is_player_type(player, "YAG") && is_player_choice(player, 5, "2:2") ){
-						YAG_favor_special = true;
+						YAG_favor_specialP = true;
 					} else if(is_player_type(player, "YAG") && is_player_choice(player, 5, "2:3")){
-						YAG_cred_special = true;
+						YAG_cred_specialP = true;
 					}
           free_arr(split_update_line);
 				}
 				targets_for_updates = get_targets(raw_updates_lines[i]);
-				do_option(targets_for_updates, raw_update_lines[i]);
+				do_option(targets_for_updates, raw_updates_lines[i]);
 			}
 			
-			if(stak_vote_special)
-				stak_vote(stak_votes, stakw_player_name, stakw_voters);
-			else if(YEZ_favor_special)
+			if(stak_vote_specialP)
+				stak_vote_special(stak_votes, stakw_player_name, stakw_voters);
+			else if(YEZ_favor_specialP)
 				YEZ_favor_special();
-			else if(YEZ_cred_special)
+			else if(YEZ_cred_specialP)
 				YEZ_cred_special();
-			else if(YAG_favor_special)
+			else if(YAG_favor_specialP)
 				YAG_favor_special();
-			else if(YAG_cred_special)
+			else if(YAG_cred_specialP)
 				YAG_cred_special();
 			
 			complete = true;
@@ -90,7 +90,7 @@ bool add_update_to_queue(char* input_code) {
 FILE* z_lock_file;
 
 void lock(void){  
-  while (!(z_lock_file = fopen("lock_file.txt", "wx"));
+  while (!(z_lock_file = fopen("lock_file.txt", "wx")));
 }
 
 void unlock(void){
@@ -98,56 +98,51 @@ void unlock(void){
   unlink("lock_file.txt");
 }
 
+/// Force the round to advance and choose randomly for those who have not chosen.
 bool admin_override(){
 	bool updated = false;
 	lock();
-	if(FILE *fp = fopen("update_file.txt", "r")){
-		//First, push updates in file
-		char *raw_updates = malloc(sizeof(char) * 1024 * 1024);
-		raw_updates = read_text(fp);
-		char **raw_updates_lines
-		char *raw_updates = malloc(sizeof(char) *1024 * 1024);
-		raw_updates = read_text(fp);
-		char **raw_updates_lines = split(raw_updates, '\n');
-		char **targets_for_updates = malloc(sizeof(char*) * 1024 * 1024);
-		for (int i = 0; raw_updates_lines[i]; i++) {
-			targets_for_updates[i] = get_targets(raw_updates_lines[i]);
-			do_option(targets_for_updates[i], raw_update_lines[i]);
-		}
+  FILE *fp;
+  //First, push updates in file
+  char *raw_updates = read_text("update_file.txt");
+	char **raw_updates_lines = split(raw_updates, '\n');
+	char **targets_for_updates;
+	for (int i = 0; raw_updates_lines[i]; i++) {
+	  targets_for_updates = get_targets(raw_updates_lines[i]);
+		do_option(targets_for_updates, raw_updates_lines[i]);
+    free_arr(targets_for_updates);
+  }
 
-		fclose(fp);
-		//Clears update file
-		fp = fopen("update_file.txt", "w");
-		fclose(fp);
-		
-		//Now make random updates. Taken from Greg's prompt.c mainline and repurposed. :P
-		
-		char **players = calloc(sizeof(char*), 400);
-		char *nav_text = read_text("nav_file.txt");
-		char **nav_lines = split(nav_text, '\n');
-		int i = 0;
-		for(;nav_lines[i]; i++){
-		  if(nav_lines[i][0] == '\0') continue;
-		  char **nav_line = split(nav_lines[i], '=');
-		  if(!nav_line[0]) continue;
-		  players[i] = calloc(sizeof(char), 100);
-		  strcpy(players[i], nav_line[0]);
-		  free_arr(nav_line);
-		}
-		for(int j = 0; players[j]; j++){
-			char *prompt_code = get_prompt_code(players[j], get_round());
-			char **options = get_option_codes(prompt_code);
-			int option_count = 0;
-			while(options[option_count]) option_count++;
-			int random_option_choice = grandom(option_count);
-			char **targets = get_targets(options[random_option_choice]);
-			do_option(targets, options[random_option_choice]);
-			free(prompt_code);
-			free_arr(options);
-			free_arr(targets);
-		}
-		updated = true;
+  //Clears update file
+	fp = fopen("update_file.txt", "w");
+	fclose(fp);
+  
+	//Now make random updates. Taken from Greg's prompt.c mainline and repurposed. :P
+	char **players = calloc(sizeof(char*), 400);
+	char *nav_text = read_text("nav_file.txt");
+	char **nav_lines = split(nav_text, '\n');
+	int i = 0;
+	for(;nav_lines[i]; i++){
+	  if(nav_lines[i][0] == '\0') continue;
+	  char **nav_line = split(nav_lines[i], '=');
+	  if(!nav_line[0]) continue;
+	  players[i] = calloc(sizeof(char), 100);
+	  strcpy(players[i], nav_line[0]);
+	  free_arr(nav_line);
 	}
+	for(int j = 0; players[j]; j++){
+		char *prompt_code = get_prompt_code(players[j], get_round());
+		char **options = get_option_codes(prompt_code);
+		int option_count = 0;
+		while(options[option_count]) option_count++;
+		int random_option_choice = grandom(option_count);
+		char **targets = get_targets(options[random_option_choice]);
+		do_option(targets, options[random_option_choice]);
+		free(prompt_code);
+		free_arr(options);
+		free_arr(targets);
+	}
+	updated = true;
   unlock();
 	return updated;
 }
