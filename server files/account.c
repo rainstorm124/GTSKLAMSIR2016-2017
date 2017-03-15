@@ -28,7 +28,6 @@ int main(void) {
   sscanf(arr[0], "user=%s", user);
   sscanf(arr[1], "pass=%s", pass);
   
-  
   //printf("%s%c%c\n","Content-Type:text/html;charset=iso-8859-1",13,10);
   //puts("<html><head><TITLE>Account</TITLE></head>");
   //puts("<body><h3>Your account:</h3>");
@@ -43,15 +42,24 @@ int main(void) {
     //Post: ignore data, read from standard input (is the default for scanf): scanf("uname=%s&psw=%s", user, pass);
     //sscanf(data,"uname=%s psw=%s", user, pass);
 
-    // please hash the passwords when you actually implement this. -- Nick
     if(check_pass(user, pass, "passwords.txt"))
-      printf("<html><head><script type=\"text/javascript\">"
-             "function loaded(e){ document.forms[0].submit.click();}"
-			 "</script></head><body onload=\"loaded();\"><h1>Loading..."
-			 "</h1><br><form name='user' id='user' action='rain.cgi' "
-			 "method='POST'><input type='hidden' name='user'"
-             "value='%s'><input type='submit' name='submit' "
-			 "value='Submit'></form></body></html>",user);
+      if(strcmp(user, "klam") == 0){ // admin
+        printf("<html><head><script type=\"text/javascript\">"
+               "function loaded(e){ document.forms[0].submit.click();}"
+               "</script></head><body onload=\"loaded();\"><h1>Loading..."
+			         "</h1><br><form name='user' id='user' action='admin_interface_v1.cgi' "
+			         "method='POST'><input type='hidden' name='user'"
+               "value='%s'><input type='submit' name='submit' "
+			         "value='Submit'></form></body></html>",user);
+      }else{ // player
+        printf("<html><head><script type=\"text/javascript\">"
+               "function loaded(e){ document.forms[0].submit.click();}"
+               "</script></head><body onload=\"loaded();\"><h1>Loading..."
+			         "</h1><br><form name='user' id='user' action='player_interface_v2.1.cgi' "
+			         "method='POST'><input type='hidden' name='user'"
+               "value='%s'><input type='submit' name='submit' "
+			         "value='Submit'></form></body></html>",user);
+      }      
     else {
       printf("<p> Invalid username or password<br /><a href='/cgi-bin/greg/mainpage.cgi'>Homepage</a></p>");
     }

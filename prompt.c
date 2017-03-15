@@ -1212,7 +1212,6 @@ char* get_option_texts_given_codes(char* option_code_single){
 int get_round(){
   FILE *fp = fopen("round.txt", "rb");
   int round = fgetc(fp) - '0';
-  //fread(&round, sizeof(int), 1, fp);
   fclose(fp);
   return round;
 }

@@ -51,7 +51,7 @@ void print_type(void *ptr){
 int main(int argc, char **argv){
   if(argc > 1 && !strcmp(argv[1], "-y")) ask_prompt = 0;
   else ask_prompt = 1;
-	initialize("test_students.txt");
+	initialize("students.txt");
 	return 0;
 }
 
