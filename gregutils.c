@@ -1,17 +1,29 @@
+#define _XOPEN_SOURCE
+#define _XOPEN_SOURCE_EXTENDED
+#define _GNU_SOURCE
+#include <unistd.h>
 #include "gregutils.h"
 #include <time.h>
+#include <string.h>
+
 
 char* read_text(char *filename){
   FILE *fp = fopen(filename, "r");
+  if(!fp){
+		printf("File \"%s\" not found\n", filename);
+		return NULL;
+	}
   char c;
   int num = 0;
   while((c=fgetc(fp)) != EOF){
+    if(c == '\r') continue;
     num++;
   }
   fseek(fp, 0, SEEK_SET);
   char *total = calloc(sizeof(char), num + 1);
   int i = 0;
   while((c=fgetc(fp)) != EOF){
+    if(c == '\r') continue;
     total[i] = c;
     i++;
   }
@@ -90,4 +102,23 @@ char *crypt(char *pass, const char *b){
 char *hash_pw(char *pass){
 	const char *salt = "$6$eM6XDFpkQy0IWZOy$";
 	return strdup(crypt(pass, salt));
+}
+
+int check_pass(char *user, char *pass, char *pswd_file){
+	char *fulltext = read_text(pswd_file);
+	char **arr = split(fulltext, '\n');
+	int retval = 0;
+	for(int i = 0; arr[i]; i++){
+      char **line = split(arr[i], '=');
+	  if(strcmp(line[0], user)==0){
+		  char *hash = hash_pw(pass);
+		  retval = !strcmp(hash, line[1]);
+		  free(hash);
+	  }
+	  free_arr(line);
+	  break;
+    }
+	free_arr(arr);
+	free(fulltext);
+	return retval;
 }

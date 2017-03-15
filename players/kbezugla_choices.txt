@@ -1,0 +1,3 @@
+kbezugla:1:1:1
+kbezugla:2:2:3
+kbezugla:3:3:2

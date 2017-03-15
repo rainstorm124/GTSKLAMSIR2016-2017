@@ -1,0 +1,2 @@
+mkusoro:1:1:1
+mkusoro:2:2:2

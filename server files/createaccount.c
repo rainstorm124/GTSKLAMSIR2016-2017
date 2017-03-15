@@ -1,5 +1,6 @@
 #include "gregutils.h"
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 
 int is_valid_game_key(char *user, char *key);
@@ -20,19 +21,28 @@ int main(int argc, char **argv){
   char **arr = split(postdata, '&');
   sscanf(arr[0], "user=%s", user);
   sscanf(arr[1], "pass=%s", pass);
-  sscanf(arr[1], "key=%s", key);
+  sscanf(arr[2], "key=%s", key);
   
   //check if username is actually in the list of students (IMSA usernames)
   char *students = read_text("students.txt");
   char **studarr = split(students, '\n');
-  char **s;
-  for(s = studarr; *s; s++){
-	  if(!strcmp(*s, user)) break;
+  bool user_found = false;
+  if(!studarr[0]){
+    puts("<html><head><title>ERROR 500 NO STUDENTS.TXT</title></head><body><h1>List of permissible usernames not found."
+         "Contact your teacher or sysadmin for help.</h1>"
+		     "<p>Click <a href='/greg/createaccount.html'>here</a> to return to the account creation page</p></body></html>");
+    exit(0);
   }
-  if(!(*s)){
-	puts("<html><head><title>Bad Username</title></head><body><h1>This is not a permissible username."
+  for(int i = 0; studarr[i]; i++){
+	  if(strcmp(studarr[i], user) == 0){
+      user_found = true;
+      break;
+    }    
+  }
+  if(!user_found){
+    printf("<html><head><title>Bad Username</title></head><body><h1>\"%s\" is not a permissible username."
          "Try your IMSA username, or contact your teacher or sysadmin for help.</h1>"
-		 "<p>Click <a href='/greg/createaccount.html'>here</a> to return to the account creation page</p></body></html>");
+		     "<p>Click <a href='/greg/createaccount.html'>here</a> to return to the account creation page</p></body></html>", user);
     exit(0);
   }
   free_arr(studarr);
@@ -55,10 +65,10 @@ int main(int argc, char **argv){
   //frpwd:
   free(pwtext);
   
-  if(!is_valid_game_key(key)){
+  if(!is_valid_game_key(user, key)){
     printf("<html><head><title>Invalid Game Key</title></head><body><h1>\"%s\" is an invalid game key."
            "Ask your teacher or sysadmin for help.</h1>"
-           "<p>Click <a href='/greg/createaccount.html'>here</a> to return to the account creation page</p></body></html>");
+           "<p>Click <a href='/greg/createaccount.html'>here</a> to return to the account creation page</p></body></html>", key);
     exit(0);
   }
   

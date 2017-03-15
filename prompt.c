@@ -354,7 +354,7 @@ bool attr_change_single(char *target, char *player_name){
     printf("error in player file\n");
     abort();
   }
-  int num_player_atrs = atoi(player_info[0]);//and pulls the number of attributes that player has.
+  //int num_player_atrs = atoi(player_info[0]);//and pulls the number of attributes that player has.
   // loop through names of attributes to be changed
   for(int i2 = 0; attributes[i2]; i2++){
     bool attribute_found = false;
@@ -375,7 +375,7 @@ bool attr_change_single(char *target, char *player_name){
       value += attribute_changes[i2];//Add the change of the attribute
       char str[10];
       sprintf(str, "%d", value);
-      old_attr_line[1] = str;//And store it back into the string.
+      strcpy(old_attr_line[1], str);//And store it back into the string.
     }else{ // attr expecting to be changed was not found in player's file
       printf("attribute \"%s\" is not %s\n", attributes[i2], player_atr_filename);
       printf("There is a typo!!!\n");
@@ -386,7 +386,7 @@ bool attr_change_single(char *target, char *player_name){
     player_info[i3] = strdup(new_attr_line);
     
     free(new_attr_line);
-    //free_arr(old_attr_line);
+    free_arr(old_attr_line);
   }
 
   /* overwrite player attr file with new numbers */
@@ -1116,6 +1116,9 @@ int get_attr_val(char *player_name, char *attr_name){
     char **attr = split(player_lines[i], '=');
     if(strcmp(attr[0], attr_name) == 0){
       int a = atoi(attr[1]);
+      free_arr(player_lines);
+      free(player_attr);
+      free(player_file);
       free_arr(attr);
       return a;
     }
@@ -1133,12 +1136,12 @@ char* get_prompt_text(char *player_name, char *prompt_code){
   char* prompt_text = calloc(sizeof(char), 2048);
   char* prompt_info_filename = malloc(sizeof(char)*50);
   char** search_key = split(prompt_code, ':');
-  sprintf(prompt_info_filename, "prompt_%d_info.txt", search_key[1]);
+  sprintf(prompt_info_filename, "prompt_%s_info.txt", search_key[1]);
   char* info = read_text(prompt_info_filename);
   free(prompt_info_filename);
   char** info_lines = split(info, '\n');
   char* character_code_type = get_type(player_name);
-  bool round_found = false, type_found = false, prompt_found = false;
+  bool round_found = false, type_found = false;
   for(int i = 0; info_lines[i]; i++){
     char* line = info_lines[i];
     char** split_line = split(line, '=');
