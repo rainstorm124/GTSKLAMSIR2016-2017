@@ -120,7 +120,7 @@ void initialize(char *student_file){
 		sprintf(dir, "./players/");
 		struct stat st = {0};
 		if (stat(dir, &st) == -1) {
-      #ifdef WINDOWS
+      #ifdef WIN32
 			mkdir(dir);
       #else
         mkdir(dir, ~0);

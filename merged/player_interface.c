@@ -2,7 +2,7 @@
  * player_interface_v2.1.c
  *
  *  Created on: Mar 15, 2017
- *      Author: rcb
+ *      Author: rcb, greg, nick
  */
 
 
@@ -20,6 +20,8 @@ int main(void){
 	printf("<html><head><title>");
 	printf("WELCOME TO THE GULAG\n");
 	printf("</title>");
+  
+  printf("<!-- round = %d-->", round);
 
 	//CSS Stylesheet.
 	printf("<style>");
@@ -79,18 +81,25 @@ int main(void){
 	//The player isn't dead.
 	if(!player_dead && !player_gulag){
 		char *prompt_code = get_prompt_code(user, round);
+    printf("<!-- prompt_code = %s -->", prompt_code);
 		char **prompt_choices = get_option_codes(prompt_code);
 		char *prompt_text = get_prompt_text(user, prompt_code);
 		char **prompt_choices_texts = calloc(4, sizeof(char*));
-		for(int i = 0; i<3; i++) {
-			prompt_choices_texts[i] = malloc(sizeof(char) * 100);
-			strcpy(prompt_choices_texts[i],get_option_texts_given_codes(prompt_code));
+    
+    
+    int num_options = 0;
+		for(int i = 0; prompt_choices[i]; i++, num_options++) {
+      char *option_special = calloc(sizeof(char), 1024);
+      sprintf(option_special, "%s:%d", prompt_code, i + 1);
+			prompt_choices_texts[i] = malloc(sizeof(char) * 512);
+			strcpy(prompt_choices_texts[i],get_option_texts_given_codes(option_special));
+      free(option_special);
 		}
-		char **pre_prompt_code = split(prompt_code, ';');
+		char **pre_prompt_code = split(prompt_code, ':');
 
-		char *round_HTML_setup = calloc(sizeof(char), 128);
-		char *prompt_HTML_setup = calloc(sizeof(char), 128);
-		char *user_HTML_setup = calloc(sizeof(char), 128);
+		char *round_HTML_setup = calloc(sizeof(char), 512);
+		char *prompt_HTML_setup = calloc(sizeof(char), 512);
+		char *user_HTML_setup = calloc(sizeof(char), 512);
 
 		sprintf(round_HTML_setup,"<input type=\"hidden\" name=\"round\" id=\"round\" value=\"%s\">", pre_prompt_code[1]);
 		sprintf(prompt_HTML_setup, "<input type=\"hidden\" name=\"prompt\" id=\"prompt\" value=\"%s\">", pre_prompt_code[2]);
@@ -102,20 +111,47 @@ int main(void){
 				"<div id = \"prompt\">"
 				"<div id=\"header_and_prompt\">"
 				"<h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
-		printf("<div id=\"choice_left\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[0]);
-		printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
-				"%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"1\">"
-				"<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\"> </form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
-		printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
-		printf("<div id=\"choice_center\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[0]);
-		printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
-				"%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"2\">"
-				"<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\"> </form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
-		printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
-		printf("<div id=\"choice_right\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[0]);
-		printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\"> <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"3\">"
-				"%s %s %s <input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
-				"</form> </center> </div> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
+        
+    for(int i = 0; i < num_options; i++){
+      switch(i){
+      case 0:
+        printf("<div id=\"choice_left\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[i]);
+        printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\" method = \"post\">"
+            "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"1\">"
+            "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
+            "</form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
+        break;
+      case 1:
+        printf("<div id=\"choice_center\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[i]);
+        printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\" method = \"post\">"
+            "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"2\">"
+            "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
+            "</form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
+        break;
+      case 2:
+        printf("<div id=\"choice_right\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[i]);
+        printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\" method = \"post\">"
+            "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"3\">"
+            "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
+            "</form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
+        break;
+      }
+          
+      // printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
+      // printf("<div id=\"choice_center\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[1]);
+      // printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
+          // "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"2\">"
+          // "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
+          // "</form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
+          
+      // printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
+      // printf("<div id=\"choice_right\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[2]);
+      // printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
+          // "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"3\">"
+          // "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
+          // "</form> </center> </div> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
+    }
+        
 		printf("<div id = \"attr\" style=\"display:none;\"");
 		printf("<div id=\"playerattributes\"> <h1 style=\"color:black\"> <center> Player Attributes </center> </h1> <center> <table style=\"width:730px\">");
 		printf("<tr><th colspan=\"2\"> Attributes</th> <th> Values> </th> </tr>");

@@ -30,7 +30,7 @@ int main(void){
 	round++;
 	set_round(round);
 
-	if (count_players_chosen("update_file.txt") == true){
+	if (count_players_chosen("update_file.txt") == count_nav_lines()){
 		printf("<html><head><title>");
 		printf("WELCOME TO THE GULAG\n");
 		printf("</title>");

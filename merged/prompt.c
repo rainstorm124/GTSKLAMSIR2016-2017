@@ -19,7 +19,9 @@ int GMAIN(int argc, char **argv){
     }
   }
 
-  int games = 0;
+  
+  
+  /*int games = 0;
   while(true){
     system("setup.exe -y");
     srand(time(NULL));
@@ -60,7 +62,7 @@ int GMAIN(int argc, char **argv){
     free(nav_text);
     free_arr(nav_lines);
     free_arr(players);
-  }
+  }*/
   return 0;
 }
 
@@ -1157,7 +1159,7 @@ char* get_prompt_text(char *player_name, char *prompt_code){
           break;
         }
         free_arr(prompt_num_check);
-      }else if(strcmp(split_line[0], "CHARACTER_TYPE") ==0 && strcmp(split_line[1], search_key[0])==0){
+      }else if(strcmp(split_line[0], "CHARACTER_TYPE") ==0 && strcmp(split_line[1], character_code_type)==0){
         type_found = true;
       }
     }else if(strcmp(split_line[0], "ROUND") == 0 && strcmp(split_line[1], search_key[1])==0){
@@ -1180,6 +1182,7 @@ char* get_option_texts_given_codes(char* option_code_single){
   char *info = read_text(prompt_info_filename);
   free(prompt_info_filename);
   char **lines = split(info, '\n');
+  char *type = get_type(search_key[0]);
   bool round_found = false, player_found = false, prompt_found = false;
   for (int i = 0; lines[i]; i++){
     char** split_line = split(lines[i], '=');
@@ -1200,7 +1203,7 @@ char* get_option_texts_given_codes(char* option_code_single){
           }
           free_arr(prompt_num_check);
         }
-      }else if(strcmp(split_line[0], "CHARACTER_TYPE")==0 && strcmp(split_line[1], search_key[0])==0){
+      }else if(strcmp(split_line[0], "CHARACTER_TYPE")==0 && strcmp(split_line[1], type)==0){
         player_found=true;  
       }
     }else if(strcmp(split_line[0], "ROUND")==0 && strcmp(split_line[1], search_key[1])==0){
@@ -1211,6 +1214,7 @@ char* get_option_texts_given_codes(char* option_code_single){
   free(info);
   free_arr(search_key);
   free_arr(lines);
+  free(type);
   return option_text;
 }
 
