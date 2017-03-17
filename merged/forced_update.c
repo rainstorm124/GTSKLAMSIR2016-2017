@@ -18,26 +18,27 @@ int main(void){
 	long int text_len = strtol(text_length, NULL, 10);
 	char *postdata = malloc(text_len + 1);
 	fgets(postdata, text_len + 1, stdin);
-	char *choice = malloc(sizeof(char) * 1024 * 1024);
+	char choice[1024];
 	char **split_return = split(postdata, '&');
-	char *character_name = malloc(sizeof(char) * 1024);
+	char character_name[1024];
 	sscanf(split_return[2], "name=%s", character_name);
-	char *user_HTML_setup = malloc(sizeof(char)*30);
+	char user_HTML_setup[512];
 	sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"name\" id=\"name\" value=\"%s\">", split_return[2]);
 
 	admin_override();
-	int round = get_round();
-	round++;
-	set_round(round);
+	set_round(get_round() + 1);
 
 	if (count_players_chosen("update_file.txt") == count_nav_lines()){
-		printf("<html><head><title>");
-		printf("WELCOME TO THE GULAG\n");
-		printf("</title>");
-		printf("<body> <h1> All updates in this round made. Please press the button below to continue. </h1>");
-		printf("<form action = admin_interface.cgi>"
-			"%s"
-			"<input type=\"submit\" name = \"submitbutton\" id=\"submitbutton\"> </form>", user_HTML_setup);
+		printf("<html><head>\n<title>The Soviet Great Terror Simulation\n</title>\n");
+    printf("<script type=\"text/javascript\">function loaded(e){ document.forms[0].submit.click();}</script>\n</head>");
+		printf("<body onload=\"loaded();\"> <h1> Round forcefully advanced. Please press the button below to continue or wait 3 seconds. </h1>");
+		printf("<form action = admin_interface.cgi> %s <input type=\"submit\" name = \"submitbutton\" id=\"submitbutton\"> </form>", user_HTML_setup);
 		printf("</body></html>");
-	}
+	}else{
+    set_round(get_round() - 1);
+    printf("<html><head><title>ERROR?</title> </head>");
+		printf("<body> <h1> Warning: not everyone in this round has updated.  Press the button below to try again! </h1>");
+		printf("<form action = forced_update.cgi> %s <input type=\"submit\" name = \"submitbutton\" id=\"submitbutton\"> </form>", user_HTML_setup);
+		printf("</body></html>");
+  }
 }

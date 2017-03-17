@@ -49,8 +49,15 @@ char* read_text(char *filename){
 	return data;
 }*/
 
+size_t array_size(char **arr){
+  size_t len = 0;
+  for(;arr[len];len++);
+  return len;
+}
+
 char** split(char *src, char delimiter){
 	int element_count = 1;
+  if(!src || !src[0] || src[0] == delimiter) return calloc(1, sizeof(char*)); 
 	for(int i = 0; src[i]; i++){
 		if(src[i] != delimiter)continue;
     if(src[i+1] != '\0' && src[i+1] != delimiter) element_count++;
@@ -109,15 +116,16 @@ int check_pass(char *user, char *pass, char *pswd_file){
 	char **arr = split(fulltext, '\n');
 	int retval = 0;
 	for(int i = 0; arr[i]; i++){
-      char **line = split(arr[i], '=');
+    char **line = split(arr[i], '=');
 	  if(strcmp(line[0], user)==0){
 		  char *hash = hash_pw(pass);
 		  retval = !strcmp(hash, line[1]);
 		  free(hash);
+      free_arr(line);
+      break;
 	  }
 	  free_arr(line);
-	  break;
-    }
+  }
 	free_arr(arr);
 	free(fulltext);
 	return retval;

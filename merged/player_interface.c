@@ -18,7 +18,7 @@ int main(void){
 	//HTML header
   print_header();
 	printf("<html><head><title>");
-	printf("WELCOME TO THE GULAG\n");
+	printf("The Soviet Great Terror Simulation\n");
 	printf("</title>");
   
   printf("<!-- round = %d-->", round);
@@ -36,16 +36,15 @@ int main(void){
 	//Javascript-based Menu
 	printf("<script>");
 	
-	printf("function prompt() { document.getElementbyId(\"prompt\").style.display=\"block\";"
-		"document.getElementbyId(\"attr\").style.display=\"none\";"
-		"document.getElementbyId(\"history\").style.display=\"none\";}");
-	printf("function attr() { document.getElementbyId(\"attr\").style.display=\"block\";" 
-		"document.getElementbyId(\"prompt\").style.display=\"none\";"
-		"document.getElementbyId(\"history\").style.display=\"none\";}");
-	printf("function history() { document.getElementbyId(\"history\").style.display=\"block\";"
-		"document.getElementbyId(\"prompt\").style.display=\"none\";"
-		"document.getElementbyId(\"attr\").style.display=\"none\";");
-	printf("");
+	printf("function prompt() { document.getElementById(\"prompt\").style.display=\"block\";"
+		"document.getElementById(\"attr\").style.display=\"none\";"
+		"document.getElementById(\"history\").style.display=\"none\";}");
+	printf("function attr() { document.getElementById(\"attr\").style.display=\"block\";" 
+		"document.getElementById(\"prompt\").style.display=\"none\";"
+		"document.getElementById(\"history\").style.display=\"none\";}");
+	printf("function history() { document.getElementById(\"history\").style.display=\"block\";"
+		"document.getElementById(\"prompt\").style.display=\"none\";"
+    "document.getElementById(\"attr\").style.display=\"none\";}");
 	printf("</script>");
 	//end of head
 	printf("</head>");
@@ -105,57 +104,44 @@ int main(void){
 		sprintf(prompt_HTML_setup, "<input type=\"hidden\" name=\"prompt\" id=\"prompt\" value=\"%s\">", pre_prompt_code[2]);
 		sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"name\" id=\"name\" value=\"%s\">", pre_prompt_code[0]);
 
-		printf("<body> <button onclick=\"prompt();\"> Prompt </button>"
+		printf("<body background = \"/greg/background.png\">"
+        "<button onclick=\"prompt();\"> Prompt </button>"
 				"<button onclick=\"attr();\"> Attributes </button>"
 				"<button onclick=\"history();\"> Choice History </button>"
 				"<div id = \"prompt\">"
 				"<div id=\"header_and_prompt\">"
 				"<h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
-        
     for(int i = 0; i < num_options; i++){
       switch(i){
       case 0:
-        printf("<div id=\"choice_left\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[i]);
+        printf("<div id=\"choice_left\"> <h3 style=\"color:black\"> Option 1:<br><center> %s </center> </h3>", prompt_choices_texts[i]);
         printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\" method = \"post\">"
             "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"1\">"
             "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
             "</form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
         break;
       case 1:
-        printf("<div id=\"choice_center\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[i]);
+        printf("<div id=\"choice_center\"> <h3 style=\"color:black\"> Option 2:<br><center> %s </center> </h3>", prompt_choices_texts[i]);
         printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\" method = \"post\">"
             "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"2\">"
             "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
             "</form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
         break;
       case 2:
-        printf("<div id=\"choice_right\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[i]);
+        printf("<div id=\"choice_right\"> <h3 style=\"color:black\"> Option 3:<br><center> %s </center> </h3>", prompt_choices_texts[i]);
         printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\" method = \"post\">"
             "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"3\">"
             "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
             "</form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
         break;
       }
-          
-      // printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
-      // printf("<div id=\"choice_center\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[1]);
-      // printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
-          // "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"2\">"
-          // "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
-          // "</form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
-          
-      // printf("<body><div id=\"header_and_prompt\"> <h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
-      // printf("<div id=\"choice_right\"> <h1 style=\"color:black\"> <center> %s </center> </h1>", prompt_choices_texts[2]);
-      // printf("<center> <form id=\"choiceform\" action=\"player_choice.cgi\">"
-          // "%s %s %s <input type=\"hidden\" name=\"playerchoice\" id=\"playerchoice\" value=\"3\">"
-          // "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
-          // "</form> </center> </div> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup);
     }
         
-		printf("<div id = \"attr\" style=\"display:none;\"");
+		printf("<div id = \"attr\" style=\"display:none;\">");
 		printf("<div id=\"playerattributes\"> <h1 style=\"color:black\"> <center> Player Attributes </center> </h1> <center> <table style=\"width:730px\">");
-		printf("<tr><th colspan=\"2\"> Attributes</th> <th> Values> </th> </tr>");
+		printf("<tr><th colspan=\"2\"> Attributes</th> <th> Values </th> </tr>");
 		if(split_attributes[0]) for (int i = 0; split_attributes[i]; i++){
+      if(i==0)continue;
 			char **attributes = split(split_attributes[i], '=');
 			printf("<tr><td colspan=\"2\">%s</td><td>%s</td></tr>", attributes[0], attributes[1]);
 			free_arr(attributes);
@@ -204,10 +190,11 @@ int main(void){
 				"<div id = \"prompt\">"
 				"<div id=\"header_and_prompt\">"
 				"<h1 style=\"color:black \"> <center> You're dead. Sorry. </center> </h1> </div> </div>");
-		printf("<div id = \"attr\" style=\"display:none;\"");
+		printf("<div id = \"attr\" style=\"display:none;\">");
 		printf("<div id=\"playerattributes\"> <h1 style=\"color:black\"> <center> Player Attributes </center> </h1> <center> <table style=\"width:730px\">");
-		printf("<tr><th colspan=\"2\"> Attributes</th> <th> Values> </th> </tr>");
+		printf("<tr><th colspan=\"2\"> Attributes</th> <th> Values </th> </tr>");
 		if(split_attributes[0]) for (int i = 0; split_attributes[i]; i++){
+      if(i==0)continue;
 			char **attributes = split(split_attributes[i], '=');
 			printf("<tr><td colspan=\"2\">%s</td><td>%s</td></tr>", attributes[0], attributes[1]);
 			free_arr(attributes);
@@ -247,10 +234,11 @@ int main(void){
 				"<div id = \"prompt\">"
 				"<div id=\"header_and_prompt\">"
 				"<h1 style=\"color:black \"> <center> You're in the Gulag. Sorry. </center> </h1> </div> </div>");
-		printf("<div id = \"attr\" style=\"display:none;\"");
+		printf("<div id = \"attr\" style=\"display:none;\">");
 		printf("<div id=\"playerattributes\"> <h1 style=\"color:black\"> <center> Player Attributes </center> </h1> <center> <table style=\"width:730px\">");
-		printf("<tr><th colspan=\"2\"> Attributes</th> <th> Values> </th> </tr>");
+		printf("<tr><th colspan=\"2\"> Attributes</th> <th> Values </th> </tr>");
 		for (int i = 0; split_attributes[i]; i++) {
+      if(i==0)continue;
 			char **attributes = split(split_attributes[i], '=');
 			printf("<tr><td colspan=\"2\">%s</td><td>%s</td></tr>", attributes[0], attributes[1]);
 			free_arr(attributes);
@@ -259,7 +247,7 @@ int main(void){
 		printf("</div><center><h1>");
 		/// XXX FIXME BUGS for ()
 		printf("<div id = \"history\" style=\"display:none;\">");
-		printf("<center><h1>Choice History</h1>");
+		printf("<center><h1>Choice History (All players must have decided)</h1>");
 		printf("<table><tr><th>Round Number</th><th>Prompt</th><th>Choice</th></tr>");
 
 		//Open and process player choice file.

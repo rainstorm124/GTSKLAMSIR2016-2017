@@ -6,45 +6,48 @@
 
 int main(void){
   print_header();
+  fflush(stdout);
 	char *text_length = getenv("CONTENT_LENGTH");
 	long int text_len = strtol(text_length, NULL, 10);
-	char *postdata = malloc(text_len + 1);
+	char *postdata = calloc(text_len + 1, sizeof(char));
 	fgets(postdata, text_len + 1, stdin);
+  printf("<!DOCTYPE html>\n");
 	char *choice = calloc(sizeof(char), 1024);
 	char **split_return = split(postdata, '&');
+  //variable scanning
 	sscanf(split_return[3], "playerchoice=%s", choice);
-	char *round = calloc(sizeof(char), 1024);
+  char *round = calloc(sizeof(char), 1024);
 	char *prompt = calloc(sizeof(char), 1024);
 	char *player_name = calloc(sizeof(char), 1000);
 	sscanf(split_return[2], "name=%s", player_name);
 	sscanf(split_return[1], "prompt=%s", prompt);
 	sscanf(split_return[0], "round=%s", round);
-printf("<html><head><title>");
-		printf("WELCOME TO THE GULAG\n");
-		printf("</title><body>round=%s prompt=%s name=%s choice=%s</body>", round, prompt, player_name, choice);
-	char *full_code = calloc(sizeof(char), 2000);
+  
+  // printf("<!-- got data r='%s' p='%s' n='%s' c='%s'-->\n", round, prompt, player_name, choice);
+  // fflush(stdout);
+	// make full code
+  char *full_code = calloc(sizeof(char), 2000);
 	sprintf(full_code, "%s:%s:%s:%s", player_name, round, prompt, choice);
-	add_update_to_queue(full_code);
+	// printf("<!-- made full code '%s'-->\n", full_code);
+  // fflush(stdout);
+  add_update_to_queue(full_code);
   char *prompt_code = calloc(sizeof(char), 2000);
   sprintf(prompt_code, "%s:%s:%s", player_name, round, prompt);
   
 	char *user_HTML_setup = calloc(sizeof(char), 128);
 	sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"name\" id=\"name\" value=\"%s\">", split_return[2]);
 
+		printf("<html><head><title>The Soviet Great Terror Simulation</title>");
 	if (count_players_chosen("update_file.txt") == count_nav_lines()){
-		printf("<html><head><title>");
-		printf("WELCOME TO THE GULAG\n");
-		printf("</title>");
-		printf("<body> <h1> All choices in this round made. Please press the button below to continue. </h1>");
+    //printf("<body>round=%s prompt=%s name=%s choice=%s</body>", round, prompt, player_name, choice);
+		printf("<body background = \"/greg/background.png\"> <h1> All choices in this round made. Please press the button below to continue. </h1>");
 		printf("<form action = player_interface.cgi>"
 			"%s"
 			"<input type=\"submit\" name = \"submitbutton\" id=\"submitbutton\"> </form>", user_HTML_setup);
 		printf("</body></html>");
+    fflush(stdout);
 		set_round(get_round()+1);
 	} else {
-		printf("<html><head><title>");
-		printf("WELCOME TO THE GULAG\n");
-		printf("</title>");
 		printf("<style>");
 		printf("#header_and_prompt {"
 					"position:absolute;"
@@ -59,18 +62,26 @@ printf("<html><head><title>");
 					"height:400px;"
 					"float:left;}");
 		printf("</style>");
+    printf("<script>");
+ 		printf("function prompt() { document.getElementById(\"prompt\").style.display=\"block\"; document.getElementById(\"attr\").style.display=\"none\"; document.getElementById(\"history\").style.display=\"none\"; document.getElementById(\"players_chosen\").style.display=\"none\";}");
+	  printf("</script>");
 		printf("<script>");
-		printf("function prompt() { document.getElementbyId(\"prompt\").style.display=\"block\"; document.getElementbyId(\"attr\").style.display=\"none\"; document.getElementbyId(\"history\").style.display=\"none\";}");
-		printf("function attr() { document.getElementbyId(\"attr\").style.display=\"block\"; document.getElementbyId(\"prompt\").style.display=\"none\";document.getElementbyId(\"history\").style.display=\"none\";}");
-		printf("function history() { document.getElementbyId(\"history\").style.display=\"block\"; document.getElementbyId(\"prompt\").style.display=\"none\";document.getElementbyId(\"attr\").style.display=\"none\";");
+ 		printf("function attr() { document.getElementById(\"attr\").style.display=\"block\"; document.getElementById(\"prompt\").style.display=\"none\";document.getElementById(\"history\").style.display=\"none\"; document.getElementById(\"players_chosen\").style.display=\"none\";}");
 		printf("</script>");
-		printf("</head> <body background = \"/greg/background.png\"");
-		printf("<button onclick=\"prompt();\"> Prompt </button>"
-				"<button onclick=\"attr();\"> Attributes </button>"
-				"<button onclick=\"history();\"> Choice History </button>");
+		printf("<script>");
+ 		printf("function history() { document.getElementById(\"history\").style.display=\"block\"; document.getElementById(\"prompt\").style.display=\"none\";document.getElementById(\"attr\").style.display=\"none\"; document.getElementById(\"players_chosen\").style.display=\"none\";}");
+		printf("</script>");
+		printf("<script>");
+ 		printf("function players_chosen() { document.getElementById(\"players_chosen\").style.display=\"block\"; document.getElementById(\"prompt\").style.display=\"none\";document.getElementById(\"attr\").style.display=\"none\"; document.getElementById(\"history\").style.display=\"none\";}");
+ 		printf("</script>");
+		printf("</head> <body background = \"/greg/background.png\">");
+		printf("<button onclick=\"prompt()\"> Prompt </button>"
+				"<button onclick=\"attr()\"> Attributes </button>"
+				"<button onclick=\"history()\"> Choice History </button>"
+		    "<button onclick=\"players_chosen()\"> Players Chosen </button>");
 		printf("<div id=\"prompt\"> <!-- %s --> <h3>%s</h3> </div>", full_code, get_prompt_text(player_name, prompt_code));
 		printf("<div id=\"header_and_prompt\"> <h1> Your fate has been sealed. Please wait for your peers to decide theirs. </h1> </div></div>");
-		printf("<div id=\"attr\" style=\"display:none;\"");
+		printf("<div id=\"attr\" style=\"display:none;\">");
 		printf("<div id=\"playerattributes\">"
 				"<h1 style=\"color:black\"><center> Player Attributes </center></h1>"
 				"<center><table style=\"width:730px\"> <tr> <th colspan=\"2\">Attributes</th>"
@@ -93,6 +104,7 @@ printf("<html><head><title>");
 		}
 		printf("</table></center></div>");
 	  printf("</body> </html>");
+    fflush(stdout);
   }
   exit(0);
 }
