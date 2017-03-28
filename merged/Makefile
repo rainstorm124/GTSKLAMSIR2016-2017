@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-std=gnu99 -g
+CFLAGS=-std=gnu99 -g -Wall
 #tell the linker to look for libraries in the current directory
 LDFLAGS=-L.
 #tell the linker which libraries to use
