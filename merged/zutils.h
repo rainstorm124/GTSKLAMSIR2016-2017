@@ -1,5 +1,5 @@
-#ifndef _ZOINKA_H
-#define _ZOINKA_H
+#ifndef _ZUTILS_H
+#define _ZUTILS_H 1
 #include "gregutils.h"
 #include "prompt.h"
 #include "prompt_chooser.h"

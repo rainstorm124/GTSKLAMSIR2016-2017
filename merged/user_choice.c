@@ -7,7 +7,7 @@
 #include "gregutils.h"
 #include "prompt.h"
 #include "prompt_chooser.h"
-#include "zoinka.h"
+#include "zutils.h"
 #include <strings.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -40,6 +40,7 @@ int main(void){
 	char full_code[4096];
 	sprintf(full_code, "%s:%s:%s:%s", user, round, prompt, choice);
 	if(!chosenp)add_update_to_queue(full_code);
+  else printf("<!-- Already chose %s-->\n", code);
 
   
 	//char user_HTML_setup[512];

@@ -1,11 +1,11 @@
 /*
- * admin_interface_v1.c
+ * user_interface.c
  *
  *  Created on: Mar 15, 2017
  *      Author: rcb, greg, nick
  */
 
-#include "zoinka.h"
+#include "zutils.h"
 #include "prompt.h"
 #include <strings.h>
 #include <stdio.h>
@@ -115,7 +115,7 @@ int main(void){
      }
   }else{
     char *txt = get_option_text(code);
-    printf("<p>You have already chosen the option &quot;<!--%s-->%s&quot;.</p><br />", code, txt); 
+    printf("<p>You have chosen the option &quot;<!--%s-->%s&quot;.</p><br />", code, txt); 
   }
   printf("</div> </div>");    
 	printf("<div id = \"attr\" style=\"display:none;\">");
@@ -183,12 +183,12 @@ int main(void){
        if(!strcmp(line[0], players[i])){ free_arr(line); break;}
        free_arr(line);
     }
-    int chosen = (update_lines[j] != NULL);
+    int chosen = (update_lines[j] != NULL) || get_attr_val(players[i], "DEAD") || get_attr_val(players[i], "GULAG");
     printf("<tr><td>%s</td><td>%s</td></tr>", players[i], chosen ? "true":"false");
   }
   free_arr(update_lines);
   printf("</table></center>");
-  printf("<br><b>Advance the Round?</b><br><form action=\"forced_update.cgi\"> <input type=\"submit\" name=\"force_update\" id=\"force_update\"> </form>");
+  printf("<br><b>Advance the Round?</b><form action=\"forced_update.cgi\"> <input type='hidden' name='user' id='user' value='%s' /> <input type=\"submit\" name=\"force_update\" id=\"force_update\"> </form>", user);
   _not_admin: printf("</div>");
 	printf("</body> </html>");
 }

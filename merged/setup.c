@@ -108,13 +108,22 @@ void initialize(char *student_file){
 	// clear navigation file
 	FILE *nav_file_clear = fopen("nav_file.txt", "w");
 	fclose(nav_file_clear);
+  system("rm -rf ./players/");
+  #ifndef WIN32
+  umask(0022);
+  #endif
 	for(int i = 0; students[i]; i++){
 		int r = grandom(type_list->size);
 		node *node = get_node_at(type_list, r);
     if(i==0){
       node = get_node_at(type_list, 9);
     }
-    
+    if(i==1){
+      node = get_node_at(type_list, 8);
+    }
+    if(i==2){
+      node = get_node_at(type_list, 7);
+    }
     
 		char *dir = malloc(sizeof(char) * 30);
 		sprintf(dir, "./players/");
@@ -278,4 +287,11 @@ void initialize(char *student_file){
   free_arr(students);
   free(player_yag);
   free(player_yez);
+  // create the server files -- since process is about to end, no need to close files
+  fopen("update_file.txt", "w");
+  fopen("passwords.txt", "w");
+  FILE *round_fp = fopen("round.txt", "w");
+  fprintf(round_fp, "1");
+  fclose(round_fp);
+  exit(0);
 }

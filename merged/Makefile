@@ -4,10 +4,10 @@ CFLAGS=-std=gnu99 -g
 LDFLAGS=-L.
 #tell the linker which libraries to use
 LDLIBS=-lgreg -lcrypt -g -pthread
-LIBG_OBJECTS=gregutils.o prompt.o prompt_chooser.o zoinka.o
+LIBG_OBJECTS=gregutils.o prompt.o prompt_chooser.o zutils.o
 
 all: mainpage.cgi account.cgi libgreg.a createaccount.cgi\
-user_interface.cgi user_choice.cgi forced_update.cgi setup.exe
+user_interface.cgi user_choice.cgi forced_update.cgi setup.exe setup.cgi
 
 libgreg.a: $(LIBG_OBJECTS)
 	ar rcs $@ $^
@@ -32,6 +32,9 @@ user_interface.cgi: user_interface.o libgreg.a
 	
 user_choice.cgi: user_choice.o libgreg.a
 	$(CC) $(LDFLAGS) -o user_choice.cgi user_choice.o $(LDLIBS)
+	
+setup.cgi: setup_cgi.o libgreg.a
+	$(CC) $(LDFLAGS) -o setup.cgi setup_cgi.o $(LDLIBS)
 	
 clean:
 	rm *.o *.cgi *.a *.exe

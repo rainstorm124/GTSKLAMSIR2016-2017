@@ -1,12 +1,5 @@
 //A file for functions concerning updating, checking player chosen counts, etc.
-#ifdef __unix__
-#define _GNU_SOURCE
-#include <pthread.h>
-#define YIELD pthread_yield()
-#else
-#define YIELD
-#endif
-#include "zoinka.h"
+#include "zutils.h"
 int ZOINKA_main(int argc, char **argv){
 	return 0;
 }
@@ -22,82 +15,21 @@ int count_nav_lines(void){
 }
 
 bool add_update_to_queue(char* input_code) {
-	bool complete = false;
   lock();
   FILE *fp;
 	if(fp = fopen("update_file.txt", "a+")){
 		fprintf(fp, "%s\n", input_code);
-    int stak_votes = 0;
-    bool stak_vote_specialP = false;
-		bool YEZ_favor_specialP = false;
-		bool YEZ_cred_specialP = false;
-		bool YAG_favor_specialP = false;
-		bool YAG_cred_specialP = false;
-    
-		if(count_players_chosen("update_file.txt") == count_nav_lines() ){
-			char *raw_updates = read_text("update_file.txt");
-			char **raw_updates_lines = split(raw_updates, '\n');
-			char **targets_for_updates = calloc(sizeof(char*), 65500);
-			char **stakw_voters = calloc(sizeof(char*),100);
-			char **stakw_player_name = calloc(sizeof(char*), 100);
-			for (int i = 0; raw_updates_lines[i]; i++){
-				if(get_round()==5){
-					char **split_update_line = split(raw_updates_lines[i], ':');
-          char *player = split_update_line[0];
-          
-					if(is_player_type(player, "STAKW") && is_player_choice(player, 5, "2:2")){
-						stak_vote_specialP = true;
-						strcpy(stakw_player_name[stak_votes], player);
-						strcpy(stakw_voters[stak_votes], raw_updates_lines[i]);
-						stak_votes++;
-					} else if(is_player_type(player, "YEZ") && is_player_choice(player, 5, "2:2")){
-						YEZ_favor_specialP = true;
-					} else if(is_player_type(player, "YEZ") && is_player_choice(player, 5, "2:3")){
-						YEZ_cred_specialP = true;
-					} else if(is_player_type(player, "YAG") && is_player_choice(player, 5, "2:2") ){
-						YAG_favor_specialP = true;
-					} else if(is_player_type(player, "YAG") && is_player_choice(player, 5, "2:3")){
-						YAG_cred_specialP = true;
-					}
-          free_arr(split_update_line);
-				}
-				targets_for_updates = get_targets(raw_updates_lines[i]);
-				do_option(targets_for_updates, raw_updates_lines[i]);
-			}
-			
-			if(stak_vote_specialP)
-				stak_vote_special(stak_votes, stakw_player_name, stakw_voters);
-			else if(YEZ_favor_specialP)
-				YEZ_favor_special();
-			else if(YEZ_cred_specialP)
-				YEZ_cred_special();
-			else if(YAG_favor_specialP)
-				YAG_favor_special();
-			else if(YAG_cred_specialP)
-				YAG_cred_special();
-			
-			complete = true;
-			fclose(fp);
-			//Clears update file
-			fp = fopen("update_file.txt", "w");
-			fclose(fp);
-			free(raw_updates);
-			free_arr(raw_updates_lines);
-			free_arr(targets_for_updates);
-		}
-		unlock();
-		complete = true;
+    fclose(fp);
 	}
-	if(complete != true)
-		return false;
-	else
-		return complete;
+  unlock();
+  return false;
 }
 FILE* z_lock_file;
 
 void lock(void){  
-  while (!(z_lock_file = fopen("lock_file.txt", "wx")))YIELD;
+  while (!(z_lock_file = fopen("lock_file.txt", "wx")));
 }
+
 
 void unlock(void){
   fclose(z_lock_file);
@@ -113,13 +45,52 @@ bool admin_override(){
   char *raw_updates = read_text("update_file.txt");
 	char **raw_updates_lines = split(raw_updates, '\n');
 	char **targets_for_updates;
-	for (int i = 0; raw_updates_lines[i]; i++) {
+	
+  int stak_votes = 0;
+  bool stak_vote_specialP = false;
+	bool YEZ_favor_specialP = false;
+	bool YEZ_cred_specialP = false;
+	bool YAG_favor_specialP = false;
+	bool YAG_cred_specialP = false;
+	char **stakw_voters = calloc(sizeof(char*),100);
+	char **stakw_player_name = calloc(sizeof(char*), 100);
+  
+  for (int i = 0; raw_updates_lines[i]; i++) {
 	  targets_for_updates = get_targets(raw_updates_lines[i]);
 		do_option(targets_for_updates, raw_updates_lines[i]);
+    ///
+    if(get_round() == 5){
+      char **split_update_line = split(raw_updates_lines[i], ':');
+      char *player = split_update_line[0];
+      if(is_player_type(player, "STAKW") && is_player_choice(player, 5, "2:2")){
+        stak_vote_specialP = true;
+        strcpy(stakw_player_name[stak_votes], player);
+        strcpy(stakw_voters[stak_votes], raw_updates_lines[i]);
+        stak_votes++;
+      } else if(is_player_type(player, "YEZ") && is_player_choice(player, 5, "2:2")){
+        YEZ_favor_specialP = true;
+      } else if(is_player_type(player, "YEZ") && is_player_choice(player, 5, "2:3")){
+        YEZ_cred_specialP = true;
+      } else if(is_player_type(player, "YAG") && is_player_choice(player, 5, "2:2") ){
+        YAG_favor_specialP = true;
+      } else if(is_player_type(player, "YAG") && is_player_choice(player, 5, "2:3")){
+        YAG_cred_specialP = true;
+      }
+      free_arr(split_update_line);
+    }
     free_arr(targets_for_updates);
   }
-
-  //Clears update file
+  if(stak_vote_specialP)
+    stak_vote_special(stak_votes, stakw_player_name, stakw_voters);
+  else if(YEZ_favor_specialP)
+    YEZ_favor_special();
+  else if(YEZ_cred_specialP)
+    YEZ_cred_special();
+  else if(YAG_favor_specialP)
+    YAG_favor_special();
+  else if(YAG_cred_specialP)
+    YAG_cred_special();
+	//Clears update file
 	fp = fopen("update_file.txt", "w");
 	fclose(fp);
   
@@ -137,6 +108,7 @@ bool admin_override(){
 	  free_arr(nav_line);
 	}
 	for(int j = 0; players[j]; j++){
+    if(get_attr_val(players[j], "DEAD") || get_attr_val(players[j], "GULAG"))continue;
 		char *prompt_code = get_prompt_code(players[j], get_round());
 		char **options = get_option_codes(prompt_code);
 		int option_count = 0;
@@ -148,6 +120,7 @@ bool admin_override(){
 		free_arr(options);
 		free_arr(targets);
 	}
+  set_round(get_round()+1);
 	updated = true;
   unlock();
 	return updated;
