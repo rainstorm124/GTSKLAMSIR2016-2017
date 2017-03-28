@@ -24,8 +24,7 @@ int main(void){
   printf("<!DOCTYPE html>\n");
 	char **split_return = split(postdata, '&');
   //variable scanning
-	char choice[1024];
-  char round [1024];
+	char round [1024];
 	char prompt[1024];
 	char user[1024];
 	sscanf(split_return[3], "choice=%s", choice);
