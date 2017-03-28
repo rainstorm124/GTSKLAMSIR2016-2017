@@ -19,7 +19,9 @@ int GMAIN(int argc, char **argv){
     }
   }
 
-  int games = 0;
+  
+  
+  /*int games = 0;
   while(true){
     system("setup.exe -y");
     srand(time(NULL));
@@ -60,7 +62,7 @@ int GMAIN(int argc, char **argv){
     free(nav_text);
     free_arr(nav_lines);
     free_arr(players);
-  }
+  }*/
   return 0;
 }
 
@@ -260,7 +262,6 @@ char** get_targets(char* option_code){
   char **lines = split(info, '\n');
   char **targets = calloc(sizeof(char*), 100);
   bool round_found = false, char_found = false, prompt_found = false, option_found = false, num_targets_found = false;
-  int options = 0;
   int target_count = 0;
   int i;
   for(i = 0; lines[i]; i++){
@@ -624,7 +625,6 @@ bool attr_change_multiple(char *target, char *player_name){
     }
   }else if(strcmp(type, "ASSOCIATED_IM") == 0){ // good
     char *stakw = calloc(sizeof(char), 100);
-    int found = 0;
     // if the player is an NKVDO, then the ASSOCIATED_IM is the manager of the STAKW they are investigating
     char *check_type = get_type(player_name);
     if(strcmp(check_type, "NKVDO") == 0){
@@ -1135,7 +1135,7 @@ int get_attr_val(char *player_name, char *attr_name){
   return -100;
 }
 
-char* get_prompt_text(char *player_name, char *prompt_code){
+char* get_prompt_text(char *prompt_code){
   char* prompt_text = calloc(sizeof(char), 2048);
   char* prompt_info_filename = malloc(sizeof(char)*50);
   char** search_key = split(prompt_code, ':');
@@ -1143,7 +1143,8 @@ char* get_prompt_text(char *player_name, char *prompt_code){
   char* info = read_text(prompt_info_filename);
   free(prompt_info_filename);
   char** info_lines = split(info, '\n');
-  char* character_code_type = get_type(player_name);
+  //char* character_code_type = get_type(player_name);
+  char* character_code_type = get_type(search_key[0]);
   bool round_found = false, type_found = false;
   for(int i = 0; info_lines[i]; i++){
     char* line = info_lines[i];
@@ -1157,7 +1158,7 @@ char* get_prompt_text(char *player_name, char *prompt_code){
           break;
         }
         free_arr(prompt_num_check);
-      }else if(strcmp(split_line[0], "CHARACTER_TYPE") ==0 && strcmp(split_line[1], search_key[0])==0){
+      }else if(strcmp(split_line[0], "CHARACTER_TYPE") ==0 && strcmp(split_line[1], character_code_type)==0){
         type_found = true;
       }
     }else if(strcmp(split_line[0], "ROUND") == 0 && strcmp(split_line[1], search_key[1])==0){
@@ -1171,15 +1172,15 @@ char* get_prompt_text(char *player_name, char *prompt_code){
   free_arr(search_key);
   return prompt_text;
 }
-
-char* get_option_texts_given_codes(char* option_code_single){
+char* get_option_text(char* option_code_single){
   char* option_text = calloc(sizeof(char), 1000);
-  char** search_key = split(option_code_single, '\n');
+  char** search_key = split(option_code_single, ':');
   char* prompt_info_filename = calloc(sizeof(char), 50);
   sprintf(prompt_info_filename, "prompt_%s_info.txt", search_key[1]);
   char *info = read_text(prompt_info_filename);
   free(prompt_info_filename);
   char **lines = split(info, '\n');
+  char *type = get_type(search_key[0]);
   bool round_found = false, player_found = false, prompt_found = false;
   for (int i = 0; lines[i]; i++){
     char** split_line = split(lines[i], '=');
@@ -1200,7 +1201,7 @@ char* get_option_texts_given_codes(char* option_code_single){
           }
           free_arr(prompt_num_check);
         }
-      }else if(strcmp(split_line[0], "CHARACTER_TYPE")==0 && strcmp(split_line[1], search_key[0])==0){
+      }else if(strcmp(split_line[0], "CHARACTER_TYPE")==0 && strcmp(split_line[1], type)==0){
         player_found=true;  
       }
     }else if(strcmp(split_line[0], "ROUND")==0 && strcmp(split_line[1], search_key[1])==0){
@@ -1208,10 +1209,10 @@ char* get_option_texts_given_codes(char* option_code_single){
     }
     free_arr(split_line);
   }
-  free(prompt_info_filename);
   free(info);
   free_arr(search_key);
   free_arr(lines);
+  free(type);
   return option_text;
 }
 
