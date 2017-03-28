@@ -4,7 +4,7 @@
  *  Created on: Mar 15, 2017
  *      Author: rcb, greg, nick
  */
-#error "ONLY user_interface.c IS SUPPORTED"
+
 #include "zoinka.h"
 #include "prompt.h"
 #include <strings.h>
@@ -56,7 +56,7 @@ int main(void){
   printf("<!-- prompt_code = %s -->", prompt_code);
 	char **prompt_choices = get_option_codes(prompt_code);
   // get the prompt text
-	char *prompt_text = get_prompt_text(user, prompt_code);
+	char *prompt_text = get_prompt_text(prompt_code);
   //get the option texts
 	char **option_texts = calloc(50, sizeof(char*));
   int num_options = 0;
@@ -64,7 +64,7 @@ int main(void){
     char *option_special = calloc(sizeof(char), 1024);
     sprintf(option_special, "%s:%d", prompt_code, i + 1);
 		option_texts[i] = malloc(sizeof(char) * 512);
-		strcpy(option_texts[i],get_option_texts_given_codes(option_special));
+		strcpy(option_texts[i],get_option_text(option_special));
     free(option_special);
 	}
   
@@ -75,41 +75,25 @@ int main(void){
 
 	sprintf(round_HTML_setup, "<input type=\"hidden\" name=\"round\" id=\"round\" value=\"%s\">", pre_prompt_code[1]);
 	sprintf(prompt_HTML_setup, "<input type=\"hidden\" name=\"prompt\" id=\"prompt\" value=\"%s\">", pre_prompt_code[2]);
-	sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"name\" id=\"name\" value=\"%s\">", pre_prompt_code[0]);
+	sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"user\" id=\"user\" value=\"%s\">", pre_prompt_code[0]);
 
 	printf("<body background = \"/greg/background.png\"> <button onclick=\"prompt();\"> Prompt </button>"
 			"<button onclick=\"attr();\"> Attributes </button>"
 			"<button onclick=\"history();\"> Choice History </button>"
 			"<button onclick=\"players_chosen();\"> Player Status </button>"
+      "<label> <b>Round %d</b></label>"
 			"<div id = \"prompt\">"
 			"<div id=\"header_and_prompt\">"
-			"<h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
+			"<h1 style=\"color:black \"> <center> %s </center> </h1>", round, prompt_text);
   // check to see if we have already chosen
-  char *update_text = read_text("update_file.txt");
-  char **update_lines = split(update_text, '\n');
-  char *code = NULL;
-  bool chosenp = false;
-  for(size_t i=0; *update_lines[i]; i++){
-    if(*update_lines[i] == '\0' || *update_lines[i] == '\n') continue;
-    char **line = split(update_lines[i], ':');
-    if(!line[0] || line[0] == '\0'){
-      free_arr(line);
-      continue;
-    }
-    if(!strcmp(line[0], user)) {
-      chosenp = true;
-      code = strdup(update_lines[i]);
-      free_arr(line);
-      break;
-    }
-    free_arr(line);
-  }
+  char *code = get_user_choice(user);
+  bool chosenp = (code != NULL);
   // this was better
   /*char *sn = calloc(snprintf(NULL, 0, "\n%s:", user)+1, sizeof(char));
   sprintf(sn, "\n%s:", user)
   if(strstr(update_text(*/
   // not always 3 opts
-  if(!chosenp)
+  if(!chosenp){
     for(int i = 0; i < num_options; i++){
        char* posn;
        switch(i){
@@ -129,11 +113,11 @@ int main(void){
             "<input type =\"submit\" name=\"submitbutton\" id=\"submitbutton\">"
              "</form> </center> </div>", round_HTML_setup, prompt_HTML_setup, user_HTML_setup, i+1);
      }
+  }else{
+    char *txt = get_option_text(code);
+    printf("<p>You have already chosen the option &quot;<!--%s-->%s&quot;.</p><br />", code, txt); 
   }
-  else{
-    
-  }
-  printf("</div>");    
+  printf("</div> </div>");    
 	printf("<div id = \"attr\" style=\"display:none;\">");
 	printf("<div id=\"attributes\"> <h1 style=\"color:black\"> <center> Your Attributes </center> </h1> <center> <table style=\"width:730px\">");
 	printf("<tr><th colspan=\"2\"> Attributes</th> <th> Values </th> </tr>");
@@ -161,16 +145,16 @@ int main(void){
 	printf("</table> </center>");
 	printf("</div></div>");
 	printf("<div id = \"history\" style=\"display:none;\">");
-  printf("<center><h3>Choice History (Note: All players must have decided for a given round)</h3>");
+  printf("<center><h3>Choice History during previous rounds</h3>");
 	printf("<table><tr><th>Round Number</th><th>Prompt</th><th>Choice</th></tr>");
 
 	//Open and process admin choice file.
-  char *admin_choices_filename = calloc(4096, sizeof(char));
-	sprintf(admin_choices_filename, "players/%s_choices.txt", user);
-	char *admin_choices = read_text(admin_choices_filename);
-	char **split_choices = split(admin_choices, '\n');
-  free(admin_choices_filename);
-  free(admin_choices);
+  char *choices_filename = calloc(4096, sizeof(char));
+	sprintf(choices_filename, "players/%s_choices.txt", user);
+	char *choices = read_text(choices_filename);
+	char **split_choices = split(choices, '\n');
+  free(choices_filename);
+  free(choices);
 
 	for (int i = 0; split_choices[i]; i++){
 		char **choices = split(split_choices[i], ':');
@@ -202,9 +186,9 @@ int main(void){
     int chosen = (update_lines[j] != NULL);
     printf("<tr><td>%s</td><td>%s</td></tr>", players[i], chosen ? "true":"false");
   }
+  free_arr(update_lines);
   printf("</table></center>");
-  printf("<br><b>UPDATE the Round?</b><br><form action=\"forced_update.cgi\"> <input type=\"submit\" name=\"force_update\" id=\"force_update\"> </form>");
-  :_not_admin;
-  printf("</div>");
+  printf("<br><b>Advance the Round?</b><br><form action=\"forced_update.cgi\"> <input type=\"submit\" name=\"force_update\" id=\"force_update\"> </form>");
+  _not_admin: printf("</div>");
 	printf("</body> </html>");
 }

@@ -4,7 +4,7 @@
  *  Created on: Mar 15, 2017
  *      Author: rcb, greg, nick
  */
-
+#error "ONLY user_interface.c IS SUPPORTED"
 
 #include <stdio.h>
 #include <strings.h>
@@ -21,7 +21,7 @@ int main(void){
 	printf("The Soviet Great Terror Simulation\n");
 	printf("</title>");
   
-  printf("<!-- round = %d-->", round);
+  // printf("<!-- round = %d-->", round);
 
 	//CSS Stylesheet.
 	printf("<style>");
@@ -35,16 +35,9 @@ int main(void){
 
 	//Javascript-based Menu
 	printf("<script>");
-	
-	printf("function prompt() { document.getElementById(\"prompt\").style.display=\"block\";"
-		"document.getElementById(\"attr\").style.display=\"none\";"
-		"document.getElementById(\"history\").style.display=\"none\";}");
-	printf("function attr() { document.getElementById(\"attr\").style.display=\"block\";" 
-		"document.getElementById(\"prompt\").style.display=\"none\";"
-		"document.getElementById(\"history\").style.display=\"none\";}");
-	printf("function history() { document.getElementById(\"history\").style.display=\"block\";"
-		"document.getElementById(\"prompt\").style.display=\"none\";"
-    "document.getElementById(\"attr\").style.display=\"none\";}");
+	printf("function prompt() { document.getElementById(\"prompt\").style.display=\"block\"; document.getElementById(\"attr\").style.display=\"none\"; document.getElementById(\"history\").style.display=\"none\";}");
+	printf("function attr() { document.getElementById(\"attr\").style.display=\"block\"; document.getElementById(\"prompt\").style.display=\"none\";document.getElementById(\"history\").style.display=\"none\";}");
+	printf("function history() { document.getElementById(\"history\").style.display=\"block\"; document.getElementById(\"prompt\").style.display=\"none\";document.getElementById(\"attr\").style.display=\"none\";}");
 	printf("</script>");
 	//end of head
 	printf("</head>");
@@ -100,9 +93,9 @@ int main(void){
 		char *prompt_HTML_setup = calloc(sizeof(char), 512);
 		char *user_HTML_setup = calloc(sizeof(char), 512);
 
-		sprintf(round_HTML_setup,"<input type=\"hidden\" name=\"round\" id=\"round\" value=\"%s\">", pre_prompt_code[1]);
-		sprintf(prompt_HTML_setup, "<input type=\"hidden\" name=\"prompt\" id=\"prompt\" value=\"%s\">", pre_prompt_code[2]);
-		sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"name\" id=\"name\" value=\"%s\">", pre_prompt_code[0]);
+		sprintf(round_HTML_setup, "<input type=\"hidden\" name=\"round\" id=\"round\" value=\"%s\">", pre_prompt_code[1]);
+    sprintf(prompt_HTML_setup, "<input type=\"hidden\" name=\"prompt\" id=\"prompt\" value=\"%s\">", pre_prompt_code[2]);
+    sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"name\" id=\"name\" value=\"%s\">", pre_prompt_code[0]);
 
 		printf("<body background = \"/greg/background.png\">"
         "<button onclick=\"prompt();\"> Prompt </button>"
@@ -111,6 +104,27 @@ int main(void){
 				"<div id = \"prompt\">"
 				"<div id=\"header_and_prompt\">"
 				"<h1 style=\"color:black \"> <center> %s </center> </h1> </div>", prompt_text);
+    // check to see if we have already chosen
+  char *update_text = read_text("update_file.txt");
+  char **update_lines = split(update_text, '\n');
+  char *code = NULL;
+  bool chosenp = false;
+  for(size_t i=0; *update_lines[i]; i++){
+    if(*update_lines[i] == '\0' || *update_lines[i] == '\n') continue;
+    char **line = split(update_lines[i], ':');
+    if(!line[0] || line[0] == '\0'){
+      free_arr(line);
+      continue;
+    }
+    if(!strcmp(line[0], user)) {
+      chosenp = true;
+      code = strdup(update_lines[i]);
+      free_arr(line);
+      break;
+    }
+    free_arr(line);
+  }
+    // not always 3 opts   
     for(int i = 0; i < num_options; i++){
       switch(i){
       case 0:
@@ -136,22 +150,37 @@ int main(void){
         break;
       }
     }
-        
+    __a:
+    printf("</div>");    
 		printf("<div id = \"attr\" style=\"display:none;\">");
 		printf("<div id=\"playerattributes\"> <h1 style=\"color:black\"> <center> Player Attributes </center> </h1> <center> <table style=\"width:730px\">");
 		printf("<tr><th colspan=\"2\"> Attributes</th> <th> Values </th> </tr>");
-		if(split_attributes[0]) for (int i = 0; split_attributes[i]; i++){
+    
+    free(round_HTML_setup);
+		free(prompt_HTML_setup);
+		free(user_HTML_setup);
+    
+    //Prepares the player's files for reading
+    char *player_attributes_filename = calloc(4096, sizeof(char));
+    sprintf(player_attributes_filename, "players/%s_attributes.txt", user);
+
+    //Reads them and processes them
+    char *player_attributes = read_text(player_attributes_filename);
+    char **split_attributes = split(player_attributes, '\n');
+    
+		// if(split_attributes[0])
+    for (int i = 0; split_attributes[i]; i++){
       if(i==0)continue;
 			char **attributes = split(split_attributes[i], '=');
 			printf("<tr><td colspan=\"2\">%s</td><td>%s</td></tr>", attributes[0], attributes[1]);
 			free_arr(attributes);
 		}
 		printf("</table> </center>");
-		printf("</div><center><h1>");
+		printf("</div></div><center><h1>");
 		// XXX TODO ??? BUG FIXME for ()
 		printf("<div id = \"history\" style=\"display:none;\">");
-		printf("<center><h1>Choice History</h1>");
-		printf("<table><tr><th>Round Number</th><th>Prompt</th><th>Choice</th></tr>");
+		printf("<center><h3>Choice History (Note: All players must have decided for a given round)</h3>");
+    printf("<table><tr><th>Round Number</th><th>Prompt</th><th>Choice</th></tr>");
 
 		//Open and process player choice file.
 		sprintf(player_choices_filename, "players/%s_choices.txt", user);
@@ -179,9 +208,7 @@ int main(void){
 		free_arr(prompt_choices);
 		free_arr(prompt_choices_texts);
 		free_arr(pre_prompt_code);
-		free(round_HTML_setup);
-		free(prompt_HTML_setup);
-		free(user_HTML_setup);
+
 	} else if (player_dead){
 	//The player IS dead.
 		printf("<body> <button onclick=\"prompt();\"> Prompt </button>"

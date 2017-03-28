@@ -19,4 +19,5 @@ void YAG_cred_special();
 void lock(void);
 void unlock(void);
 int count_nav_lines(void);
+char *get_user_choice(char *user);
 #endif

@@ -1,3 +1,4 @@
+#error "ONLY user_choice.c IS SUPPORTED"
 #include "zoinka.h"
 #include <stdio.h>
 #include <strings.h>

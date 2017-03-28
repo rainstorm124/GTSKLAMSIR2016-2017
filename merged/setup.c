@@ -123,7 +123,7 @@ void initialize(char *student_file){
       #ifdef WIN32
 			mkdir(dir);
       #else
-        mkdir(dir, ~0);
+      mkdir(dir, ~0);
       #endif
 		}
 		char **character_attirbute_names;

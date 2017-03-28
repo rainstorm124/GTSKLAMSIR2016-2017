@@ -3,12 +3,11 @@ CFLAGS=-std=gnu99 -g
 #tell the linker to look for libraries in the current directory
 LDFLAGS=-L.
 #tell the linker which libraries to use
-LDLIBS=-lgreg -lcrypt -g
+LDLIBS=-lgreg -lcrypt -g -pthread
 LIBG_OBJECTS=gregutils.o prompt.o prompt_chooser.o zoinka.o
 
 all: mainpage.cgi account.cgi libgreg.a createaccount.cgi\
-player_interface.cgi player_choice.cgi forced_update.cgi setup.exe\
-admin_choice.cgi admin_interface.cgi
+user_interface.cgi user_choice.cgi forced_update.cgi setup.exe
 
 libgreg.a: $(LIBG_OBJECTS)
 	ar rcs $@ $^
@@ -28,14 +27,11 @@ account.cgi:account.o libgreg.a
 createaccount.cgi: createaccount.o libgreg.a
 	$(CC) $(LDFLAGS) -o createaccount.cgi createaccount.o $(LDLIBS)
 	
-player_interface.cgi: player_interface.o libgreg.a
-	$(CC) $(LDFLAGS) -o player_interface.cgi player_interface.o $(LDLIBS)
+user_interface.cgi: user_interface.o libgreg.a
+	$(CC) $(LDFLAGS) -o user_interface.cgi user_interface.o $(LDLIBS)
 	
-admin_interface.cgi: admin_interface.o libgreg.a
-	$(CC) $(LDFLAGS) -o admin_interface.cgi admin_interface.o $(LDLIBS)
-	
-admin_choice.cgi: admin_choice.o libgreg.a
-	$(CC) $(LDFLAGS) -o admin_choice.cgi admin_choice.o $(LDLIBS)
+user_choice.cgi: user_choice.o libgreg.a
+	$(CC) $(LDFLAGS) -o user_choice.cgi user_choice.o $(LDLIBS)
 	
 clean:
 	rm *.o *.cgi *.a *.exe

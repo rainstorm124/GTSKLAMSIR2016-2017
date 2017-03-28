@@ -1,6 +1,12 @@
 //A file for functions concerning updating, checking player chosen counts, etc.
+#ifdef __unix__
+#define _GNU_SOURCE
+#include <pthread.h>
+#define YIELD pthread_yield()
+#else
+#define YIELD
+#endif
 #include "zoinka.h"
-
 int ZOINKA_main(int argc, char **argv){
 	return 0;
 }
@@ -90,7 +96,7 @@ bool add_update_to_queue(char* input_code) {
 FILE* z_lock_file;
 
 void lock(void){  
-  while (!(z_lock_file = fopen("lock_file.txt", "wx")));
+  while (!(z_lock_file = fopen("lock_file.txt", "wx")))YIELD;
 }
 
 void unlock(void){
@@ -225,4 +231,27 @@ void YAG_cred_special(){
 		attr_change_single("YEZ 1 GULAG 1", YAG_name);
 	} else attr_change_single("YAG 1 DEAD 1", YAG_name);
   free(YAG_name);
+}
+
+char *get_user_choice(char *user){
+  char *update_text = read_text("update_file.txt");
+  char **update_lines = split(update_text, '\n');
+  free(update_text);
+  char *code = NULL;
+  for(size_t i=0; update_lines[i]; i++){
+    if(*update_lines[i] == '\0' || *update_lines[i] == '\n') continue;
+    char **line = split(update_lines[i], ':');
+    if(!line[0] || line[0] == '\0'){
+      free_arr(line);
+      continue;
+    }
+    if(!strcmp(line[0], user)) {
+      code = strdup(update_lines[i]);
+      free_arr(line);
+      break;
+    }
+    free_arr(line);
+  }
+  free_arr(update_lines);
+  return code;
 }

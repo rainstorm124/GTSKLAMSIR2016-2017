@@ -43,23 +43,13 @@ int main(void) {
     //sscanf(data,"uname=%s psw=%s", user, pass);
 
     if(check_pass(user, pass, "passwords.txt")){
-      if(strcmp(user, "klam") == 0){ // admin
-        printf("<html><head><script type=\"text/javascript\">"
-               "function loaded(e){ document.forms[0].submit.click();}"
-               "</script></head><body onload=\"loaded();\"><h1>Loading..."
-			         "</h1><br><form name='user' id='user' action='admin_interface.cgi' "
-			         "method='POST'><input type='hidden' name='user'"
-               "value='%s'><input type='submit' name='submit' "
-			         "value='Submit'></form></body></html>",user);
-      }else{ // player
-        printf("<html><head><script type=\"text/javascript\">"
-               "function loaded(e){ document.forms[0].submit.click();}"
-               "</script></head><body onload=\"loaded();\"><h1>Loading..."
-			         "</h1><br><form name='user' id='user' action='player_interface.cgi' "
-			         "method='POST'><input type='hidden' name='user'"
-               "value='%s'><input type='submit' name='submit' "
-			         "value='Submit'></form></body></html>",user);
-      }      
+      printf("<html><head><script type=\"text/javascript\">"
+             "function loaded(e){ document.forms[0].submit.click();}"
+             "</script></head><body onload=\"loaded();\"><h1>Loading..."
+			       "</h1><br><form name='user' id='user' action='user_interface.cgi' "
+			       "method='POST'><input type='hidden' name='user'"
+             "value='%s'><input type='submit' name='submit' "
+			       "value='Submit'></form></body></html>",user);      
     }else {
       printf("<p> Invalid username or password<br /><a href='/cgi-bin/greg/mainpage.cgi'>Homepage</a></p>");
     }

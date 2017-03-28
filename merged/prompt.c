@@ -1137,7 +1137,7 @@ int get_attr_val(char *player_name, char *attr_name){
   return -100;
 }
 
-char* get_prompt_text(char *player_name, char *prompt_code){
+char* get_prompt_text(char *prompt_code){
   char* prompt_text = calloc(sizeof(char), 2048);
   char* prompt_info_filename = malloc(sizeof(char)*50);
   char** search_key = split(prompt_code, ':');
@@ -1145,7 +1145,8 @@ char* get_prompt_text(char *player_name, char *prompt_code){
   char* info = read_text(prompt_info_filename);
   free(prompt_info_filename);
   char** info_lines = split(info, '\n');
-  char* character_code_type = get_type(player_name);
+  //char* character_code_type = get_type(player_name);
+  char* character_code_type = get_type(search_key[0]);
   bool round_found = false, type_found = false;
   for(int i = 0; info_lines[i]; i++){
     char* line = info_lines[i];
@@ -1173,8 +1174,7 @@ char* get_prompt_text(char *player_name, char *prompt_code){
   free_arr(search_key);
   return prompt_text;
 }
-
-char* get_option_texts_given_codes(char* option_code_single){
+char* get_option_text(char* option_code_single){
   char* option_text = calloc(sizeof(char), 1000);
   char** search_key = split(option_code_single, ':');
   char* prompt_info_filename = calloc(sizeof(char), 50);
