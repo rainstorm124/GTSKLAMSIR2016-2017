@@ -262,7 +262,6 @@ char** get_targets(char* option_code){
   char **lines = split(info, '\n');
   char **targets = calloc(sizeof(char*), 100);
   bool round_found = false, char_found = false, prompt_found = false, option_found = false, num_targets_found = false;
-  int options = 0;
   int target_count = 0;
   int i;
   for(i = 0; lines[i]; i++){
@@ -626,7 +625,6 @@ bool attr_change_multiple(char *target, char *player_name){
     }
   }else if(strcmp(type, "ASSOCIATED_IM") == 0){ // good
     char *stakw = calloc(sizeof(char), 100);
-    int found = 0;
     // if the player is an NKVDO, then the ASSOCIATED_IM is the manager of the STAKW they are investigating
     char *check_type = get_type(player_name);
     if(strcmp(check_type, "NKVDO") == 0){
