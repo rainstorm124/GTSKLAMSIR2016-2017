@@ -3,10 +3,26 @@
 #include "gregutils.h"
 #include <stdlib.h>
 
+int is_type_choice(char *player_type, int round, char *choice){
+  char *player_name = get_player(player_type);
+  char *real_choice = get_choice(player_name, round);
+  int retval = !strcmp(real_choice, choice);
+  free(real_choice);
+  free(player_name);
+  return retval;
+}
+
 int is_player_choice(char *player_name, int round, char *choice){
   char *real_choice = get_choice(player_name, round);
   int retval = !strcmp(real_choice, choice);
   free(real_choice);
+  return retval;
+}
+
+int is_player_type(char *player_name, char *type){
+  char *real_type = get_type(player_name);
+  int retval = !strcmp(real_type, type);
+  free(real_type);
   return retval;
 }
 

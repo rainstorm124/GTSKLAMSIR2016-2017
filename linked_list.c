@@ -1,6 +1,8 @@
 /* Author Greg Johnson */
 /* 9.21.16 */
 #include "linked_list.h"
+#include <stddef.h>
+#include <stdint.h>
 
 /*
 operation:		Default comparison method, comparing casted int pointers

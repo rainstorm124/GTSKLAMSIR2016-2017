@@ -7,8 +7,8 @@ char* get_player(char*);
 char* get_type(char*);
 char* get_prompt_code(char*, int);
 char* get_choice(char *player_name, int round);
-char* get_prompt_text(char *player_name, char *prompt_code);
-char* get_option_texts_given_codes(char* option_code_single);
+char* get_prompt_text(char *prompt_code);
+char* get_option_text(char *option_code);
 
 char** get_option_codes(char*);
 char** get_targets(char*);
