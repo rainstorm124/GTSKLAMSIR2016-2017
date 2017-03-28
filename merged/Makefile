@@ -7,7 +7,8 @@ LDLIBS=-lgreg -lcrypt -g -pthread
 LIBG_OBJECTS=gregutils.o prompt.o prompt_chooser.o zutils.o
 
 all: mainpage.cgi account.cgi libgreg.a createaccount.cgi\
-user_interface.cgi user_choice.cgi forced_update.cgi setup.exe setup.cgi
+user_interface.cgi user_choice.cgi forced_update.cgi setup.exe setup.cgi\
+reset.cgi
 
 libgreg.a: $(LIBG_OBJECTS)
 	ar rcs $@ $^
@@ -35,6 +36,9 @@ user_choice.cgi: user_choice.o libgreg.a
 	
 setup.cgi: setup_cgi.o libgreg.a
 	$(CC) $(LDFLAGS) -o setup.cgi setup_cgi.o $(LDLIBS)
+	
+reset.cgi: reset.o libgreg.a
+	$(CC) $(LDFLAGS) -o reset.cgi reset.o $(LDLIBS)
 	
 clean:
 	rm *.o *.cgi *.a *.exe
