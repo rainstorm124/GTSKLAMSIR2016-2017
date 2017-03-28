@@ -13,18 +13,18 @@
 #include <stdbool.h>
 
 int main(void){
-  print_header();
-  //
+	  print_header();
 	int _round = get_round();
 	// process stuff
-  char *text_length = getenv("CONTENT_LENGTH");
+	char *text_length = getenv("CONTENT_LENGTH");
 	long int text_len = strtol(text_length, NULL, 10);
 	char *postdata = calloc(text_len + 1, sizeof(char));
 	fgets(postdata, text_len + 1, stdin);
-  printf("<!DOCTYPE html>\n");
+	printf("<!DOCTYPE html>\n");
 	char **split_return = split(postdata, '&');
-  //variable scanning
+	//variable scanning
 	char round [1024];
+	char choice[1024];
 	char prompt[1024];
 	char user[1024];
 	sscanf(split_return[3], "choice=%s", choice);
