@@ -1,2 +1,2 @@
-GOAL: Consolidate power for yourself. POW > 10, ALI > 8, SUP > 8
+GOAL: Consolidate power for yourself. POW > 10, ALI > 8, SUP > 8 <br>
 GOAL: Remove any potential threats to the state. POW > 8, FEAR > 7
