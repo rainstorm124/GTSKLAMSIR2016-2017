@@ -52,7 +52,7 @@ int main(void){
   printf("</script>");
 	//end of head
 	printf("</head>");
-  
+  if(round > 6) goto __GAMEOVER;
   char *prompt_code = get_prompt_code(user, round);
   printf("<!-- prompt_code = %s -->", prompt_code);
 	char **prompt_choices = get_option_codes(prompt_code);
@@ -68,7 +68,7 @@ int main(void){
 		strcpy(option_texts[i],get_option_text(option_special));
     free(option_special);
 	}
-  
+  __GAMEOVER: (void)0;
 	char **pre_prompt_code = split(prompt_code, ':');
   char *round_HTML_setup = calloc(sizeof(char), 512);
 	char *prompt_HTML_setup = calloc(sizeof(char), 512);
@@ -77,7 +77,8 @@ int main(void){
 	sprintf(round_HTML_setup, "<input type=\"hidden\" name=\"round\" id=\"round\" value=\"%s\">", pre_prompt_code[1]);
 	sprintf(prompt_HTML_setup, "<input type=\"hidden\" name=\"prompt\" id=\"prompt\" value=\"%s\">", pre_prompt_code[2]);
 	sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"user\" id=\"user\" value=\"%s\">", pre_prompt_code[0]);
-  bool noprompt = (get_attr_val(user, "DEAD") != 0|| get_attr_val(user, "GULAG") != 0);
+  
+  bool noprompt = (get_attr_val(user, "DEAD") != 0|| get_attr_val(user, "GULAG") != 0 || round == 7);
 	printf("<body background = \"/greg/background.png\" onload='loaded();'> <button onclick=\"prompt();\"> Prompt </button>"
 			"<button onclick=\"attr();\"> Attributes </button>"
 			"<button onclick=\"history();\"> Choice History </button>"
@@ -85,22 +86,24 @@ int main(void){
       "<label> <b>Round %d</b></label>"
 			"<div id = \"prompt\">"
 			"<div id=\"header_and_prompt\">"
-			"<h1 style=\"color:black \"> <center> %s </center> </h1>", round, noprompt?"":prompt_text);
-  // check to see if we have already chosen
-  char *code = get_user_choice(user);
-  bool chosenp = (code != NULL);
-  // this was better
-  /*char *sn = calloc(snprintf(NULL, 0, "\n%s:", user)+1, sizeof(char));
-  sprintf(sn, "\n%s:", user)
-  if(strstr(update_text(*/
-  // not always 3 opts
+			"<h1 style=\"color:black \"> <center> %s </center> </h1>", round > 6 ? 6 : round, noprompt?"":prompt_text);
+  bool no_opt = false;
+  if(round > 6){
+    printf("<b>The Game has ended, thanks for playing.</b>");
+    no_opt = true;
+  }
   if(get_attr_val(user, "DEAD") != 0){
     printf("<p>Oh dear, you are dead!</p><br />"); 
-    goto _skip_options;
+    no_opt = true;
   }else if(get_attr_val(user, "GULAG")){
-    printf("<p>Oh dear, you are in the Gulag!</p><br />"); 
-    goto _skip_options;
+    printf("<p>Oh dear, you are in the Gulag!</p><br />");
+    no_opt = true;
   }
+  if(no_opt)goto _skip_options;
+  // check to see if the user has already chosen
+  char *code = get_user_choice(user);
+  bool chosenp = (code != NULL);
+  // not always 3 opts
   if(!chosenp){
     for(int i = 0; i < num_options; i++){
        char* posn;
@@ -206,7 +209,8 @@ int main(void){
   }
   free_arr(update_lines);
   printf("</table></center>");
-  printf("<br><b>Advance the Round?</b><form action=\"forced_update.cgi\" method='post'> <input type='hidden' name='user' id='user' value='%s' /> <input type=\"submit\" name=\"force_update\" id=\"force_update\"> </form>", user);
+  if(round <= 6)printf("<br><b>Advance the Round?</b><form action=\"forced_update.cgi\" method='post'> <input type='hidden' name='user' id='user' value='%s' /> <input type=\"submit\" name=\"force_update\" id=\"force_update\"> </form>", user);
+  else printf("<b> Can not advance as the game has ended. </b>");
   _not_admin: printf("</div>");
 	printf("</body> </html>");
 }
