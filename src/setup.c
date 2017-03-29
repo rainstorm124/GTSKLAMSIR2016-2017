@@ -116,6 +116,11 @@ void initialize(char *student_file){
   #ifndef WIN32
   umask(0022);
   #endif
+  int opl_bio_n = 1;
+  int im_bio_n = 1;
+  int stakw_bio_n = 1;
+  int bd_bio_n = 1;
+  int nkvdo_bio_n = 1;
 	for(int i = 0; students[i]; i++){
 		int r = grandom(type_list->size);
 		node *node = get_node_at(type_list, r);
@@ -131,12 +136,21 @@ void initialize(char *student_file){
     
 		char *dir = malloc(sizeof(char) * 30);
 		sprintf(dir, "./players/");
+    char *bio_dir = malloc(sizeof(char) * 30);
+		sprintf(bio_dir, "./bios/");
 		struct stat st = {0};
 		if (stat(dir, &st) == -1) {
       #ifdef WIN32
 			mkdir(dir);
       #else
       mkdir(dir, ~0);
+      #endif
+		}
+    if (stat(bio_dir, &st) == -1) {
+      #ifdef WIN32
+			mkdir(bio_dir);
+      #else
+      mkdir(bio_dir, ~0);
       #endif
 		}
 		char **character_attirbute_names;
@@ -186,6 +200,116 @@ void initialize(char *student_file){
 		FILE *player_choices = fopen(choice_filepath, "w+");
 		fclose(player_choices);
 		free(choice_filepath);
+    
+    /// ADD bio/goal files!
+    char *bio_filepath = calloc(sizeof(char) , 100);
+		sprintf(bio_filepath, "%s/%s_bio.txt", dir, students[i]);
+		FILE *player_bio = fopen(bio_filepath, "w+");
+    free(bio_filepath);
+   
+
+    if(!strcmp(((player_type*)node->data)->type, "STA")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/STA_bio_1.txt", bio_dir);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      free(bio_text);
+      free(bio_text_filepath);      
+    }else if(!strcmp(((player_type*)node->data)->type, "YEZ")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/YEZ_bio_1.txt", bio_dir);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      free(bio_text);
+      free(bio_text_filepath); 
+    }else if(!strcmp(((player_type*)node->data)->type, "YAG")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/YAG_bio_1.txt", bio_dir);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      free(bio_text);
+      free(bio_text_filepath); 
+    }else if(!strcmp(((player_type*)node->data)->type, "OPL")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/OPL_bio_%d.txt", bio_dir, opl_bio_n);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      if(opl_bio_n == 3){
+        opl_bio_n = 1;
+      }else{
+        opl_bio_n++;
+      }
+      free(bio_text);
+      free(bio_text_filepath); 
+    }else if(!strcmp(((player_type*)node->data)->type, "IM")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/IM_bio_%d.txt", bio_dir, im_bio_n);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      if(im_bio_n == 9){
+        im_bio_n = 1;
+      }else{
+        im_bio_n++;
+      }
+      free(bio_text);
+      free(bio_text_filepath); 
+    }else if(!strcmp(((player_type*)node->data)->type, "STAKW")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/STAKW_bio_%d.txt", bio_dir, stakw_bio_n);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      if(stakw_bio_n == 2){
+        stakw_bio_n = 1;
+      }else{
+        stakw_bio_n++;
+      }
+      free(bio_text);
+      free(bio_text_filepath); 
+    }else if(!strcmp(((player_type*)node->data)->type, "EP")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/EP_bio_1.txt", bio_dir);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      free(bio_text);
+      free(bio_text_filepath); 
+    }else if(!strcmp(((player_type*)node->data)->type, "EXK")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/EXK_bio_1.txt", bio_dir);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      free(bio_text);
+      free(bio_text_filepath); 
+    }else if(!strcmp(((player_type*)node->data)->type, "BD")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/BD_bio_%d.txt", bio_dir, bd_bio_n);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      if(bd_bio_n == 2){
+        bd_bio_n = 1;
+      }else{
+        bd_bio_n++;
+      }
+      free(bio_text);
+      free(bio_text_filepath); 
+    }else if(!strcmp(((player_type*)node->data)->type, "NKVDO")){
+      char *bio_text_filepath = calloc(sizeof(char), 100);
+      sprintf(bio_text_filepath, "%s/NKVDO_bio_%d.txt", bio_dir, nkvdo_bio_n);
+      char *bio_text = read_text(bio_text_filepath);
+      fprintf(player_bio, "%s", bio_text);
+      if(nkvdo_bio_n == 5){
+        nkvdo_bio_n = 1;
+      }else{
+        nkvdo_bio_n++;
+      }
+      free(bio_text);
+      free(bio_text_filepath); 
+    }
+    fclose(player_bio);
+    
+    
+    
+    
+    
 		// add character assignment to navigation file
 		FILE *nav_file = fopen("nav_file.txt", "a+");
 		fprintf(nav_file, "%s=%s\n", students[i], ((player_type*)node->data)->type);
