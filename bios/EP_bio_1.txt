@@ -1,4 +1,4 @@
-You were born in the 1890s. You studied economics and joined the party in 1922. You were appointed to the position of economic planner by Molotov in 1930. Your job is to regulate the goals of production for factories and individual workers. The goals you set should follow the second 5-year plan, but you should also take care to make the goals realistic for workers to complete. 
-GOAL: Avoid drawing the attention of those in power. Sus<2
-GOAL: Set achievable goals for workers that will help advance the second five-year plan. ALI>8
+You were born in the 1890s. You studied economics and joined the party in 1922. You were appointed to the position of economic planner by Molotov in 1930. Your job is to regulate the goals of production for factories and individual workers. The goals you set should follow the second 5-year plan, but you should also take care to make the goals realistic for workers to complete. <br> 
+GOAL: Avoid drawing the attention of those in power. Sus<2 <br>
+GOAL: Set achievable goals for workers that will help advance the second five-year plan. ALI>8 <br>
 http://soviethistory.msu.edu/1934-2/seventeenth-party-congress/seventeenth-party-congress-texts/russias-economic-growth/
