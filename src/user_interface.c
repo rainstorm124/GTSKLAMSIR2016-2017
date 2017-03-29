@@ -47,8 +47,9 @@ int main(void){
 	printf("function prompt() { document.getElementById(\"prompt\").style.display=\"block\"; document.getElementById(\"attr\").style.display=\"none\"; document.getElementById(\"history\").style.display=\"none\";document.getElementById(\"players_chosen\").style.display=\"none\";}");
 	printf("function attr() { document.getElementById(\"attr\").style.display=\"block\"; document.getElementById(\"prompt\").style.display=\"none\";document.getElementById(\"history\").style.display=\"none\";document.getElementById(\"players_chosen\").style.display=\"none\";}");
 	printf("function history() { document.getElementById(\"history\").style.display=\"block\"; document.getElementById(\"prompt\").style.display=\"none\";document.getElementById(\"attr\").style.display=\"none\";document.getElementById(\"players_chosen\").style.display=\"none\";}");
-	if(admin)printf("function players_chosen() { document.getElementById(\"players_chosen\").style.display=\"block\"; document.getElementById(\"attr\").style.display=\"none\"; document.getElementById(\"history\").style.display=\"none\";document.getElementById(\"prompt\").style.display=\"none\";}");
-	printf("</script>");
+	if(admin)printf("function players_chosen() { document.getElementById(\"players_chosen\").style.display=\"block\"; document.getElementById(\"attr\").style.display=\"none\"; document.getElementById(\"history\").style.display=\"none\";document.getElementById(\"prompt\").style.display=\"none\";} function loaded(){}");
+	else printf("function loaded(){document.getElementById('choosebtn').style.display='none';}");
+  printf("</script>");
 	//end of head
 	printf("</head>");
   
@@ -76,15 +77,15 @@ int main(void){
 	sprintf(round_HTML_setup, "<input type=\"hidden\" name=\"round\" id=\"round\" value=\"%s\">", pre_prompt_code[1]);
 	sprintf(prompt_HTML_setup, "<input type=\"hidden\" name=\"prompt\" id=\"prompt\" value=\"%s\">", pre_prompt_code[2]);
 	sprintf(user_HTML_setup, "<input type=\"hidden\" name=\"user\" id=\"user\" value=\"%s\">", pre_prompt_code[0]);
-
-	printf("<body background = \"/greg/background.png\"> <button onclick=\"prompt();\"> Prompt </button>"
+  bool noprompt = (get_attr_val(user, "DEAD") != 0|| get_attr_val(user, "GULAG") != 0);
+	printf("<body background = \"/greg/background.png\" onload='loaded();'> <button onclick=\"prompt();\"> Prompt </button>"
 			"<button onclick=\"attr();\"> Attributes </button>"
 			"<button onclick=\"history();\"> Choice History </button>"
-			"<button onclick=\"players_chosen();\"> Player Status </button>"
+			"<button id='choosebtn' onclick=\"players_chosen();\"> Player Status </button>"
       "<label> <b>Round %d</b></label>"
 			"<div id = \"prompt\">"
 			"<div id=\"header_and_prompt\">"
-			"<h1 style=\"color:black \"> <center> %s </center> </h1>", round, prompt_text);
+			"<h1 style=\"color:black \"> <center> %s </center> </h1>", round, noprompt?"":prompt_text);
   // check to see if we have already chosen
   char *code = get_user_choice(user);
   bool chosenp = (code != NULL);
@@ -93,6 +94,13 @@ int main(void){
   sprintf(sn, "\n%s:", user)
   if(strstr(update_text(*/
   // not always 3 opts
+  if(get_attr_val(user, "DEAD") != 0){
+    printf("<p>Oh dear, you are dead!</p><br />"); 
+    goto _skip_options;
+  }else if(get_attr_val(user, "GULAG")){
+    printf("<p>Oh dear, you are in the Gulag!</p><br />"); 
+    goto _skip_options;
+  }
   if(!chosenp){
     for(int i = 0; i < num_options; i++){
        char* posn;
@@ -117,6 +125,7 @@ int main(void){
     char *txt = get_option_text(code);
     printf("<p>You have chosen the option &quot;<!--%s-->%s&quot;.</p><br />", code, txt); 
   }
+  _skip_options:
   printf("</div> </div>");    
 	printf("<div id = \"attr\" style=\"display:none;\">");
 	printf("<div id=\"attributes\"> <h1 style=\"color:black\"> <center> Your Attributes </center> </h1> <center> <table style=\"width:730px\">");
@@ -183,12 +192,21 @@ int main(void){
        if(!strcmp(line[0], players[i])){ free_arr(line); break;}
        free_arr(line);
     }
-    int chosen = (update_lines[j] != NULL) || get_attr_val(players[i], "DEAD") || get_attr_val(players[i], "GULAG");
-    printf("<tr><td>%s</td><td>%s</td></tr>", players[i], chosen ? "true":"false");
+    if(update_lines[j] != NULL){
+      printf("<tr><td>%s</td><td>%s</td></tr>", players[i], "true");
+    }else if(get_attr_val(players[i], "DEAD") != 0){
+      printf("<tr><td>%s</td><td>%s</td></tr>", players[i], "DEAD");
+    }else if(get_attr_val(players[i], "GULAG") != 0){
+      printf("<tr><td>%s</td><td>%s</td></tr>", players[i], "GULAG");
+    }else{
+      printf("<tr><td>%s</td><td>%s</td></tr>", players[i], "false");
+    }
+    // int chosen = (update_lines[j] != NULL) || get_attr_val(players[i], "DEAD") || get_attr_val(players[i], "GULAG");
+    // printf("<tr><td>%s</td><td>%s</td></tr>", players[i], chosen ? "true":"false");
   }
   free_arr(update_lines);
   printf("</table></center>");
-  printf("<br><b>Advance the Round?</b><form action=\"forced_update.cgi\"> <input type='hidden' name='user' id='user' value='%s' /> <input type=\"submit\" name=\"force_update\" id=\"force_update\"> </form>", user);
+  printf("<br><b>Advance the Round?</b><form action=\"forced_update.cgi\" method='post'> <input type='hidden' name='user' id='user' value='%s' /> <input type=\"submit\" name=\"force_update\" id=\"force_update\"> </form>", user);
   _not_admin: printf("</div>");
 	printf("</body> </html>");
 }

@@ -107,6 +107,10 @@ void initialize(char *student_file){
 	//printf("extra peasants total = %d, bd = %d, exk = %d\n", peasants, bedniaks, ex_kulaks);
 	// clear navigation file
 	FILE *nav_file_clear = fopen("nav_file.txt", "w");
+  if(!nav_file_clear){
+    perror("Could not clear the nav file");
+    abort();
+  }
 	fclose(nav_file_clear);
   system("rm -rf ./players/");
   #ifndef WIN32
@@ -289,7 +293,6 @@ void initialize(char *student_file){
   free(player_yez);
   // create the server files -- since process is about to end, no need to close files
   fopen("update_file.txt", "w");
-  fopen("passwords.txt", "w");
   FILE *round_fp = fopen("round.txt", "w");
   fprintf(round_fp, "1");
   fclose(round_fp);

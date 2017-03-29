@@ -28,8 +28,8 @@ int main(void){
 	//if (count_players_chosen("update_file.txt") == count_nav_lines()){
 		printf("<html><head>\n<title>The Soviet Great Terror Simulation\n</title>\n");
     printf("<script type=\"text/javascript\">function loaded(e){ document.forms[0].submit.click();}</script>\n</head>");
-		printf("<body onload=\"loaded();\"> <h1> Round forcefully advanced. Please press the button below to continue or wait 3 seconds. </h1>");
-		printf("<form action = user_interface.cgi><input type='hidden' name='user' id='user' value='%s' /><input type=\"submit\" name = \"submitbutton\" id=\"submitbutton\"> </form>", user);
+		printf("<body onload=\"loaded();\"> <h1> Round forcefully advanced. Press the button below to return.</h1>");
+		printf("<form action ='user_interface.cgi' method='post'><input type='hidden' name='user' id='user' value='%s' /><input type=\"submit\" name = \"submitbutton\" id=\"submitbutton\"> </form>", user);
 		printf("</body></html>");
 	/*}else{
     printf("<html><head><title>ERROR?</title> </head>");

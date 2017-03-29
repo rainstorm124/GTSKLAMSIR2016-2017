@@ -456,10 +456,10 @@ int get_prompt_num_YAG(char *player_name, int round){
   int yez_r2c3 = is_player_choice(player_yez, 2, "3:3");
   
   int player_arrested = get_attr_val(player_name, "ARRESTED");
-  int player_demoted = get_attr_val(player_name, "DEMOTED");
+  int player_demoted = get_attr_val(player_name, "DEMOTED") != 0;
   
   int yez_arrested = get_attr_val(player_yez, "ARRESTED");
-  int yez_demoted = get_attr_val(player_yez, "DEMOTED");
+  int yez_demoted = get_attr_val(player_yez, "DEMOTED") != 0;
   
   int sta_r5a1 = is_player_choice(player_sta, 5, "1:1");
   int sta_r5a2 = is_player_choice(player_sta, 5, "1:2");

@@ -82,11 +82,11 @@ char* get_player(char *type){
     if(strcmp(type, "YEZ") == 0 || strcmp(type, "YAG") == 0){
       bool looking_for_yez = strcmp(type, "YEZ") == 0;
       if(strcmp(nav_line[1], "NKVDO") == 0){
-        if(get_attr_val(nav_line[0], "DEMOTED") == 1 && looking_for_yez){
+        if(get_attr_val(nav_line[0], "DEMOTED") > 0 && looking_for_yez){
           player_found = true;
           strcpy(player_name, nav_line[0]);
         }
-        if(get_attr_val(nav_line[0], "DEMOTED") == 2 && !looking_for_yez){
+        if(get_attr_val(nav_line[0], "DEMOTED") < 0 && !looking_for_yez){
           player_found = true;
           strcpy(player_name, nav_line[0]);
         }

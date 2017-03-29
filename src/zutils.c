@@ -37,15 +37,12 @@ void unlock(void){
 }
 
 /// Force the round to advance and choose randomly for those who have not chosen.
-bool admin_override(){
-	bool updated = false;
+void admin_override(){
 	lock();
-  FILE *fp;
   //First, push updates in file
   char *raw_updates = read_text("update_file.txt");
 	char **raw_updates_lines = split(raw_updates, '\n');
-	char **targets_for_updates;
-	
+  
   int stak_votes = 0;
   bool stak_vote_specialP = false;
 	bool YEZ_favor_specialP = false;
@@ -56,7 +53,7 @@ bool admin_override(){
 	char **stakw_player_name = calloc(sizeof(char*), 100);
   
   for (int i = 0; raw_updates_lines[i]; i++) {
-	  targets_for_updates = get_targets(raw_updates_lines[i]);
+	  char **targets_for_updates = get_targets(raw_updates_lines[i]);
 		do_option(targets_for_updates, raw_updates_lines[i]);
     ///
     if(get_round() == 5){
@@ -90,16 +87,12 @@ bool admin_override(){
     YAG_favor_special();
   else if(YAG_cred_specialP)
     YAG_cred_special();
-	//Clears update file
-	fp = fopen("update_file.txt", "w");
-	fclose(fp);
   
 	//Now make random updates. Taken from Greg's prompt.c mainline and repurposed. :P
 	char **players = calloc(sizeof(char*), 400);
 	char *nav_text = read_text("nav_file.txt");
 	char **nav_lines = split(nav_text, '\n');
-	int i = 0;
-	for(;nav_lines[i]; i++){
+	for(int i = 0; nav_lines[i]; i++){
 	  if(nav_lines[i][0] == '\0') continue;
 	  char **nav_line = split(nav_lines[i], '=');
 	  if(!nav_line[0]) continue;
@@ -108,7 +101,19 @@ bool admin_override(){
 	  free_arr(nav_line);
 	}
 	for(int j = 0; players[j]; j++){
-    if(get_attr_val(players[j], "DEAD") || get_attr_val(players[j], "GULAG"))continue;
+    bool player_already_chose = get_user_choice(players[j]) != NULL;
+    if(get_attr_val(players[j], "DEAD") == 1 || get_attr_val(players[j], "GULAG") == 1)continue;
+    /*for(int a = 0; raw_updates_lines[a]; a++){
+      if(!raw_updates_lines[a] || raw_updates_lines[a][0] == '\0') continue;
+      char **update_line = split(raw_updates_lines[a], ':');
+      if(!update_line[0]) continue;
+      if(!strcmp(players[j], update_line[0])){
+        player_already_chose = true;
+      }
+      printf("\n<!-- %s %s %d -->\n", players[j], update_line[0], player_already_chose);
+      free_arr(update_line);
+    }*/
+    if(player_already_chose) continue;
 		char *prompt_code = get_prompt_code(players[j], get_round());
 		char **options = get_option_codes(prompt_code);
 		int option_count = 0;
@@ -120,10 +125,15 @@ bool admin_override(){
 		free_arr(options);
 		free_arr(targets);
 	}
+  //Clears update file
+	FILE *fp = fopen("update_file.txt", "w");
+	fclose(fp);
+  // advance the round in round.txt by 1
   set_round(get_round()+1);
-	updated = true;
+  // release the lock file
   unlock();
-	return updated;
+  free(raw_updates);
+  free_arr(raw_updates_lines);
 }
 
 int count_players_chosen(char *fname) {
@@ -137,8 +147,7 @@ int count_players_chosen(char *fname) {
 }
 
 //First counts then checks total of stakw chosen and all stakw overall.
-bool stak_vote_special(int stak_votes, char **voter_codes, char **voter_names){
-	bool success = false;
+void stak_vote_special(int stak_votes, char **voter_codes, char **voter_names){
 	int total = 0;
 	char *nav = read_text("nav_file.txt");
 	char **nav_lines = split(nav, '\n');

@@ -7,6 +7,7 @@ int main(int argc, char** argv){
 	long int text_len = strtol(text_length, NULL, 10);
 	char *postdata = malloc(text_len + 1);
 	fgets(postdata, text_len + 1, stdin);
+  print_header();
   char *user = calloc(text_len, sizeof (char));
   char *password = calloc(text_len, sizeof (char));
   char **pd = split(postdata, '&');
@@ -16,4 +17,6 @@ int main(int argc, char** argv){
   if(strcmp("M4s2xW9W", password) != 0) exit(0);
   
   system("./setup.exe -y");
+  
+  printf("\n\n<html><head><title>Success</title></head><body><a href='mainpage.cgi'> <b><strong><em>HOME</em></strong></b></a></body></html>\n");
 }

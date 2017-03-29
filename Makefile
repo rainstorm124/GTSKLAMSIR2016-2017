@@ -4,7 +4,7 @@ CFLAGS=-std=gnu99 -g -Wall -Iinclude
 LDFLAGS=-L.
 #tell the linker which libraries to use
 LDLIBS=-lgreg -lcrypt -g -pthread
-LIBG_OBJECTS=src/gregutils.o src/prompt.o src/prompt_chooser.o src/zutils.o
+LIBG_OBJECTS=src/gregutils.o src/prompt.o src/prompt_chooser.o src/zutils.o src/linked_list.o
 
 all: mainpage.cgi account.cgi libgreg.a createaccount.cgi\
 user_interface.cgi user_choice.cgi forced_update.cgi\
