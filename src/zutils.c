@@ -1,5 +1,7 @@
 //A file for functions concerning updating, checking player chosen counts, etc.
 #include "zutils.h"
+#include <time.h>
+
 int ZOINKA_main(int argc, char **argv){
 	return 0;
 }
@@ -39,6 +41,7 @@ void unlock(void){
 /// Force the round to advance and choose randomly for those who have not chosen.
 void admin_override(){
 	lock();
+  srand(time(NULL));
   //First, push updates in file
   char *raw_updates = read_text("update_file.txt");
 	char **raw_updates_lines = split(raw_updates, '\n');
